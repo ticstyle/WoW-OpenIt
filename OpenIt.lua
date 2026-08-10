@@ -1,0 +1,407 @@
+-- OpenIt.lua
+-- https://github.com/ticstyle/WoW-OpenIt
+
+-- luacheck: globals OpenItDB CreateFrame UIParent C_Container C_Item Settings InCombatLockdown IsShiftKeyDown GameTooltip GameTooltip_Hide SlashCmdList SLASH_OPENIT1 Enum time pairs ipairs table math print
+
+local addonName, addon = ...
+addon.frame = CreateFrame("Frame")
+
+-- Local state variables
+local currentItem = nil
+local optionsCategory = nil
+
+-- Default configuration structure
+local defaultDB = {
+    blacklist = {},
+    snoozed = {},
+    position = { point = "CENTER", x = 0, y = 0 },
+}
+
+-- Print helper for addon chat output
+function addon:Print(msg)
+    print("|cff9966ffOpenIt:|r " .. msg)
+end
+
+-------------------------------------------------------------------------------
+-- Helper Functions
+-------------------------------------------------------------------------------
+
+-- Check if an item in bags can be opened or used as a container
+local function IsItemOpenable(bag, slot, info)
+    if not info or not info.itemID then
+        return false
+    end
+
+    local itemID = info.itemID
+
+    -- Skip blacklisted items
+    if OpenItDB.blacklist[itemID] then
+        return false
+    end
+
+    -- Skip snoozed items until timer expires
+    local snoozeUntil = OpenItDB.snoozed[itemID]
+    if snoozeUntil then
+        if time() < snoozeUntil then
+            return false
+        else
+            OpenItDB.snoozed[itemID] = nil
+        end
+    end
+
+    -- Built-in container flag set by game engine for openable items
+    if info.hasLoot then
+        return true
+    end
+
+    -- Fallback check for container item class
+    local classID = select(12, C_Item.GetItemInfo(itemID))
+    if classID == Enum.ItemClass.Container then
+        return true
+    end
+
+    return false
+end
+
+-- Scan player inventory for the first openable item
+function addon:ScanBags()
+    for bag = 0, 5 do
+        local numSlots = C_Container.GetContainerNumSlots(bag) or 0
+        for slot = 1, numSlots do
+            local info = C_Container.GetContainerItemInfo(bag, slot)
+            if info and IsItemOpenable(bag, slot, info) then
+                return {
+                    bag = bag,
+                    slot = slot,
+                    itemID = info.itemID,
+                    icon = info.iconFileID,
+                    count = info.stackCount or 1,
+                    hyperlink = info.hyperlink,
+                }
+            end
+        end
+    end
+    return nil
+end
+
+-------------------------------------------------------------------------------
+-- Main Frame & Button Construction
+-------------------------------------------------------------------------------
+
+local button = CreateFrame("Button", "OpenItButton", UIParent, "SecureActionButtonTemplate, BackdropTemplate")
+button:SetSize(48, 48)
+button:SetMovable(true)
+button:EnableMouse(true)
+button:SetClampedToScreen(true)
+button:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+button:RegisterForDrag("LeftButton")
+button:Hide()
+
+-- Texture initialization
+button.icon = button:CreateTexture(nil, "BACKGROUND")
+button.icon:SetAllPoints()
+button.icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
+
+-- Stack count overlay
+button.count = button:CreateFontString(nil, "OVERLAY", "NumberFontNormal")
+button.count:SetPoint("BOTTOMRIGHT", -2, 2)
+
+-- Border backdrop styling
+button:SetBackdrop({
+    edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+    tile = true,
+    tileSize = 16,
+    edgeSize = 12,
+    insets = { left = 2, right = 2, top = 2, bottom = 2 },
+})
+button:SetBackdropBorderColor(0.6, 0.4, 1.0, 1)
+
+-- Drag handling
+button:SetScript("OnDragStart", function(self)
+    if not InCombatLockdown() then
+        self:StartMoving()
+    end
+end)
+
+button:SetScript("OnDragStop", function(self)
+    self:StopMovingOrSizing()
+    local point, _, relativePoint, x, y = self:GetPoint()
+    OpenItDB.position = {
+        point = point,
+        relativePoint = relativePoint,
+        x = x,
+        y = y,
+    }
+end)
+
+-- Handle Right-Click (Snooze) and Shift + Right-Click (Blacklist)
+button:SetScript("PreClick", function(_, btn)
+    if btn ~= "RightButton" or not currentItem then
+        return
+    end
+
+    local itemID = currentItem.itemID
+    if not itemID then
+        return
+    end
+
+    local itemName = C_Item.GetItemInfo(itemID) or currentItem.hyperlink or ("Item #" .. itemID)
+
+    if IsShiftKeyDown() then
+        OpenItDB.blacklist[itemID] = true
+        addon:Print("Blacklisted " .. itemName)
+        if addon.optionsFrame and addon.optionsFrame:IsShown() then
+            addon.optionsFrame:RefreshList()
+        end
+    else
+        -- Snooze for 3 hours (10,800 seconds)
+        OpenItDB.snoozed[itemID] = time() + (3 * 3600)
+        addon:Print("Snoozed " .. itemName .. " for 3 hours.")
+    end
+
+    addon:Update()
+end)
+
+-- Tooltip display handlers
+button:SetScript("OnEnter", function(self)
+    if currentItem then
+        GameTooltip:SetOwner(self, "ANCHOR_TOP")
+        GameTooltip:SetBagItem(currentItem.bag, currentItem.slot)
+        GameTooltip:AddLine(" ")
+        GameTooltip:AddLine("|cff00ff00Left-Click:|r Open / Use item", 1, 1, 1)
+        GameTooltip:AddLine("|cffffcc00Right-Click:|r Snooze for 3 hours", 1, 1, 1)
+        GameTooltip:AddLine("|cffff3333Shift + Right-Click:|r Blacklist item", 1, 1, 1)
+        GameTooltip:AddLine("|cff888888Drag to move button|r", 0.7, 0.7, 0.7)
+        GameTooltip:Show()
+    end
+end)
+
+button:SetScript("OnLeave", function()
+    GameTooltip_Hide()
+end)
+
+-------------------------------------------------------------------------------
+-- Addon Core Logic
+-------------------------------------------------------------------------------
+
+function addon:Update()
+    -- Attributes on secure action frames cannot be updated in combat
+    if InCombatLockdown() then
+        addon.pendingUpdate = true
+        return
+    end
+    addon.pendingUpdate = false
+
+    local item = addon:ScanBags()
+    if item then
+        currentItem = item
+        button.icon:SetTexture(item.icon)
+
+        if item.count > 1 then
+            button.count:SetText(item.count)
+            button.count:Show()
+        else
+            button.count:Hide()
+        end
+
+        -- Configure left-click secure item target
+        button:SetAttribute("type1", "item")
+        button:SetAttribute("item", item.bag .. " " .. item.slot)
+        button:Show()
+    else
+        currentItem = nil
+        button:Hide()
+    end
+end
+
+local function RestorePosition()
+    if OpenItDB and OpenItDB.position then
+        local pos = OpenItDB.position
+        button:ClearAllPoints()
+        button:SetPoint(pos.point or "CENTER", UIParent, pos.relativePoint or "CENTER", pos.x or 0, pos.y or 0)
+    else
+        button:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+    end
+end
+
+-------------------------------------------------------------------------------
+-- Retail Options Panel Construction
+-------------------------------------------------------------------------------
+
+local function CreateOptionsPanel()
+    local panel = CreateFrame("Frame", "OpenItOptionsPanel", UIParent)
+    panel.name = "OpenIt"
+    addon.optionsFrame = panel
+
+    local title = panel:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
+    title:SetPoint("TOPLEFT", 16, -16)
+    title:SetText("OpenIt - Blacklisted Items")
+
+    local desc = panel:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
+    desc:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 0, -8)
+    desc:SetPoint("RIGHT", panel, "RIGHT", -16, 0)
+    desc:SetJustifyH("LEFT")
+    desc:SetText("Items listed below will not trigger the floating icon. Click the red X to remove an item from the blacklist.")
+
+    local scrollFrame = CreateFrame("ScrollFrame", "OpenItOptionsScrollFrame", panel, "UIPanelScrollFrameTemplate")
+    scrollFrame:SetPoint("TOPLEFT", desc, "BOTTOMLEFT", 0, -16)
+    scrollFrame:SetPoint("BOTTOMRIGHT", panel, "BOTTOMRIGHT", -32, 16)
+
+    local scrollChild = CreateFrame("Frame", "OpenItOptionsScrollChild", scrollFrame)
+    scrollChild:SetSize(scrollFrame:GetWidth() or 500, 1)
+    scrollFrame:SetScrollChild(scrollChild)
+
+    panel.rows = {}
+
+    function panel:RefreshList()
+        for _, row in ipairs(panel.rows) do
+            row:Hide()
+        end
+
+        local blacklistedIDs = {}
+        for itemID in pairs(OpenItDB.blacklist) do
+            table.insert(blacklistedIDs, itemID)
+        end
+        table.sort(blacklistedIDs)
+
+        if #blacklistedIDs == 0 then
+            if not panel.emptyText then
+                panel.emptyText = scrollChild:CreateFontString(nil, "ARTWORK", "GameFontDisable")
+                panel.emptyText:SetPoint("TOPLEFT", 10, -10)
+                panel.emptyText:SetText("No blacklisted items.")
+            end
+            panel.emptyText:Show()
+            scrollChild:SetHeight(40)
+            return
+        elseif panel.emptyText then
+            panel.emptyText:Hide()
+        end
+
+        local rowHeight = 32
+        local yOffset = 0
+
+        for i, itemID in ipairs(blacklistedIDs) do
+            local row = panel.rows[i]
+            if not row then
+                row = CreateFrame("Frame", nil, scrollChild)
+                row:SetSize(450, rowHeight)
+
+                row.icon = row:CreateTexture(nil, "ARTWORK")
+                row.icon:SetSize(24, 24)
+                row.icon:SetPoint("LEFT", 8, 0)
+
+                row.name = row:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+                row.name:SetPoint("LEFT", row.icon, "RIGHT", 8, 0)
+
+                row.deleteBtn = CreateFrame("Button", nil, row)
+                row.deleteBtn:SetSize(24, 24)
+                row.deleteBtn:SetPoint("RIGHT", row, "RIGHT", -8, 0)
+
+                row.deleteBtn.text = row.deleteBtn:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+                row.deleteBtn.text:SetPoint("CENTER", 0, 0)
+                row.deleteBtn.text:SetText("X")
+                row.deleteBtn.text:SetTextColor(1, 0.2, 0.2)
+
+                row.deleteBtn:SetScript("OnEnter", function(btn)
+                    btn.text:SetTextColor(1, 0.5, 0.5)
+                end)
+                row.deleteBtn:SetScript("OnLeave", function(btn)
+                    btn.text:SetTextColor(1, 0.2, 0.2)
+                end)
+
+                panel.rows[i] = row
+            end
+
+            row:SetPoint("TOPLEFT", scrollChild, "TOPLEFT", 0, -yOffset)
+            row:Show()
+
+            local itemName, _, itemQuality, _, _, _, _, _, _, itemTexture = C_Item.GetItemInfo(itemID)
+            row.icon:SetTexture(itemTexture or C_Item.GetItemIconByID(itemID) or 134400)
+
+            if itemName then
+                if itemQuality then
+                    local color = C_Item.GetItemQualityColor(itemQuality)
+                    if color then
+                        row.name:SetText(color.hex .. itemName .. "|r")
+                    else
+                        row.name:SetText(itemName)
+                    end
+                else
+                    row.name:SetText(itemName)
+                end
+            else
+                row.name:SetText("Item #" .. itemID)
+                C_Item.RequestLoadItemDataByID(itemID)
+            end
+
+            -- Remove from blacklist when red X is clicked
+            row.deleteBtn:SetScript("OnClick", function()
+                OpenItDB.blacklist[itemID] = nil
+                panel:RefreshList()
+                addon:Update()
+            end)
+
+            yOffset = yOffset + rowHeight
+        end
+
+        scrollChild:SetHeight(math.max(yOffset, 40))
+    end
+
+    panel:SetScript("OnShow", function()
+        panel:RefreshList()
+    end)
+
+    local category = Settings.RegisterCanvasLayoutCategory(panel, "OpenIt")
+    Settings.RegisterAddOnCategory(category)
+    optionsCategory = category
+end
+
+-------------------------------------------------------------------------------
+-- Event Listeners & Slash Commands
+-------------------------------------------------------------------------------
+
+addon.frame:RegisterEvent("ADDON_LOADED")
+addon.frame:RegisterEvent("BAG_UPDATE_DELAYED")
+addon.frame:RegisterEvent("PLAYER_REGEN_ENABLED")
+addon.frame:RegisterEvent("GET_ITEM_INFO_RECEIVED")
+
+addon.frame:SetScript("OnEvent", function(_, event, arg1)
+    if event == "ADDON_LOADED" and arg1 == addonName then
+        if not OpenItDB then
+            OpenItDB = {}
+        end
+        for k, v in pairs(defaultDB) do
+            if OpenItDB[k] == nil then
+                OpenItDB[k] = v
+            end
+        end
+
+        RestorePosition()
+        CreateOptionsPanel()
+        addon:Update()
+    elseif event == "BAG_UPDATE_DELAYED" then
+        addon:Update()
+    elseif event == "PLAYER_REGEN_ENABLED" then
+        if addon.pendingUpdate then
+            addon:Update()
+        end
+    elseif event == "GET_ITEM_INFO_RECEIVED" then
+        if addon.optionsFrame and addon.optionsFrame:IsShown() then
+            addon.optionsFrame:RefreshList()
+        end
+    end
+end)
+
+SLASH_OPENIT1 = "/openit"
+SlashCmdList["OPENIT"] = function(msg)
+    msg = msg and msg:lower():gsub("^%s*(.-)%s*$", "%1") or ""
+    if msg == "reset" then
+        OpenItDB.position = { point = "CENTER", x = 0, y = 0 }
+        RestorePosition()
+        addon:Print("Position reset to screen center.")
+    else
+        if optionsCategory then
+            Settings.OpenToCategory(optionsCategory:GetID())
+        end
+    end
+end
