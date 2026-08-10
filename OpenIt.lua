@@ -1,7 +1,7 @@
 -- OpenIt.lua
 -- https://github.com/ticstyle/WoW-OpenIt
 
--- luacheck: globals OpenItDB CreateFrame UIParent C_Container C_Item Settings InCombatLockdown IsShiftKeyDown GameTooltip GameTooltip_Hide SlashCmdList SLASH_OPENIT1 Enum time pairs ipairs table math print
+-- luacheck: globals OpenItDB CreateFrame UIParent C_Container C_Item C_TooltipInfo Settings InCombatLockdown IsShiftKeyDown GameTooltip GameTooltip_Hide SlashCmdList SLASH_OPENIT1 Enum time pairs ipairs table math print _G ITEM_OPENABLE ITEM_SPELL_TRIGGER_ONUSE
 
 local addonName, addon = ...
 addon.frame = CreateFrame("Frame")
@@ -26,7 +26,15 @@ end
 -- Helper Functions
 -------------------------------------------------------------------------------
 
--- Check if an item in bags can be opened or used as a container
+-- Strip color codes and escape sequences from tooltip text
+local function CleanTooltipText(text)
+    if not text then
+        return ""
+    end
+    return text:gsub("|c%x%x%x%x%x%x%x%x", ""):gsub("|r", ""):gsub("|T.-|t", "")
+end
+
+-- Determine if an item is an openable container, satchel, or usable package
 local function IsItemOpenable(bag, slot, info)
     if not info or not info.itemID then
         return false
@@ -49,15 +57,54 @@ local function IsItemOpenable(bag, slot, info)
         end
     end
 
-    -- Built-in container flag set by game engine for openable items
+    -- Never trigger on equippable gear with "Use:" effects (trinkets, weapons, armor)
+    if C_Item.IsEquippableItem(itemID) then
+        return false
+    end
+
+    -- 1. Engine flag for container loot
     if info.hasLoot then
         return true
     end
 
-    -- Fallback check for container item class
+    -- 2. Tooltip scan via modern C_TooltipInfo API
+    if C_TooltipInfo and C_TooltipInfo.GetBagItem then
+        local tooltipData = C_TooltipInfo.GetBagItem(bag, slot)
+        if tooltipData and tooltipData.lines then
+            for _, lineData in ipairs(tooltipData.lines) do
+                local text = lineData.leftText
+                if text and text ~= "" then
+                    local cleanText = CleanTooltipText(text)
+
+                    -- Check for engine openable string ("<Right Click to Open>")
+                    if ITEM_OPENABLE and cleanText:find(ITEM_OPENABLE, 1, true) then
+                        return true
+                    end
+
+                    -- Check for general right-click open text
+                    if cleanText:lower():find("right click to open") or cleanText:find("<Right Click") then
+                        return true
+                    end
+
+                    -- Check for "Use:" trigger on container/package/quest items
+                    if ITEM_SPELL_TRIGGER_ONUSE and cleanText:find(ITEM_SPELL_TRIGGER_ONUSE, 1, true) then
+                        local _, spellID = C_Item.GetItemSpell(itemID)
+                        if spellID then
+                            return true
+                        end
+                    end
+                end
+            end
+        end
+    end
+
+    -- 3. Fallback check for item class and spell cast capability (Caches, Containers, Lockboxes)
     local classID = select(12, C_Item.GetItemInfo(itemID))
-    if classID == Enum.ItemClass.Container then
-        return true
+    if classID == Enum.ItemClass.Container or classID == Enum.ItemClass.Miscellaneous then
+        local _, spellID = C_Item.GetItemSpell(itemID)
+        if spellID then
+            return true
+        end
     end
 
     return false
@@ -364,6 +411,7 @@ addon.frame:RegisterEvent("ADDON_LOADED")
 addon.frame:RegisterEvent("BAG_UPDATE_DELAYED")
 addon.frame:RegisterEvent("PLAYER_REGEN_ENABLED")
 addon.frame:RegisterEvent("GET_ITEM_INFO_RECEIVED")
+addon.frame:RegisterEvent("ITEM_DATA_LOAD_RESULT")
 
 addon.frame:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED" and arg1 == addonName then
@@ -385,10 +433,11 @@ addon.frame:SetScript("OnEvent", function(_, event, arg1)
         if addon.pendingUpdate then
             addon:Update()
         end
-    elseif event == "GET_ITEM_INFO_RECEIVED" then
+    elseif event == "GET_ITEM_INFO_RECEIVED" or event == "ITEM_DATA_LOAD_RESULT" then
         if addon.optionsFrame and addon.optionsFrame:IsShown() then
             addon.optionsFrame:RefreshList()
         end
+        addon:Update()
     end
 end)
 
