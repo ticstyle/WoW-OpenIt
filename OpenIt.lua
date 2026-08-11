@@ -87,6 +87,17 @@ local function IsItemOpenable(bag, slot, info)
     if C_TooltipInfo and C_TooltipInfo.GetBagItem then
         local tooltipData = C_TooltipInfo.GetBagItem(bag, slot)
         if tooltipData and tooltipData.lines then
+            -- Pre-pass: Skip readable books/ledgers ("<Right Click to Read>")
+            for _, lineData in ipairs(tooltipData.lines) do
+                local text = lineData.leftText
+                if text and text ~= "" then
+                    local cleanText = CleanTooltipText(text):lower()
+                    if cleanText:find("right click to read") or cleanText:find("<right click to read>") then
+                        return false
+                    end
+                end
+            end
+
             for _, lineData in ipairs(tooltipData.lines) do
                 local text = lineData.leftText
                 if text and text ~= "" then
@@ -148,9 +159,10 @@ button:RegisterForClicks("LeftButtonUp", "RightButtonUp")
 button:RegisterForDrag("LeftButton")
 button:Hide()
 
--- Texture initialization
+-- Texture inset within frame border to prevent spilling
 button.icon = button:CreateTexture(nil, "BACKGROUND")
-button.icon:SetAllPoints()
+button.icon:SetPoint("TOPLEFT", button, "TOPLEFT", 3, -3)
+button.icon:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", -3, 3)
 button.icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
 
 -- Stack count overlay
@@ -225,6 +237,7 @@ button:SetScript("OnEnter", function(self)
         if not OpenItDB.isLocked then
             GameTooltip:AddLine("|cff888888Drag to move button|r", 0.7, 0.7, 0.7)
         end
+        GameTooltip:AddLine("Item ID: " .. currentItem.itemID, 0.5, 0.5, 0.5)
         GameTooltip:Show()
     end
 end)
