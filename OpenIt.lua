@@ -1,7 +1,11 @@
 -- OpenIt.lua
 -- https://github.com/ticstyle/WoW-OpenIt
 
--- luacheck: globals OpenItDB CreateFrame UIParent C_Container C_Item C_TooltipInfo C_ToyBox C_QuestLog C_CurrencyInfo Settings InCombatLockdown IsShiftKeyDown GameTooltip GameTooltip_Hide SlashCmdList SLASH_OPENIT1 Enum time pairs ipairs table math print _G ITEM_OPENABLE ITEM_SPELL_TRIGGER_ONUSE tonumber tostring ITEM_QUALITY_COLORS PlaySound SOUNDKIT
+-- luacheck: globals OpenItDB CreateFrame UIParent C_Container C_Item C_TooltipInfo
+-- luacheck: globals C_ToyBox C_QuestLog C_CurrencyInfo Settings InCombatLockdown
+-- luacheck: globals IsShiftKeyDown GameTooltip GameTooltip_Hide SlashCmdList SLASH_OPENIT1
+-- luacheck: globals Enum time pairs ipairs table math print _G ITEM_OPENABLE
+-- luacheck: globals ITEM_SPELL_TRIGGER_ONUSE tonumber tostring ITEM_QUALITY_COLORS PlaySound SOUNDKIT
 
 local addonName, addon = ...
 addon.frame = CreateFrame("Frame")
@@ -22,7 +26,7 @@ local defaultDB = {
 }
 
 -- Print helper for addon chat output
-function addon:Print(msg)
+function addon.Print(_, msg)
 	print("|cff9966ffOpenIt:|r " .. msg)
 end
 
@@ -298,17 +302,17 @@ local function IsItemOpenable(bag, slot, info)
 		return false
 	end
 
-	-- Skip permanently/hardcoded blacklisted items (Data/Blacklist.lua)
+	-- Fast Check 1: Skip permanently/hardcoded blacklisted items (Data/Blacklist.lua)
 	if addon.hardcodedBlacklist and addon.hardcodedBlacklist[itemID] then
 		return false
 	end
 
-	-- Skip user-blacklisted items
+	-- Fast Check 2: Skip user-blacklisted items
 	if IsBlacklisted(itemID) then
 		return false
 	end
 
-	-- Skip snoozed items until timer expires
+	-- Fast Check 3: Skip snoozed items until timer expires
 	local snoozeUntil = OpenItDB.snoozed[itemID]
 	if snoozeUntil then
 		if time() < snoozeUntil then
@@ -318,7 +322,7 @@ local function IsItemOpenable(bag, slot, info)
 		end
 	end
 
-	-- Never trigger on equippable gear with "Use:" effects
+	-- Fast Check 4: Never trigger on equippable gear with "Use:" effects
 	if C_Item.IsEquippableItem(itemID) then
 		return false
 	end
@@ -362,7 +366,7 @@ local function IsItemOpenable(bag, slot, info)
 end
 
 -- Scan player inventory for the first openable item
-function addon:ScanBags()
+function addon.ScanBags(_)
 	for bag = 0, 5 do
 		local numSlots = C_Container.GetContainerNumSlots(bag) or 0
 		for slot = 1, numSlots do
@@ -432,15 +436,15 @@ button:SetBackdrop({
 button:SetBackdropBorderColor(0.6, 0.4, 1.0, 1)
 
 -- Drag handling (Respects isLocked setting)
-button:SetScript("OnDragStart", function(self)
+button:SetScript("OnDragStart", function(_)
 	if not InCombatLockdown() and not OpenItDB.isLocked then
-		self:StartMoving()
+		button:StartMoving()
 	end
 end)
 
-button:SetScript("OnDragStop", function(self)
-	self:StopMovingOrSizing()
-	local point, _, relativePoint, x, y = self:GetPoint()
+button:SetScript("OnDragStop", function(_)
+	button:StopMovingOrSizing()
+	local point, _, relativePoint, x, y = button:GetPoint()
 	OpenItDB.position = {
 		point = point,
 		relativePoint = relativePoint,
@@ -515,7 +519,7 @@ end)
 -- Addon Core Logic & Settings Application
 -------------------------------------------------------------------------------
 
-function addon:ApplyVisualSettings()
+function addon.ApplyVisualSettings(_)
 	local size = OpenItDB.buttonSize or 48
 	local alpha = OpenItDB.buttonAlpha or 1.0
 
@@ -523,7 +527,7 @@ function addon:ApplyVisualSettings()
 	button:SetAlpha(alpha)
 end
 
-function addon:Update()
+function addon.Update(_)
 	if InCombatLockdown() then
 		addon.pendingUpdate = true
 		return
@@ -610,10 +614,10 @@ local function CreateOptionsPanel()
 	sizeSlider.valText = sizeSlider:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
 	sizeSlider.valText:SetPoint("TOP", sizeSlider, "BOTTOM", 0, -2)
 
-	sizeSlider:SetScript("OnValueChanged", function(s, value)
+	sizeSlider:SetScript("OnValueChanged", function(_, value)
 		value = math.floor(value)
 		OpenItDB.buttonSize = value
-		s.valText:SetText(value .. " px")
+		sizeSlider.valText:SetText(value .. " px")
 		addon:ApplyVisualSettings()
 	end)
 
@@ -632,10 +636,10 @@ local function CreateOptionsPanel()
 	opacitySlider.valText = opacitySlider:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
 	opacitySlider.valText:SetPoint("TOP", opacitySlider, "BOTTOM", 0, -2)
 
-	opacitySlider:SetScript("OnValueChanged", function(s, value)
+	opacitySlider:SetScript("OnValueChanged", function(_, value)
 		value = math.floor(value * 100 + 0.5) / 100
 		OpenItDB.buttonAlpha = value
-		s.valText:SetText(math.floor(value * 100) .. "%")
+		opacitySlider.valText:SetText(math.floor(value * 100) .. "%")
 		addon:ApplyVisualSettings()
 	end)
 
@@ -655,10 +659,10 @@ local function CreateOptionsPanel()
 	qualitySlider.valText = qualitySlider:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
 	qualitySlider.valText:SetPoint("TOP", qualitySlider, "BOTTOM", 0, -2)
 
-	qualitySlider:SetScript("OnValueChanged", function(s, value)
+	qualitySlider:SetScript("OnValueChanged", function(_, value)
 		value = math.floor(value)
 		OpenItDB.minQuality = value
-		s.valText:SetText(qualityNames[value] or "Junk")
+		qualitySlider.valText:SetText(qualityNames[value] or "Junk")
 		addon:Update()
 	end)
 
@@ -684,7 +688,7 @@ local function CreateOptionsPanel()
 
 	panel.rows = {}
 
-	function panel:RefreshList()
+	function panel.RefreshList(_)
 		-- Sync form values
 		lockCB:SetChecked(OpenItDB.isLocked or false)
 		sizeSlider:SetValue(OpenItDB.buttonSize or 48)
@@ -803,7 +807,7 @@ local function CreateOptionsPanel()
 		scrollChild:SetHeight(math.max(yOffset, 40))
 	end
 
-	panel:SetScript("OnShow", function()
+	panel:SetScript("OnShow", function(_)
 		panel:RefreshList()
 	end)
 
