@@ -102,7 +102,7 @@ end
 -------------------------------------------------------------------------------
 
 local function HasUnmetRequirements(bag, slot, itemID, info)
-    -- Native engine usability check
+    -- 1. Native engine usability check
     if C_Item and C_Item.IsUsableItem then
         local isUsable, noMana = C_Item.IsUsableItem(itemID)
         if not isUsable and not noMana then
@@ -110,25 +110,25 @@ local function HasUnmetRequirements(bag, slot, itemID, info)
         end
     end
 
-    -- Check Cooldowns
+    -- 2. Check Cooldowns
     local _, duration = C_Container.GetContainerItemCooldown(bag, slot)
     if duration and duration > 1.5 then
         return true
     end
 
-    -- Check Minimum Quality Threshold
+    -- 3. Check Minimum Quality Threshold
     local quality = (info and info.quality) or select(3, C_Item.GetItemInfo(itemID))
     local minQuality = OpenItDB.minQuality or 1
     if quality and quality < minQuality then
         return true
     end
 
-    -- Check Already Collected Toys
+    -- 4. Check Already Collected Toys
     if C_ToyBox and C_ToyBox.IsToyCollected and C_ToyBox.IsToyCollected(itemID) then
         return true
     end
 
-    -- Check Quest Start Items (Completed or Active in Log)
+    -- 5. Check Quest Start Items (Completed or Active in Log)
     local questID = (C_Item and C_Item.GetItemQuestMetaData) and C_Item.GetItemQuestMetaData(itemID)
     if questID then
         if (C_QuestLog.IsQuestFlaggedCompleted and C_QuestLog.IsQuestFlaggedCompleted(questID))
@@ -137,15 +137,14 @@ local function HasUnmetRequirements(bag, slot, itemID, info)
         end
     end
 
-    -- Tooltip Inspection
+    -- 6. Tooltip Inspection
     if not C_TooltipInfo or not C_TooltipInfo.GetBagItem then
         return false
     end
 
     local tooltipData = C_TooltipInfo.GetBagItem(bag, slot)
     if not tooltipData or not tooltipData.lines or #tooltipData.lines == 0 then
-        C_Item.RequestLoadItemDataByID(itemID)
-        return true
+        return false
     end
 
     local totalItemCount = (C_Item and C_Item.GetItemCount) and C_Item.GetItemCount(itemID) or (info and info.stackCount) or 1
@@ -225,6 +224,41 @@ local function HasUnmetRequirements(bag, slot, itemID, info)
 end
 
 -------------------------------------------------------------------------------
+-- Fast Pre-Filter Logic
+-------------------------------------------------------------------------------
+
+local function FastCanBeOpenable(itemID, info)
+    -- Instant lookup for known openable items
+    if addon.knownItems and addon.knownItems[itemID] then
+        return true
+    end
+
+    -- Engine container loot flag
+    if info and info.hasLoot then
+        return true
+    end
+
+    -- Check Item Class / Subclass to avoid tooltip building on trade goods, reagents, armor, etc.
+    local classID = select(12, C_Item.GetItemInfo(itemID))
+    if classID then
+        -- Skip Trade Goods, Armor, Weapons, Recipes, Gems, Glyphs, Item Enhancement
+        if classID == Enum.ItemClass.Tradegoods
+            or classID == Enum.ItemClass.Armor
+            or classID == Enum.ItemClass.Weapon
+            or classID == Enum.ItemClass.Recipe
+            or classID == Enum.ItemClass.Gem
+            or classID == Enum.ItemClass.ItemEnhancement
+        then
+            return false
+        end
+    end
+
+    -- Verify item has an associated spell cast action before tooltip inspection
+    local _, spellID = C_Item.GetItemSpell(itemID)
+    return spellID ~= nil
+end
+
+-------------------------------------------------------------------------------
 -- Item Detection Core Logic
 -------------------------------------------------------------------------------
 
@@ -239,17 +273,17 @@ local function IsItemOpenable(bag, slot, info)
         return false
     end
 
-    -- Skip permanently/hardcoded blacklisted items (Data/Blacklist.lua)
+    -- Fast Check 1: Skip permanently/hardcoded blacklisted items (Data/Blacklist.lua)
     if addon.hardcodedBlacklist and addon.hardcodedBlacklist[itemID] then
         return false
     end
 
-    -- Skip user-blacklisted items
+    -- Fast Check 2: Skip user-blacklisted items
     if IsBlacklisted(itemID) then
         return false
     end
 
-    -- Skip snoozed items until timer expires
+    -- Fast Check 3: Skip snoozed items until timer expires
     local snoozeUntil = OpenItDB.snoozed[itemID]
     if snoozeUntil then
         if time() < snoozeUntil then
@@ -259,8 +293,13 @@ local function IsItemOpenable(bag, slot, info)
         end
     end
 
-    -- Never trigger on equippable gear with "Use:" effects
+    -- Fast Check 4: Never trigger on equippable gear with "Use:" effects
     if C_Item.IsEquippableItem(itemID) then
+        return false
+    end
+
+    -- Fast Check 5: Class/Subclass & Spell pre-filter before doing expensive tooltip scans
+    if not FastCanBeOpenable(itemID, info) then
         return false
     end
 
@@ -270,7 +309,6 @@ local function IsItemOpenable(bag, slot, info)
     end
 
     -- Tooltip inspection for container/loot triggers
-    local isUsableLoot = false
     if C_TooltipInfo and C_TooltipInfo.GetBagItem then
         local tooltipData = C_TooltipInfo.GetBagItem(bag, slot)
         if tooltipData and tooltipData.lines then
@@ -280,39 +318,19 @@ local function IsItemOpenable(bag, slot, info)
                     local cleanText = CleanTooltipText(text)
 
                     if ITEM_OPENABLE and cleanText:find(ITEM_OPENABLE, 1, true) then
-                        isUsableLoot = true
-                        break
+                        return true
                     end
 
                     if cleanText:lower():find("right click to open") or cleanText:find("<Right Click") then
-                        isUsableLoot = true
-                        break
+                        return true
                     end
 
                     if ITEM_SPELL_TRIGGER_ONUSE and cleanText:find(ITEM_SPELL_TRIGGER_ONUSE, 1, true) then
-                        local _, spellID = C_Item.GetItemSpell(itemID)
-                        if spellID then
-                            isUsableLoot = true
-                            break
-                        end
+                        return true
                     end
                 end
             end
         end
-    end
-
-    if isUsableLoot then
-        return true
-    end
-
-    -- Fallback: Check known items database
-    if addon.knownItems and addon.knownItems[itemID] then
-        return true
-    end
-
-    -- Fallback: Check engine container loot flag
-    if info.hasLoot then
-        return true
     end
 
     return false
@@ -757,8 +775,6 @@ end
 addon.frame:RegisterEvent("ADDON_LOADED")
 addon.frame:RegisterEvent("BAG_UPDATE_DELAYED")
 addon.frame:RegisterEvent("PLAYER_REGEN_ENABLED")
-addon.frame:RegisterEvent("GET_ITEM_INFO_RECEIVED")
-addon.frame:RegisterEvent("ITEM_DATA_LOAD_RESULT")
 
 addon.frame:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED" and arg1 == addonName then
@@ -780,11 +796,6 @@ addon.frame:SetScript("OnEvent", function(_, event, arg1)
         if addon.pendingUpdate then
             addon:Update()
         end
-    elseif event == "GET_ITEM_INFO_RECEIVED" or event == "ITEM_DATA_LOAD_RESULT" then
-        if addon.optionsFrame and addon.optionsFrame.RefreshList and addon.optionsFrame:IsShown() then
-            addon.optionsFrame:RefreshList()
-        end
-        addon:Update()
     end
 end)
 
