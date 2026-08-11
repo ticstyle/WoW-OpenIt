@@ -98,29 +98,29 @@ local function ContainsRedColorCode(text)
 end
 
 -------------------------------------------------------------------------------
--- Advanced Requirement & Reagent Validation (Smart Checks 1-6)
+-- Advanced Requirement & Reagent Validation
 -------------------------------------------------------------------------------
 
 local function HasUnmetRequirements(bag, slot, itemID, info)
-    -- Check 1: Cooldowns & Basic Usability
+    -- Check Cooldowns & Basic Usability
     local _, duration = C_Container.GetContainerItemCooldown(bag, slot)
     if duration and duration > 1.5 then
         return true
     end
 
-    -- Check 5: Minimum Quality Threshold
+    -- Check Minimum Quality Threshold
     local quality = (info and info.quality) or select(3, C_Item.GetItemInfo(itemID))
     local minQuality = OpenItDB.minQuality or 1
     if quality and quality < minQuality then
         return true
     end
 
-    -- Check 2: Already Collected Toys
+    -- Check Already Collected Toys
     if C_ToyBox and C_ToyBox.IsToyCollected and C_ToyBox.IsToyCollected(itemID) then
         return true
     end
 
-    -- Check 4: Quest Start Items (Completed or Active in Log)
+    -- Check Quest Start Items (Completed or Active in Log)
     local questID = (C_Item and C_Item.GetItemQuestMetaData) and C_Item.GetItemQuestMetaData(itemID)
     if questID then
         if (C_QuestLog.IsQuestFlaggedCompleted and C_QuestLog.IsQuestFlaggedCompleted(questID))
@@ -152,7 +152,7 @@ local function HasUnmetRequirements(bag, slot, itemID, info)
             end
         end
 
-        -- Check 3: Currency Overcap Protection
+        -- Check Currency Overcap Protection
         local currencyID = left:match("|Hcurrency:(%d+)") or right:match("|Hcurrency:(%d+)")
         if currencyID then
             local cID = tonumber(currencyID)
@@ -164,7 +164,7 @@ local function HasUnmetRequirements(bag, slot, itemID, info)
             end
         end
 
-        -- Check 6: Target / World Requirements & Red Color Warnings
+        -- Check Red Color Warnings (Target/Profession/Reagent requirements)
         if ContainsRedColorCode(left) or ContainsRedColorCode(right) then
             return true
         end
@@ -181,7 +181,7 @@ local function HasUnmetRequirements(bag, slot, itemID, info)
         local combinedClean = cleanLeft .. " " .. cleanRight
         local lowerClean = combinedClean:lower()
 
-        -- Check 2 (Cont.): Already Collected Mounts & Pets
+        -- Check Already Collected Mounts & Pets
         if lowerClean:find("already known") or lowerClean:find("already collected") or lowerClean:find("<already known>") then
             return true
         end
@@ -254,7 +254,7 @@ local function IsItemOpenable(bag, slot, info)
         return false
     end
 
-    -- Reject items failing smart requirements checks
+    -- Reject items failing smart requirement checks
     if HasUnmetRequirements(bag, slot, itemID, info) then
         return false
     end
@@ -622,13 +622,21 @@ local function CreateOptionsPanel()
         if OpenItDB and OpenItDB.blacklist then
             for itemID in pairs(OpenItDB.blacklist) do
                 local numID = tonumber(itemID)
-                if numID and not seen[numID] then
+
+                -- Exclude items present in the permanent/hardcoded blacklist
+                if numID and not seen[numID] and not (addon.hardcodedBlacklist and addon.hardcodedBlacklist[numID]) then
                     seen[numID] = true
                     table.insert(blacklistedIDs, numID)
                 end
             end
         end
-        table.sort(blacklistedIDs)
+
+        -- Sort user blacklist alphabetically (A-Z) by item name
+        table.sort(blacklistedIDs, function(a, b)
+            local nameA = C_Item.GetItemInfo(a) or ("Item #" .. a)
+            local nameB = C_Item.GetItemInfo(b) or ("Item #" .. b)
+            return nameA:lower() < nameB:lower()
+        end)
 
         if #blacklistedIDs == 0 then
             if not panel.emptyText then
