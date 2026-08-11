@@ -72,6 +72,106 @@ local function CleanTooltipText(text)
     return text:gsub("|c%x%x%x%x%x%x%x%x", ""):gsub("|r", ""):gsub("|T.-|t", "")
 end
 
+-- Check RGB values for red requirement warning colors
+local function IsRedColor(r, g, b)
+    if not r or not g or not b then
+        return false
+    end
+    return (r > 0.75 and g < 0.35 and b < 0.35)
+end
+
+-- Parse hex color codes in raw text strings for red requirement warnings
+local function ContainsRedColorCode(text)
+    if not text or text == "" then
+        return false
+    end
+    for hex in text:gmatch("|c(%x%x%x%x%x%x%x%x)") do
+        local r = tonumber(hex:sub(3, 4), 16) or 0
+        local g = tonumber(hex:sub(5, 6), 16) or 0
+        local b = tonumber(hex:sub(7, 8), 16) or 0
+        if IsRedColor(r / 255, g / 255, b / 255) then
+            return true
+        end
+    end
+    return false
+end
+
+-------------------------------------------------------------------------------
+-- Requirement & Reagent Validation
+-------------------------------------------------------------------------------
+
+-- Check if an item has unmet requirements (missing reagents, red text, insufficient level)
+local function HasUnmetRequirements(bag, slot, itemID)
+    if not C_TooltipInfo or not C_TooltipInfo.GetBagItem then
+        return false
+    end
+
+    local tooltipData = C_TooltipInfo.GetBagItem(bag, slot)
+    if not tooltipData or not tooltipData.lines then
+        return false
+    end
+
+    local totalItemCount = (C_Item and C_Item.GetItemCount) and C_Item.GetItemCount(itemID) or 0
+
+    for _, lineData in ipairs(tooltipData.lines) do
+        local left = lineData.leftText or ""
+        local right = lineData.rightText or ""
+
+        -- Include string values from internal line arguments
+        if lineData.args then
+            for _, arg in ipairs(lineData.args) do
+                if arg.stringVal then
+                    left = left .. " " .. arg.stringVal
+                end
+            end
+        end
+
+        -- 1. Check for red color codes (e.g., red reagent counts or missing professions)
+        if ContainsRedColorCode(left) or ContainsRedColorCode(right) then
+            return true
+        end
+
+        -- 2. Check for ColorMixin objects set directly on tooltip lines
+        if lineData.leftColor and IsRedColor(lineData.leftColor.r, lineData.leftColor.g, lineData.leftColor.b) then
+            return true
+        end
+        if lineData.rightColor and IsRedColor(lineData.rightColor.r, lineData.rightColor.g, lineData.rightColor.b) then
+            return true
+        end
+
+        local cleanLeft = CleanTooltipText(left)
+        local cleanRight = CleanTooltipText(right)
+        local combinedClean = cleanLeft .. " " .. cleanRight
+        local lowerClean = combinedClean:lower()
+
+        -- 3. Filter readable books/ledgers ("<Right Click to Read>")
+        if lowerClean:find("right click to read") or lowerClean:find("<right click to read>") then
+            return true
+        end
+
+        -- 4. Check for progress counters (e.g. "10/15" or "10 / 15")
+        for cur, maxVal in combinedClean:gmatch("(%d+)%s*/%s*(%d+)") do
+            local numCur = tonumber(cur)
+            local numMax = tonumber(maxVal)
+            if numCur and numMax and numCur < numMax then
+                return true
+            end
+        end
+
+        -- 5. Compare required amounts in "Use:" text against player's total item count
+        if cleanLeft:find("Use:") or cleanLeft:find("Använda:") then
+            for reqCount in cleanLeft:gmatch("(%d+)") do
+                local req = tonumber(reqCount)
+                if req and req > 1 and req > totalItemCount then
+                    return true
+                end
+            end
+        end
+    end
+
+    return false
+end
+
 -------------------------------------------------------------------------------
 -- Item Detection Core Logic
 -------------------------------------------------------------------------------
@@ -112,54 +212,16 @@ local function IsItemOpenable(bag, slot, info)
         return false
     end
 
-    -- Tooltip inspection via modern C_TooltipInfo API
+    -- Reject items with unmet reagent, count, or profession requirements
+    if HasUnmetRequirements(bag, slot, itemID) then
+        return false
+    end
+
+    -- Tooltip inspection for container/loot triggers
     local isUsableLoot = false
     if C_TooltipInfo and C_TooltipInfo.GetBagItem then
         local tooltipData = C_TooltipInfo.GetBagItem(bag, slot)
         if tooltipData and tooltipData.lines then
-            -- Pre-pass 1: Check for unmet requirements (insufficient reagents "10/15" or red text lines)
-            for _, lineData in ipairs(tooltipData.lines) do
-                local left = lineData.leftText or ""
-                local right = lineData.rightText or ""
-                local combinedText = CleanTooltipText(left .. " " .. right)
-
-                -- Check for fragment/reagent progress counters like "10/15"
-                local cur, maxVal = combinedText:match("(%d+)%s*/%s*(%d+)")
-                if cur and maxVal then
-                    cur = tonumber(cur)
-                    maxVal = tonumber(maxVal)
-                    if cur and maxVal and cur < maxVal then
-                        return false
-                    end
-                end
-
-                -- Skip readable books/ledgers ("<Right Click to Read>")
-                local lowerText = combinedText:lower()
-                if lowerText:find("right click to read") or lowerText:find("<right click to read>") then
-                    return false
-                end
-
-                -- Check for red color indicators on tooltip lines (unmet level/profession/reagent requirement)
-                if lineData.leftColor then
-                    local c = lineData.leftColor
-                    if c.r and c.g and c.b and c.r > 0.85 and c.g < 0.3 and c.b < 0.3 then
-                        return false
-                    end
-                end
-                if lineData.rightColor then
-                    local c = lineData.rightColor
-                    if c.r and c.g and c.b and c.r > 0.85 and c.g < 0.3 and c.b < 0.3 then
-                        return false
-                    end
-                end
-
-                -- Fallback check for inline red color codes
-                if left:find("|cff[fF][0-3]%x%x[0-3]%x") or right:find("|cff[fF][0-3]%x%x[0-3]%x") then
-                    return false
-                end
-            end
-
-            -- Pass 2: Check if the item is an openable or usable container
             for _, lineData in ipairs(tooltipData.lines) do
                 local text = lineData.leftText
                 if text and text ~= "" then
