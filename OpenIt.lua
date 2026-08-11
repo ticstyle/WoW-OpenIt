@@ -102,25 +102,33 @@ end
 -------------------------------------------------------------------------------
 
 local function HasUnmetRequirements(bag, slot, itemID, info)
-    -- Check Cooldowns & Basic Usability
+    -- 1. Native engine usability check (returns false if missing profession, level, or stack count)
+    if C_Item and C_Item.IsUsableItem then
+        local isUsable, noMana = C_Item.IsUsableItem(itemID)
+        if not isUsable and not noMana then
+            return true
+        end
+    end
+
+    -- 2. Check Cooldowns
     local _, duration = C_Container.GetContainerItemCooldown(bag, slot)
     if duration and duration > 1.5 then
         return true
     end
 
-    -- Check Minimum Quality Threshold
+    -- 3. Check Minimum Quality Threshold
     local quality = (info and info.quality) or select(3, C_Item.GetItemInfo(itemID))
     local minQuality = OpenItDB.minQuality or 1
     if quality and quality < minQuality then
         return true
     end
 
-    -- Check Already Collected Toys
+    -- 4. Check Already Collected Toys
     if C_ToyBox and C_ToyBox.IsToyCollected and C_ToyBox.IsToyCollected(itemID) then
         return true
     end
 
-    -- Check Quest Start Items (Completed or Active in Log)
+    -- 5. Check Quest Start Items (Completed or Active in Log)
     local questID = (C_Item and C_Item.GetItemQuestMetaData) and C_Item.GetItemQuestMetaData(itemID)
     if questID then
         if (C_QuestLog.IsQuestFlaggedCompleted and C_QuestLog.IsQuestFlaggedCompleted(questID))
@@ -129,16 +137,19 @@ local function HasUnmetRequirements(bag, slot, itemID, info)
         end
     end
 
+    -- 6. Tooltip Inspection
     if not C_TooltipInfo or not C_TooltipInfo.GetBagItem then
         return false
     end
 
     local tooltipData = C_TooltipInfo.GetBagItem(bag, slot)
-    if not tooltipData or not tooltipData.lines then
-        return false
+    -- If tooltip data hasn't loaded yet, request load and hold off display until ready
+    if not tooltipData or not tooltipData.lines or #tooltipData.lines == 0 then
+        C_Item.RequestLoadItemDataByID(itemID)
+        return true
     end
 
-    local totalItemCount = (C_Item and C_Item.GetItemCount) and C_Item.GetItemCount(itemID) or 0
+    local totalItemCount = (C_Item and C_Item.GetItemCount) and C_Item.GetItemCount(itemID) or (info and info.stackCount) or 1
 
     for _, lineData in ipairs(tooltipData.lines) do
         local left = lineData.leftText or ""
@@ -152,7 +163,7 @@ local function HasUnmetRequirements(bag, slot, itemID, info)
             end
         end
 
-        -- Check Currency Overcap Protection
+        -- Currency Overcap Protection
         local currencyID = left:match("|Hcurrency:(%d+)") or right:match("|Hcurrency:(%d+)")
         if currencyID then
             local cID = tonumber(currencyID)
@@ -164,7 +175,7 @@ local function HasUnmetRequirements(bag, slot, itemID, info)
             end
         end
 
-        -- Check Red Color Warnings (Target/Profession/Reagent requirements)
+        -- Red Color Warnings (Target/Profession/Reagent requirements)
         if ContainsRedColorCode(left) or ContainsRedColorCode(right) then
             return true
         end
@@ -181,7 +192,7 @@ local function HasUnmetRequirements(bag, slot, itemID, info)
         local combinedClean = cleanLeft .. " " .. cleanRight
         local lowerClean = combinedClean:lower()
 
-        -- Check Already Collected Mounts & Pets
+        -- Already Collected Mounts & Pets
         if lowerClean:find("already known") or lowerClean:find("already collected") or lowerClean:find("<already known>") then
             return true
         end
@@ -191,7 +202,7 @@ local function HasUnmetRequirements(bag, slot, itemID, info)
             return true
         end
 
-        -- Check fraction progress counters (e.g. "10/15")
+        -- Fraction progress counters (e.g. "10/15" or "10 / 15")
         for cur, maxVal in combinedClean:gmatch("(%d+)%s*/%s*(%d+)") do
             local numCur = tonumber(cur)
             local numMax = tonumber(maxVal)
