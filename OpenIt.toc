@@ -2,7 +2,7 @@
 ## Title: OpenIt |cff9966ff<dualityps>
 ## Notes: An easy way to open stuff that can be opened.
 ## Author: dualityps
-## Version: 0.3.0
+## Version: 0.4.1
 ## SavedVariables: OpenItDB
 ## DefaultState: enabled
 
