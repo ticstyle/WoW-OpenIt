@@ -201,7 +201,7 @@ button:SetScript("PreClick", function(_, btn)
     if IsShiftKeyDown() then
         OpenItDB.blacklist[itemID] = true
         addon:Print("Blacklisted " .. itemName)
-        if addon.optionsFrame and addon.optionsFrame:IsShown() then
+        if addon.optionsFrame and addon.optionsFrame.RefreshList and addon.optionsFrame:IsShown() then
             addon.optionsFrame:RefreshList()
         end
     else
@@ -314,7 +314,9 @@ local function CreateOptionsPanel()
     sizeSlider:SetPoint("TOPLEFT", lockCB, "BOTTOMLEFT", 4, -24)
     sizeSlider:SetMinMaxValues(24, 96)
     sizeSlider:SetValueStep(2)
-    sizeSlider:ObeyStepOnDrag(true)
+    if sizeSlider.SetObeyStepOnDrag then
+        sizeSlider:SetObeyStepOnDrag(true)
+    end
     _G[sizeSlider:GetName() .. "Text"]:SetText("Button Size")
     _G[sizeSlider:GetName() .. "Low"]:SetText("24")
     _G[sizeSlider:GetName() .. "High"]:SetText("96")
@@ -334,7 +336,9 @@ local function CreateOptionsPanel()
     opacitySlider:SetPoint("LEFT", sizeSlider, "RIGHT", 40, 0)
     opacitySlider:SetMinMaxValues(0.1, 1.0)
     opacitySlider:SetValueStep(0.05)
-    opacitySlider:ObeyStepOnDrag(true)
+    if opacitySlider.SetObeyStepOnDrag then
+        opacitySlider:SetObeyStepOnDrag(true)
+    end
     _G[opacitySlider:GetName() .. "Text"]:SetText("Opacity")
     _G[opacitySlider:GetName() .. "Low"]:SetText("10%")
     _G[opacitySlider:GetName() .. "High"]:SetText("100%")
@@ -516,7 +520,7 @@ addon.frame:SetScript("OnEvent", function(_, event, arg1)
             addon:Update()
         end
     elseif event == "GET_ITEM_INFO_RECEIVED" or event == "ITEM_DATA_LOAD_RESULT" then
-        if addon.optionsFrame and addon.optionsFrame:IsShown() then
+        if addon.optionsFrame and addon.optionsFrame.RefreshList and addon.optionsFrame:IsShown() then
             addon.optionsFrame:RefreshList()
         end
         addon:Update()
