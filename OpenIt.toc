@@ -2,9 +2,10 @@
 ## Title: OpenIt |cff9966ff<dualityps>
 ## Notes: An easy way to open stuff that can be opened.
 ## Author: dualityps
-## Version: 0.2.0
+## Version: 0.3.0
 ## SavedVariables: OpenItDB
 ## DefaultState: enabled
 
 Data/Items.lua
+Data/Blacklist.lua
 OpenIt.lua
