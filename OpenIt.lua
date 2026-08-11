@@ -1,7 +1,7 @@
 -- OpenIt.lua
 -- https://github.com/ticstyle/WoW-OpenIt
 
--- luacheck: globals OpenItDB CreateFrame UIParent C_Container C_Item C_TooltipInfo Settings InCombatLockdown IsShiftKeyDown GameTooltip GameTooltip_Hide SlashCmdList SLASH_OPENIT1 Enum time pairs ipairs table math print _G ITEM_OPENABLE ITEM_SPELL_TRIGGER_ONUSE tonumber tostring ITEM_QUALITY_COLORS
+-- luacheck: globals OpenItDB CreateFrame UIParent C_Container C_Item C_TooltipInfo C_ToyBox C_QuestLog C_CurrencyInfo Settings InCombatLockdown IsShiftKeyDown GameTooltip GameTooltip_Hide SlashCmdList SLASH_OPENIT1 Enum time pairs ipairs table math print _G ITEM_OPENABLE ITEM_SPELL_TRIGGER_ONUSE tonumber tostring ITEM_QUALITY_COLORS
 
 local addonName, addon = ...
 addon.frame = CreateFrame("Frame")
@@ -18,6 +18,7 @@ local defaultDB = {
     isLocked = false,
     buttonSize = 48,
     buttonAlpha = 1.0,
+    minQuality = 1, -- 0: Junk, 1: Common, 2: Uncommon, 3: Rare, 4: Epic
 }
 
 -- Print helper for addon chat output
@@ -97,11 +98,37 @@ local function ContainsRedColorCode(text)
 end
 
 -------------------------------------------------------------------------------
--- Requirement & Reagent Validation
+-- Advanced Requirement & Reagent Validation (Smart Checks 1-6)
 -------------------------------------------------------------------------------
 
--- Check if an item has unmet requirements (missing reagents, red text, insufficient level)
-local function HasUnmetRequirements(bag, slot, itemID)
+local function HasUnmetRequirements(bag, slot, itemID, info)
+    -- Check 1: Cooldowns & Basic Usability
+    local _, duration = C_Container.GetContainerItemCooldown(bag, slot)
+    if duration and duration > 1.5 then
+        return true
+    end
+
+    -- Check 5: Minimum Quality Threshold
+    local quality = (info and info.quality) or select(3, C_Item.GetItemInfo(itemID))
+    local minQuality = OpenItDB.minQuality or 1
+    if quality and quality < minQuality then
+        return true
+    end
+
+    -- Check 2: Already Collected Toys
+    if C_ToyBox and C_ToyBox.IsToyCollected and C_ToyBox.IsToyCollected(itemID) then
+        return true
+    end
+
+    -- Check 4: Quest Start Items (Completed or Active in Log)
+    local questID = (C_Item and C_Item.GetItemQuestMetaData) and C_Item.GetItemQuestMetaData(itemID)
+    if questID then
+        if (C_QuestLog.IsQuestFlaggedCompleted and C_QuestLog.IsQuestFlaggedCompleted(questID))
+            or (C_QuestLog.GetLogIndexForQuestID and C_QuestLog.GetLogIndexForQuestID(questID)) then
+            return true
+        end
+    end
+
     if not C_TooltipInfo or not C_TooltipInfo.GetBagItem then
         return false
     end
@@ -117,7 +144,6 @@ local function HasUnmetRequirements(bag, slot, itemID)
         local left = lineData.leftText or ""
         local right = lineData.rightText or ""
 
-        -- Include string values from internal line arguments
         if lineData.args then
             for _, arg in ipairs(lineData.args) do
                 if arg.stringVal then
@@ -126,12 +152,23 @@ local function HasUnmetRequirements(bag, slot, itemID)
             end
         end
 
-        -- 1. Check for red color codes (e.g., red reagent counts or missing professions)
+        -- Check 3: Currency Overcap Protection
+        local currencyID = left:match("|Hcurrency:(%d+)") or right:match("|Hcurrency:(%d+)")
+        if currencyID then
+            local cID = tonumber(currencyID)
+            if cID and C_CurrencyInfo and C_CurrencyInfo.GetCurrencyInfo then
+                local cInfo = C_CurrencyInfo.GetCurrencyInfo(cID)
+                if cInfo and cInfo.maxQuantity and cInfo.maxQuantity > 0 and (cInfo.quantity >= cInfo.maxQuantity) then
+                    return true
+                end
+            end
+        end
+
+        -- Check 6: Target / World Requirements & Red Color Warnings
         if ContainsRedColorCode(left) or ContainsRedColorCode(right) then
             return true
         end
 
-        -- 2. Check for ColorMixin objects set directly on tooltip lines
         if lineData.leftColor and IsRedColor(lineData.leftColor.r, lineData.leftColor.g, lineData.leftColor.b) then
             return true
         end
@@ -144,12 +181,17 @@ local function HasUnmetRequirements(bag, slot, itemID)
         local combinedClean = cleanLeft .. " " .. cleanRight
         local lowerClean = combinedClean:lower()
 
-        -- 3. Filter readable books/ledgers ("<Right Click to Read>")
+        -- Check 2 (Cont.): Already Collected Mounts & Pets
+        if lowerClean:find("already known") or lowerClean:find("already collected") or lowerClean:find("<already known>") then
+            return true
+        end
+
+        -- Filter readable books/ledgers
         if lowerClean:find("right click to read") or lowerClean:find("<right click to read>") then
             return true
         end
 
-        -- 4. Check for progress counters (e.g. "10/15" or "10 / 15")
+        -- Check fraction progress counters (e.g. "10/15")
         for cur, maxVal in combinedClean:gmatch("(%d+)%s*/%s*(%d+)") do
             local numCur = tonumber(cur)
             local numMax = tonumber(maxVal)
@@ -158,7 +200,7 @@ local function HasUnmetRequirements(bag, slot, itemID)
             end
         end
 
-        -- 5. Compare required amounts in "Use:" text against player's total item count
+        -- Compare required amounts in "Use:" text against total bag count
         if cleanLeft:find("Use:") or cleanLeft:find("Använda:") then
             for reqCount in cleanLeft:gmatch("(%d+)") do
                 local req = tonumber(reqCount)
@@ -212,8 +254,8 @@ local function IsItemOpenable(bag, slot, info)
         return false
     end
 
-    -- Reject items with unmet reagent, count, or profession requirements
-    if HasUnmetRequirements(bag, slot, itemID) then
+    -- Reject items failing smart requirements checks
+    if HasUnmetRequirements(bag, slot, itemID, info) then
         return false
     end
 
@@ -512,9 +554,32 @@ local function CreateOptionsPanel()
         addon:ApplyVisualSettings()
     end)
 
+    -- Minimum Quality Slider
+    local qualityNames = { [0] = "Junk", [1] = "Common", [2] = "Uncommon", [3] = "Rare", [4] = "Epic" }
+    local qualitySlider = CreateFrame("Slider", "OpenItQualitySlider", panel, "OptionsSliderTemplate")
+    qualitySlider:SetPoint("TOPLEFT", sizeSlider, "BOTTOMLEFT", 0, -28)
+    qualitySlider:SetMinMaxValues(0, 4)
+    qualitySlider:SetValueStep(1)
+    if qualitySlider.SetObeyStepOnDrag then
+        qualitySlider:SetObeyStepOnDrag(true)
+    end
+    _G[qualitySlider:GetName() .. "Text"]:SetText("Minimum Item Quality")
+    _G[qualitySlider:GetName() .. "Low"]:SetText("Junk")
+    _G[qualitySlider:GetName() .. "High"]:SetText("Epic")
+
+    qualitySlider.valText = qualitySlider:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
+    qualitySlider.valText:SetPoint("TOP", qualitySlider, "BOTTOM", 0, -2)
+
+    qualitySlider:SetScript("OnValueChanged", function(s, value)
+        value = math.floor(value)
+        OpenItDB.minQuality = value
+        s.valText:SetText(qualityNames[value] or "Common")
+        addon:Update()
+    end)
+
     -- Blacklist Section Title
     local blacklistTitle = panel:CreateFontString(nil, "ARTWORK", "GameFontNormal")
-    blacklistTitle:SetPoint("TOPLEFT", sizeSlider, "BOTTOMLEFT", -4, -36)
+    blacklistTitle:SetPoint("TOPLEFT", qualitySlider, "BOTTOMLEFT", -4, -36)
     blacklistTitle:SetText("User Blacklisted Items")
 
     local desc = panel:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
@@ -542,6 +607,9 @@ local function CreateOptionsPanel()
 
         opacitySlider:SetValue(OpenItDB.buttonAlpha or 1.0)
         opacitySlider.valText:SetText(math.floor((OpenItDB.buttonAlpha or 1.0) * 100) .. "%")
+
+        qualitySlider:SetValue(OpenItDB.minQuality or 1)
+        qualitySlider.valText:SetText(qualityNames[OpenItDB.minQuality or 1] or "Common")
 
         -- Hide existing rows
         for _, row in ipairs(panel.rows) do
