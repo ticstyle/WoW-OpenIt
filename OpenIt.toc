@@ -6,4 +6,5 @@
 ## SavedVariables: OpenItDB
 ## DefaultState: enabled
 
+Data/Items.lua
 OpenIt.lua
