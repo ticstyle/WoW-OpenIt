@@ -107,58 +107,98 @@ local function IsItemOpenable(bag, slot, info)
         end
     end
 
-    -- 1. Check known items database first
-    if addon.knownItems and addon.knownItems[itemID] then
-        return true
-    end
-
     -- Never trigger on equippable gear with "Use:" effects
     if C_Item.IsEquippableItem(itemID) then
         return false
     end
 
-    -- 2. Engine flag for container loot
-    if info.hasLoot then
-        return true
-    end
-
-    -- 3. Tooltip scan via modern C_TooltipInfo API
+    -- Tooltip inspection via modern C_TooltipInfo API
+    local isUsableLoot = false
     if C_TooltipInfo and C_TooltipInfo.GetBagItem then
         local tooltipData = C_TooltipInfo.GetBagItem(bag, slot)
         if tooltipData and tooltipData.lines then
-            -- Pre-pass: Skip readable books/ledgers ("<Right Click to Read>")
+            -- Pre-pass 1: Check for unmet requirements (insufficient reagents "10/15" or red text lines)
             for _, lineData in ipairs(tooltipData.lines) do
-                local text = lineData.leftText
-                if text and text ~= "" then
-                    local cleanText = CleanTooltipText(text):lower()
-                    if cleanText:find("right click to read") or cleanText:find("<right click to read>") then
+                local left = lineData.leftText or ""
+                local right = lineData.rightText or ""
+                local combinedText = CleanTooltipText(left .. " " .. right)
+
+                -- Check for fragment/reagent progress counters like "10/15"
+                local cur, maxVal = combinedText:match("(%d+)%s*/%s*(%d+)")
+                if cur and maxVal then
+                    cur = tonumber(cur)
+                    maxVal = tonumber(maxVal)
+                    if cur and maxVal and cur < maxVal then
                         return false
                     end
                 end
+
+                -- Skip readable books/ledgers ("<Right Click to Read>")
+                local lowerText = combinedText:lower()
+                if lowerText:find("right click to read") or lowerText:find("<right click to read>") then
+                    return false
+                end
+
+                -- Check for red color indicators on tooltip lines (unmet level/profession/reagent requirement)
+                if lineData.leftColor then
+                    local c = lineData.leftColor
+                    if c.r and c.g and c.b and c.r > 0.85 and c.g < 0.3 and c.b < 0.3 then
+                        return false
+                    end
+                end
+                if lineData.rightColor then
+                    local c = lineData.rightColor
+                    if c.r and c.g and c.b and c.r > 0.85 and c.g < 0.3 and c.b < 0.3 then
+                        return false
+                    end
+                end
+
+                -- Fallback check for inline red color codes
+                if left:find("|cff[fF][0-3]%x%x[0-3]%x") or right:find("|cff[fF][0-3]%x%x[0-3]%x") then
+                    return false
+                end
             end
 
+            -- Pass 2: Check if the item is an openable or usable container
             for _, lineData in ipairs(tooltipData.lines) do
                 local text = lineData.leftText
                 if text and text ~= "" then
                     local cleanText = CleanTooltipText(text)
 
                     if ITEM_OPENABLE and cleanText:find(ITEM_OPENABLE, 1, true) then
-                        return true
+                        isUsableLoot = true
+                        break
                     end
 
                     if cleanText:lower():find("right click to open") or cleanText:find("<Right Click") then
-                        return true
+                        isUsableLoot = true
+                        break
                     end
 
                     if ITEM_SPELL_TRIGGER_ONUSE and cleanText:find(ITEM_SPELL_TRIGGER_ONUSE, 1, true) then
                         local _, spellID = C_Item.GetItemSpell(itemID)
                         if spellID then
-                            return true
+                            isUsableLoot = true
+                            break
                         end
                     end
                 end
             end
         end
+    end
+
+    if isUsableLoot then
+        return true
+    end
+
+    -- Fallback: Check known items database
+    if addon.knownItems and addon.knownItems[itemID] then
+        return true
+    end
+
+    -- Fallback: Check engine container loot flag
+    if info.hasLoot then
+        return true
     end
 
     return false
