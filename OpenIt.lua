@@ -1,7 +1,7 @@
 -- OpenIt.lua
 -- https://github.com/ticstyle/WoW-OpenIt
 
--- luacheck: globals OpenItDB CreateFrame UIParent C_Container C_Item C_TooltipInfo Settings InCombatLockdown IsShiftKeyDown GameTooltip GameTooltip_Hide SlashCmdList SLASH_OPENIT1 Enum time pairs ipairs table math print _G ITEM_OPENABLE ITEM_SPELL_TRIGGER_ONUSE tonumber tostring
+-- luacheck: globals OpenItDB CreateFrame UIParent C_Container C_Item C_TooltipInfo Settings InCombatLockdown IsShiftKeyDown GameTooltip GameTooltip_Hide SlashCmdList SLASH_OPENIT1 Enum time pairs ipairs table math print _G ITEM_OPENABLE ITEM_SPELL_TRIGGER_ONUSE tonumber tostring ITEM_QUALITY_COLORS
 
 local addonName, addon = ...
 addon.frame = CreateFrame("Frame")
@@ -513,11 +513,8 @@ local function CreateOptionsPanel()
 
             if itemName then
                 local displayName = itemName
-                if itemQuality then
-                    local color = C_Item.GetItemQualityColor(itemQuality)
-                    if color then
-                        displayName = color.hex .. itemName .. "|r"
-                    end
+                if itemQuality and ITEM_QUALITY_COLORS and ITEM_QUALITY_COLORS[itemQuality] then
+                    displayName = ITEM_QUALITY_COLORS[itemQuality].hex .. itemName .. "|r"
                 end
                 row.name:SetText(displayName .. " |cff888888(ID: " .. itemID .. ")|r")
             else
