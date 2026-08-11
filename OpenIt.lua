@@ -18,7 +18,7 @@ local defaultDB = {
     isLocked = false,
     buttonSize = 48,
     buttonAlpha = 1.0,
-    minQuality = 1, -- 0: Junk, 1: Common, 2: Uncommon, 3: Rare, 4: Epic
+    minQuality = 0, -- Default: 0 (Poor / Junk)
 }
 
 -- Print helper for addon chat output
@@ -118,7 +118,7 @@ local function HasUnmetRequirements(bag, slot, itemID, info)
 
     -- 3. Check Minimum Quality Threshold
     local quality = (info and info.quality) or select(3, C_Item.GetItemInfo(itemID))
-    local minQuality = OpenItDB.minQuality or 1
+    local minQuality = OpenItDB.minQuality or 0
     if quality and quality < minQuality then
         return true
     end
@@ -241,7 +241,6 @@ local function FastCanBeOpenable(itemID, info)
     -- Check Item Class / Subclass to avoid tooltip building on trade goods, reagents, armor, etc.
     local classID = select(12, C_Item.GetItemInfo(itemID))
     if classID then
-        -- Skip Trade Goods, Armor, Weapons, Recipes, Gems, Glyphs, Item Enhancement
         if classID == Enum.ItemClass.Tradegoods
             or classID == Enum.ItemClass.Armor
             or classID == Enum.ItemClass.Weapon
@@ -366,7 +365,9 @@ button:SetSize(48, 48)
 button:SetMovable(true)
 button:EnableMouse(true)
 button:SetClampedToScreen(true)
-button:RegisterForClicks("AnyUp", "AnyDown")
+
+-- Execute clicks on button release (Up) to allow dragging when unlocked
+button:RegisterForClicks("LeftButtonUp", "RightButtonUp")
 button:RegisterForDrag("LeftButton")
 button:Hide()
 
@@ -390,9 +391,28 @@ button:SetBackdrop({
 })
 button:SetBackdropBorderColor(0.6, 0.4, 1.0, 1)
 
+-- Visual pressed-down state handlers
+button:SetScript("OnMouseDown", function(self, btn)
+    if btn == "LeftButton" then
+        self.icon:SetPoint("TOPLEFT", self, "TOPLEFT", 5, -5)
+        self.icon:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -1, 1)
+        self.icon:SetVertexColor(0.7, 0.7, 0.7)
+    end
+end)
+
+local function ResetButtonVisualState(self)
+    self.icon:SetPoint("TOPLEFT", self, "TOPLEFT", 3, -3)
+    self.icon:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -3, 3)
+    self.icon:SetVertexColor(1, 1, 1)
+end
+
+button:SetScript("OnMouseUp", ResetButtonVisualState)
+button:SetScript("OnHide", ResetButtonVisualState)
+
 -- Drag handling (Respects isLocked setting)
 button:SetScript("OnDragStart", function(self)
     if not InCombatLockdown() and not OpenItDB.isLocked then
+        ResetButtonVisualState(self)
         self:StartMoving()
     end
 end)
@@ -432,9 +452,8 @@ local function RefreshTooltip(self)
 end
 
 -- Handle Right-Click (Snooze) and Shift + Right-Click (Blacklist)
-button:SetScript("PreClick", function(_, btn, down)
-    -- Ignore press-down events to prevent double-triggering when registered for AnyUp/AnyDown
-    if btn ~= "RightButton" or not currentItem or down then
+button:SetScript("PreClick", function(_, btn)
+    if btn ~= "RightButton" or not currentItem then
         return
     end
 
@@ -615,7 +634,7 @@ local function CreateOptionsPanel()
     qualitySlider:SetScript("OnValueChanged", function(s, value)
         value = math.floor(value)
         OpenItDB.minQuality = value
-        s.valText:SetText(qualityNames[value] or "Common")
+        s.valText:SetText(qualityNames[value] or "Junk")
         addon:Update()
     end)
 
@@ -650,8 +669,8 @@ local function CreateOptionsPanel()
         opacitySlider:SetValue(OpenItDB.buttonAlpha or 1.0)
         opacitySlider.valText:SetText(math.floor((OpenItDB.buttonAlpha or 1.0) * 100) .. "%")
 
-        qualitySlider:SetValue(OpenItDB.minQuality or 1)
-        qualitySlider.valText:SetText(qualityNames[OpenItDB.minQuality or 1] or "Common")
+        qualitySlider:SetValue(OpenItDB.minQuality or 0)
+        qualitySlider.valText:SetText(qualityNames[OpenItDB.minQuality or 0] or "Junk")
 
         -- Hide existing rows
         for _, row in ipairs(panel.rows) do
