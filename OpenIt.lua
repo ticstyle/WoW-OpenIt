@@ -1,7 +1,7 @@
 -- OpenIt.lua
 -- https://github.com/ticstyle/WoW-OpenIt
 
--- luacheck: globals OpenItDB CreateFrame UIParent C_Container C_Item C_TooltipInfo Settings InCombatLockdown IsShiftKeyDown GameTooltip GameTooltip_Hide SlashCmdList SLASH_OPENIT1 Enum time pairs ipairs table math print _G ITEM_OPENABLE ITEM_SPELL_TRIGGER_ONUSE tonumber
+-- luacheck: globals OpenItDB CreateFrame UIParent C_Container C_Item C_TooltipInfo Settings InCombatLockdown IsShiftKeyDown GameTooltip GameTooltip_Hide SlashCmdList SLASH_OPENIT1 Enum time pairs ipairs table math print _G ITEM_OPENABLE ITEM_SPELL_TRIGGER_ONUSE tonumber tostring
 
 local addonName, addon = ...
 addon.frame = CreateFrame("Frame")
@@ -26,8 +26,43 @@ function addon:Print(msg)
 end
 
 -------------------------------------------------------------------------------
--- Helper Functions
+-- Blacklist & State Helpers
 -------------------------------------------------------------------------------
+
+-- Check if an item is blacklisted (handles both string and numeric keys)
+local function IsBlacklisted(itemID)
+    if not OpenItDB or not OpenItDB.blacklist or not itemID then
+        return false
+    end
+    local numID = tonumber(itemID)
+    local strID = tostring(itemID)
+    return (numID and OpenItDB.blacklist[numID]) or (strID and OpenItDB.blacklist[strID]) or false
+end
+
+-- Add an item to the user blacklist
+local function AddToBlacklist(itemID)
+    if not OpenItDB then
+        return
+    end
+    OpenItDB.blacklist = OpenItDB.blacklist or {}
+    local numID = tonumber(itemID)
+    if numID then
+        OpenItDB.blacklist[numID] = true
+        OpenItDB.blacklist[tostring(numID)] = true
+    end
+end
+
+-- Remove an item from the user blacklist
+local function RemoveFromBlacklist(itemID)
+    if not OpenItDB or not OpenItDB.blacklist then
+        return
+    end
+    local numID = tonumber(itemID)
+    if numID then
+        OpenItDB.blacklist[numID] = nil
+        OpenItDB.blacklist[tostring(numID)] = nil
+    end
+end
 
 -- Strip color codes and escape sequences from tooltip text
 local function CleanTooltipText(text)
@@ -36,6 +71,10 @@ local function CleanTooltipText(text)
     end
     return text:gsub("|c%x%x%x%x%x%x%x%x", ""):gsub("|r", ""):gsub("|T.-|t", "")
 end
+
+-------------------------------------------------------------------------------
+-- Item Detection Core Logic
+-------------------------------------------------------------------------------
 
 -- Determine if an item in bags can be opened or used as a container
 local function IsItemOpenable(bag, slot, info)
@@ -54,7 +93,7 @@ local function IsItemOpenable(bag, slot, info)
     end
 
     -- Skip user-blacklisted items
-    if OpenItDB.blacklist[itemID] then
+    if IsBlacklisted(itemID) then
         return false
     end
 
@@ -211,8 +250,8 @@ button:SetScript("PreClick", function(_, btn)
     local itemName = C_Item.GetItemInfo(itemID) or currentItem.hyperlink or ("Item #" .. itemID)
 
     if IsShiftKeyDown() then
-        OpenItDB.blacklist[itemID] = true
-        addon:Print("Blacklisted " .. itemName)
+        AddToBlacklist(itemID)
+        addon:Print("Blacklisted " .. itemName .. " (ID: " .. itemID .. ")")
         if addon.optionsFrame and addon.optionsFrame.RefreshList and addon.optionsFrame:IsShown() then
             addon.optionsFrame:RefreshList()
         end
@@ -403,10 +442,15 @@ local function CreateOptionsPanel()
         end
 
         local blacklistedIDs = {}
-        for itemID in pairs(OpenItDB.blacklist) do
-            local numID = tonumber(itemID)
-            if numID then
-                table.insert(blacklistedIDs, numID)
+        local seen = {}
+
+        if OpenItDB and OpenItDB.blacklist then
+            for itemID in pairs(OpenItDB.blacklist) do
+                local numID = tonumber(itemID)
+                if numID and not seen[numID] then
+                    seen[numID] = true
+                    table.insert(blacklistedIDs, numID)
+                end
             end
         end
         table.sort(blacklistedIDs)
@@ -437,12 +481,14 @@ local function CreateOptionsPanel()
                 row.icon:SetSize(24, 24)
                 row.icon:SetPoint("LEFT", 8, 0)
 
-                row.name = row:CreateFontString(nil, "ARTWORK", "GameFontNormal")
-                row.name:SetPoint("LEFT", row.icon, "RIGHT", 8, 0)
-
                 row.deleteBtn = CreateFrame("Button", nil, row)
                 row.deleteBtn:SetSize(24, 24)
                 row.deleteBtn:SetPoint("RIGHT", row, "RIGHT", -8, 0)
+
+                row.name = row:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+                row.name:SetPoint("LEFT", row.icon, "RIGHT", 8, 0)
+                row.name:SetPoint("RIGHT", row.deleteBtn, "LEFT", -8, 0)
+                row.name:SetJustifyH("LEFT")
 
                 row.deleteBtn.text = row.deleteBtn:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
                 row.deleteBtn.text:SetPoint("CENTER", 0, 0)
@@ -466,23 +512,21 @@ local function CreateOptionsPanel()
             row.icon:SetTexture(itemTexture or C_Item.GetItemIconByID(itemID) or 134400)
 
             if itemName then
+                local displayName = itemName
                 if itemQuality then
                     local color = C_Item.GetItemQualityColor(itemQuality)
                     if color then
-                        row.name:SetText(color.hex .. itemName .. "|r")
-                    else
-                        row.name:SetText(itemName)
+                        displayName = color.hex .. itemName .. "|r"
                     end
-                else
-                    row.name:SetText(itemName)
                 end
+                row.name:SetText(displayName .. " |cff888888(ID: " .. itemID .. ")|r")
             else
-                row.name:SetText("Item #" .. itemID)
+                row.name:SetText("Item #" .. itemID .. " |cff888888(ID: " .. itemID .. ")|r")
                 C_Item.RequestLoadItemDataByID(itemID)
             end
 
             row.deleteBtn:SetScript("OnClick", function()
-                OpenItDB.blacklist[itemID] = nil
+                RemoveFromBlacklist(itemID)
                 panel:RefreshList()
                 addon:Update()
             end)
