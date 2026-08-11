@@ -237,8 +237,9 @@ button:SetScript("OnDragStop", function(self)
 end)
 
 -- Handle Right-Click (Snooze) and Shift + Right-Click (Blacklist)
-button:SetScript("PreClick", function(_, btn)
-    if btn ~= "RightButton" or not currentItem then
+button:SetScript("PreClick", function(_, btn, down)
+    -- Ignore press-down events to prevent double-triggering when registered for AnyUp/AnyDown
+    if btn ~= "RightButton" or not currentItem or down then
         return
     end
 
