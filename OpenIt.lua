@@ -1,7 +1,7 @@
 -- OpenIt.lua
 -- https://github.com/ticstyle/WoW-OpenIt
 
--- luacheck: globals OpenItDB CreateFrame UIParent C_Container C_Item C_TooltipInfo Settings InCombatLockdown IsShiftKeyDown GameTooltip GameTooltip_Hide SlashCmdList SLASH_OPENIT1 Enum time pairs ipairs table math print _G ITEM_OPENABLE ITEM_SPELL_TRIGGER_ONUSE
+-- luacheck: globals OpenItDB CreateFrame UIParent C_Container C_Item C_TooltipInfo Settings InCombatLockdown IsShiftKeyDown GameTooltip GameTooltip_Hide SlashCmdList SLASH_OPENIT1 Enum time pairs ipairs table math print _G ITEM_OPENABLE ITEM_SPELL_TRIGGER_ONUSE tonumber
 
 local addonName, addon = ...
 addon.frame = CreateFrame("Frame")
@@ -15,6 +15,9 @@ local defaultDB = {
     blacklist = {},
     snoozed = {},
     position = { point = "CENTER", x = 0, y = 0 },
+    isLocked = false,
+    buttonSize = 48,
+    buttonAlpha = 1.0,
 }
 
 -- Print helper for addon chat output
@@ -34,15 +37,23 @@ local function CleanTooltipText(text)
     return text:gsub("|c%x%x%x%x%x%x%x%x", ""):gsub("|r", ""):gsub("|T.-|t", "")
 end
 
--- Determine if an item is an openable container, satchel, or usable package
+-- Determine if an item in bags can be opened or used as a container
 local function IsItemOpenable(bag, slot, info)
     if not info or not info.itemID then
         return false
     end
 
-    local itemID = info.itemID
+    local itemID = tonumber(info.itemID)
+    if not itemID then
+        return false
+    end
 
-    -- Skip blacklisted items
+    -- Skip permanently/hardcoded blacklisted items (Data/Blacklist.lua)
+    if addon.hardcodedBlacklist and addon.hardcodedBlacklist[itemID] then
+        return false
+    end
+
+    -- Skip user-blacklisted items
     if OpenItDB.blacklist[itemID] then
         return false
     end
@@ -57,17 +68,22 @@ local function IsItemOpenable(bag, slot, info)
         end
     end
 
-    -- Never trigger on equippable gear with "Use:" effects (trinkets, weapons, armor)
+    -- 1. Check known items database first
+    if addon.knownItems and addon.knownItems[itemID] then
+        return true
+    end
+
+    -- Never trigger on equippable gear with "Use:" effects
     if C_Item.IsEquippableItem(itemID) then
         return false
     end
 
-    -- 1. Engine flag for container loot
+    -- 2. Engine flag for container loot
     if info.hasLoot then
         return true
     end
 
-    -- 2. Tooltip scan via modern C_TooltipInfo API
+    -- 3. Tooltip scan via modern C_TooltipInfo API
     if C_TooltipInfo and C_TooltipInfo.GetBagItem then
         local tooltipData = C_TooltipInfo.GetBagItem(bag, slot)
         if tooltipData and tooltipData.lines then
@@ -76,17 +92,14 @@ local function IsItemOpenable(bag, slot, info)
                 if text and text ~= "" then
                     local cleanText = CleanTooltipText(text)
 
-                    -- Check for engine openable string ("<Right Click to Open>")
                     if ITEM_OPENABLE and cleanText:find(ITEM_OPENABLE, 1, true) then
                         return true
                     end
 
-                    -- Check for general right-click open text
                     if cleanText:lower():find("right click to open") or cleanText:find("<Right Click") then
                         return true
                     end
 
-                    -- Check for "Use:" trigger on container/package/quest items
                     if ITEM_SPELL_TRIGGER_ONUSE and cleanText:find(ITEM_SPELL_TRIGGER_ONUSE, 1, true) then
                         local _, spellID = C_Item.GetItemSpell(itemID)
                         if spellID then
@@ -95,15 +108,6 @@ local function IsItemOpenable(bag, slot, info)
                     end
                 end
             end
-        end
-    end
-
-    -- 3. Fallback check for item class and spell cast capability (Caches, Containers, Lockboxes)
-    local classID = select(12, C_Item.GetItemInfo(itemID))
-    if classID == Enum.ItemClass.Container or classID == Enum.ItemClass.Miscellaneous then
-        local _, spellID = C_Item.GetItemSpell(itemID)
-        if spellID then
-            return true
         end
     end
 
@@ -120,7 +124,7 @@ function addon:ScanBags()
                 return {
                     bag = bag,
                     slot = slot,
-                    itemID = info.itemID,
+                    itemID = tonumber(info.itemID),
                     icon = info.iconFileID,
                     count = info.stackCount or 1,
                     hyperlink = info.hyperlink,
@@ -163,9 +167,9 @@ button:SetBackdrop({
 })
 button:SetBackdropBorderColor(0.6, 0.4, 1.0, 1)
 
--- Drag handling
+-- Drag handling (Respects isLocked setting)
 button:SetScript("OnDragStart", function(self)
-    if not InCombatLockdown() then
+    if not InCombatLockdown() and not OpenItDB.isLocked then
         self:StartMoving()
     end
 end)
@@ -187,7 +191,7 @@ button:SetScript("PreClick", function(_, btn)
         return
     end
 
-    local itemID = currentItem.itemID
+    local itemID = tonumber(currentItem.itemID)
     if not itemID then
         return
     end
@@ -201,7 +205,7 @@ button:SetScript("PreClick", function(_, btn)
             addon.optionsFrame:RefreshList()
         end
     else
-        -- Snooze for 3 hours (10,800 seconds)
+        -- Snooze for 3 hours
         OpenItDB.snoozed[itemID] = time() + (3 * 3600)
         addon:Print("Snoozed " .. itemName .. " for 3 hours.")
     end
@@ -218,7 +222,9 @@ button:SetScript("OnEnter", function(self)
         GameTooltip:AddLine("|cff00ff00Left-Click:|r Open / Use item", 1, 1, 1)
         GameTooltip:AddLine("|cffffcc00Right-Click:|r Snooze for 3 hours", 1, 1, 1)
         GameTooltip:AddLine("|cffff3333Shift + Right-Click:|r Blacklist item", 1, 1, 1)
-        GameTooltip:AddLine("|cff888888Drag to move button|r", 0.7, 0.7, 0.7)
+        if not OpenItDB.isLocked then
+            GameTooltip:AddLine("|cff888888Drag to move button|r", 0.7, 0.7, 0.7)
+        end
         GameTooltip:Show()
     end
 end)
@@ -228,16 +234,25 @@ button:SetScript("OnLeave", function()
 end)
 
 -------------------------------------------------------------------------------
--- Addon Core Logic
+-- Addon Core Logic & Settings Application
 -------------------------------------------------------------------------------
 
+function addon:ApplyVisualSettings()
+    local size = OpenItDB.buttonSize or 48
+    local alpha = OpenItDB.buttonAlpha or 1.0
+
+    button:SetSize(size, size)
+    button:SetAlpha(alpha)
+end
+
 function addon:Update()
-    -- Attributes on secure action frames cannot be updated in combat
     if InCombatLockdown() then
         addon.pendingUpdate = true
         return
     end
     addon.pendingUpdate = false
+
+    addon:ApplyVisualSettings()
 
     local item = addon:ScanBags()
     if item then
@@ -251,7 +266,6 @@ function addon:Update()
             button.count:Hide()
         end
 
-        -- Configure left-click secure item target
         button:SetAttribute("type1", "item")
         button:SetAttribute("item", item.bag .. " " .. item.slot)
         button:Show()
@@ -280,34 +294,103 @@ local function CreateOptionsPanel()
     panel.name = "OpenIt"
     addon.optionsFrame = panel
 
+    -- Title
     local title = panel:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
     title:SetPoint("TOPLEFT", 16, -16)
-    title:SetText("OpenIt - Blacklisted Items")
+    title:SetText("OpenIt Settings")
+
+    -- Lock Checkbox
+    local lockCB = CreateFrame("CheckButton", "OpenItLockCheckbox", panel, "UICheckButtonTemplate")
+    lockCB:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 0, -12)
+    lockCB.text = lockCB:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
+    lockCB.text:SetPoint("LEFT", lockCB, "RIGHT", 4, 0)
+    lockCB.text:SetText("Lock button position")
+    lockCB:SetScript("OnClick", function(cb)
+        OpenItDB.isLocked = cb:GetChecked()
+    end)
+
+    -- Size Slider
+    local sizeSlider = CreateFrame("Slider", "OpenItSizeSlider", panel, "OptionsSliderTemplate")
+    sizeSlider:SetPoint("TOPLEFT", lockCB, "BOTTOMLEFT", 4, -24)
+    sizeSlider:SetMinMaxValues(24, 96)
+    sizeSlider:SetValueStep(2)
+    sizeSlider:ObeyStepOnDrag(true)
+    _G[sizeSlider:GetName() .. "Text"]:SetText("Button Size")
+    _G[sizeSlider:GetName() .. "Low"]:SetText("24")
+    _G[sizeSlider:GetName() .. "High"]:SetText("96")
+
+    sizeSlider.valText = sizeSlider:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
+    sizeSlider.valText:SetPoint("TOP", sizeSlider, "BOTTOM", 0, -2)
+
+    sizeSlider:SetScript("OnValueChanged", function(s, value)
+        value = math.floor(value)
+        OpenItDB.buttonSize = value
+        s.valText:SetText(value .. " px")
+        addon:ApplyVisualSettings()
+    end)
+
+    -- Opacity Slider
+    local opacitySlider = CreateFrame("Slider", "OpenItOpacitySlider", panel, "OptionsSliderTemplate")
+    opacitySlider:SetPoint("LEFT", sizeSlider, "RIGHT", 40, 0)
+    opacitySlider:SetMinMaxValues(0.1, 1.0)
+    opacitySlider:SetValueStep(0.05)
+    opacitySlider:ObeyStepOnDrag(true)
+    _G[opacitySlider:GetName() .. "Text"]:SetText("Opacity")
+    _G[opacitySlider:GetName() .. "Low"]:SetText("10%")
+    _G[opacitySlider:GetName() .. "High"]:SetText("100%")
+
+    opacitySlider.valText = opacitySlider:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
+    opacitySlider.valText:SetPoint("TOP", opacitySlider, "BOTTOM", 0, -2)
+
+    opacitySlider:SetScript("OnValueChanged", function(s, value)
+        value = math.floor(value * 100 + 0.5) / 100
+        OpenItDB.buttonAlpha = value
+        s.valText:SetText(math.floor(value * 100) .. "%")
+        addon:ApplyVisualSettings()
+    end)
+
+    -- Blacklist Section Title
+    local blacklistTitle = panel:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+    blacklistTitle:SetPoint("TOPLEFT", sizeSlider, "BOTTOMLEFT", -4, -36)
+    blacklistTitle:SetText("User Blacklisted Items")
 
     local desc = panel:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
-    desc:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 0, -8)
+    desc:SetPoint("TOPLEFT", blacklistTitle, "BOTTOMLEFT", 0, -4)
     desc:SetPoint("RIGHT", panel, "RIGHT", -16, 0)
     desc:SetJustifyH("LEFT")
-    desc:SetText("Items listed below will not trigger the floating icon. Click the red X to remove an item from the blacklist.")
+    desc:SetText("Items blacklisted via Shift + Right-Click. Click the red X to remove an item from the blacklist.")
 
+    -- Blacklist Scroll Frame
     local scrollFrame = CreateFrame("ScrollFrame", "OpenItOptionsScrollFrame", panel, "UIPanelScrollFrameTemplate")
-    scrollFrame:SetPoint("TOPLEFT", desc, "BOTTOMLEFT", 0, -16)
+    scrollFrame:SetPoint("TOPLEFT", desc, "BOTTOMLEFT", 0, -12)
     scrollFrame:SetPoint("BOTTOMRIGHT", panel, "BOTTOMRIGHT", -32, 16)
 
     local scrollChild = CreateFrame("Frame", "OpenItOptionsScrollChild", scrollFrame)
-    scrollChild:SetSize(scrollFrame:GetWidth() or 500, 1)
+    scrollChild:SetSize(450, 1)
     scrollFrame:SetScrollChild(scrollChild)
 
     panel.rows = {}
 
     function panel:RefreshList()
+        -- Sync form values
+        lockCB:SetChecked(OpenItDB.isLocked or false)
+        sizeSlider:SetValue(OpenItDB.buttonSize or 48)
+        sizeSlider.valText:SetText((OpenItDB.buttonSize or 48) .. " px")
+
+        opacitySlider:SetValue(OpenItDB.buttonAlpha or 1.0)
+        opacitySlider.valText:SetText(math.floor((OpenItDB.buttonAlpha or 1.0) * 100) .. "%")
+
+        -- Hide existing rows
         for _, row in ipairs(panel.rows) do
             row:Hide()
         end
 
         local blacklistedIDs = {}
         for itemID in pairs(OpenItDB.blacklist) do
-            table.insert(blacklistedIDs, itemID)
+            local numID = tonumber(itemID)
+            if numID then
+                table.insert(blacklistedIDs, numID)
+            end
         end
         table.sort(blacklistedIDs)
 
@@ -331,7 +414,7 @@ local function CreateOptionsPanel()
             local row = panel.rows[i]
             if not row then
                 row = CreateFrame("Frame", nil, scrollChild)
-                row:SetSize(450, rowHeight)
+                row:SetSize(430, rowHeight)
 
                 row.icon = row:CreateTexture(nil, "ARTWORK")
                 row.icon:SetSize(24, 24)
@@ -381,7 +464,6 @@ local function CreateOptionsPanel()
                 C_Item.RequestLoadItemDataByID(itemID)
             end
 
-            -- Remove from blacklist when red X is clicked
             row.deleteBtn:SetScript("OnClick", function()
                 OpenItDB.blacklist[itemID] = nil
                 panel:RefreshList()
