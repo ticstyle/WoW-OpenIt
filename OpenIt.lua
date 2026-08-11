@@ -102,7 +102,7 @@ end
 -------------------------------------------------------------------------------
 
 local function HasUnmetRequirements(bag, slot, itemID, info)
-    -- 1. Native engine usability check (returns false if missing profession, level, or stack count)
+    -- Native engine usability check
     if C_Item and C_Item.IsUsableItem then
         local isUsable, noMana = C_Item.IsUsableItem(itemID)
         if not isUsable and not noMana then
@@ -110,25 +110,25 @@ local function HasUnmetRequirements(bag, slot, itemID, info)
         end
     end
 
-    -- 2. Check Cooldowns
+    -- Check Cooldowns
     local _, duration = C_Container.GetContainerItemCooldown(bag, slot)
     if duration and duration > 1.5 then
         return true
     end
 
-    -- 3. Check Minimum Quality Threshold
+    -- Check Minimum Quality Threshold
     local quality = (info and info.quality) or select(3, C_Item.GetItemInfo(itemID))
     local minQuality = OpenItDB.minQuality or 1
     if quality and quality < minQuality then
         return true
     end
 
-    -- 4. Check Already Collected Toys
+    -- Check Already Collected Toys
     if C_ToyBox and C_ToyBox.IsToyCollected and C_ToyBox.IsToyCollected(itemID) then
         return true
     end
 
-    -- 5. Check Quest Start Items (Completed or Active in Log)
+    -- Check Quest Start Items (Completed or Active in Log)
     local questID = (C_Item and C_Item.GetItemQuestMetaData) and C_Item.GetItemQuestMetaData(itemID)
     if questID then
         if (C_QuestLog.IsQuestFlaggedCompleted and C_QuestLog.IsQuestFlaggedCompleted(questID))
@@ -137,13 +137,12 @@ local function HasUnmetRequirements(bag, slot, itemID, info)
         end
     end
 
-    -- 6. Tooltip Inspection
+    -- Tooltip Inspection
     if not C_TooltipInfo or not C_TooltipInfo.GetBagItem then
         return false
     end
 
     local tooltipData = C_TooltipInfo.GetBagItem(bag, slot)
-    -- If tooltip data hasn't loaded yet, request load and hold off display until ready
     if not tooltipData or not tooltipData.lines or #tooltipData.lines == 0 then
         C_Item.RequestLoadItemDataByID(itemID)
         return true
@@ -391,6 +390,29 @@ button:SetScript("OnDragStop", function(self)
     }
 end)
 
+-- Refresh tooltip live when hovering or when bag contents change
+local function RefreshTooltip(self)
+    if not self:IsMouseOver() then
+        return
+    end
+
+    if currentItem then
+        GameTooltip:SetOwner(self, "ANCHOR_TOP")
+        GameTooltip:SetBagItem(currentItem.bag, currentItem.slot)
+        GameTooltip:AddLine(" ")
+        GameTooltip:AddLine("|cff00ff00Left-Click:|r Open / Use item", 1, 1, 1)
+        GameTooltip:AddLine("|cffffcc00Right-Click:|r Snooze for 3 hours", 1, 1, 1)
+        GameTooltip:AddLine("|cffff3333Shift + Right-Click:|r Blacklist item", 1, 1, 1)
+        if not OpenItDB.isLocked then
+            GameTooltip:AddLine("|cff888888Drag to move button|r", 0.7, 0.7, 0.7)
+        end
+        GameTooltip:AddLine("Item ID: " .. currentItem.itemID, 0.5, 0.5, 0.5)
+        GameTooltip:Show()
+    else
+        GameTooltip_Hide()
+    end
+end
+
 -- Handle Right-Click (Snooze) and Shift + Right-Click (Blacklist)
 button:SetScript("PreClick", function(_, btn, down)
     -- Ignore press-down events to prevent double-triggering when registered for AnyUp/AnyDown
@@ -422,19 +444,7 @@ end)
 
 -- Tooltip display handlers
 button:SetScript("OnEnter", function(self)
-    if currentItem then
-        GameTooltip:SetOwner(self, "ANCHOR_TOP")
-        GameTooltip:SetBagItem(currentItem.bag, currentItem.slot)
-        GameTooltip:AddLine(" ")
-        GameTooltip:AddLine("|cff00ff00Left-Click:|r Open / Use item", 1, 1, 1)
-        GameTooltip:AddLine("|cffffcc00Right-Click:|r Snooze for 3 hours", 1, 1, 1)
-        GameTooltip:AddLine("|cffff3333Shift + Right-Click:|r Blacklist item", 1, 1, 1)
-        if not OpenItDB.isLocked then
-            GameTooltip:AddLine("|cff888888Drag to move button|r", 0.7, 0.7, 0.7)
-        end
-        GameTooltip:AddLine("Item ID: " .. currentItem.itemID, 0.5, 0.5, 0.5)
-        GameTooltip:Show()
-    end
+    RefreshTooltip(self)
 end)
 
 button:SetScript("OnLeave", function()
@@ -482,6 +492,9 @@ function addon:Update()
         currentItem = nil
         button:Hide()
     end
+
+    -- Force tooltip refresh if cursor is hovering over the button during update
+    RefreshTooltip(button)
 end
 
 local function RestorePosition()
