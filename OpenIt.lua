@@ -194,7 +194,7 @@ button:SetSize(48, 48)
 button:SetMovable(true)
 button:EnableMouse(true)
 button:SetClampedToScreen(true)
-button:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+button:RegisterForClicks("AnyUp", "AnyDown")
 button:RegisterForDrag("LeftButton")
 button:Hide()
 
@@ -318,8 +318,9 @@ function addon:Update()
             button.count:Hide()
         end
 
-        button:SetAttribute("type1", "item")
-        button:SetAttribute("item", item.bag .. " " .. item.slot)
+        -- Configure left-click macro action to use bag slot
+        button:SetAttribute("type1", "macro")
+        button:SetAttribute("macrotext1", "/use " .. item.bag .. " " .. item.slot)
         button:Show()
     else
         currentItem = nil
