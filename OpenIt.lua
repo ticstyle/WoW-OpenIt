@@ -1,7 +1,7 @@
 -- OpenIt.lua
 -- https://github.com/ticstyle/WoW-OpenIt
 
--- luacheck: globals OpenItDB CreateFrame UIParent C_Container C_Item C_TooltipInfo C_ToyBox C_QuestLog C_CurrencyInfo Settings InCombatLockdown IsShiftKeyDown GameTooltip GameTooltip_Hide SlashCmdList SLASH_OPENIT1 Enum time pairs ipairs table math print _G ITEM_OPENABLE ITEM_SPELL_TRIGGER_ONUSE tonumber tostring ITEM_QUALITY_COLORS
+-- luacheck: globals OpenItDB CreateFrame UIParent C_Container C_Item C_TooltipInfo C_ToyBox C_QuestLog C_CurrencyInfo Settings InCombatLockdown IsShiftKeyDown GameTooltip GameTooltip_Hide SlashCmdList SLASH_OPENIT1 Enum time pairs ipairs table math print _G ITEM_OPENABLE ITEM_SPELL_TRIGGER_ONUSE tonumber tostring ITEM_QUALITY_COLORS PlaySound SOUNDKIT
 
 local addonName, addon = ...
 addon.frame = CreateFrame("Frame")
@@ -24,6 +24,23 @@ local defaultDB = {
 -- Print helper for addon chat output
 function addon:Print(msg)
     print("|cff9966ffOpenIt:|r " .. msg)
+end
+
+-------------------------------------------------------------------------------
+-- Database Cleanup & Maintenance
+-------------------------------------------------------------------------------
+
+-- Remove expired 3-hour snooze timers on login to keep SavedVariables clean
+local function PurgeExpiredSnoozes()
+    if not OpenItDB or not OpenItDB.snoozed then
+        return
+    end
+    local now = time()
+    for itemID, expireTime in pairs(OpenItDB.snoozed) do
+        if now >= expireTime then
+            OpenItDB.snoozed[itemID] = nil
+        end
+    end
 end
 
 -------------------------------------------------------------------------------
@@ -102,7 +119,7 @@ end
 -------------------------------------------------------------------------------
 
 local function HasUnmetRequirements(bag, slot, itemID, info)
-    -- 1. Native engine usability check
+    -- Native engine usability check
     if C_Item and C_Item.IsUsableItem then
         local isUsable, noMana = C_Item.IsUsableItem(itemID)
         if not isUsable and not noMana then
@@ -110,25 +127,25 @@ local function HasUnmetRequirements(bag, slot, itemID, info)
         end
     end
 
-    -- 2. Check Cooldowns
+    -- Check Cooldowns
     local _, duration = C_Container.GetContainerItemCooldown(bag, slot)
     if duration and duration > 1.5 then
         return true
     end
 
-    -- 3. Check Minimum Quality Threshold
+    -- Check Minimum Quality Threshold
     local quality = (info and info.quality) or select(3, C_Item.GetItemInfo(itemID))
     local minQuality = OpenItDB.minQuality or 0
     if quality and quality < minQuality then
         return true
     end
 
-    -- 4. Check Already Collected Toys
+    -- Check Already Collected Toys
     if C_ToyBox and C_ToyBox.IsToyCollected and C_ToyBox.IsToyCollected(itemID) then
         return true
     end
 
-    -- 5. Check Quest Start Items (Completed or Active in Log)
+    -- Check Quest Start Items (Completed or Active in Log)
     local questID = (C_Item and C_Item.GetItemQuestMetaData) and C_Item.GetItemQuestMetaData(itemID)
     if questID then
         if (C_QuestLog.IsQuestFlaggedCompleted and C_QuestLog.IsQuestFlaggedCompleted(questID))
@@ -137,7 +154,7 @@ local function HasUnmetRequirements(bag, slot, itemID, info)
         end
     end
 
-    -- 6. Tooltip Inspection
+    -- Tooltip Inspection
     if not C_TooltipInfo or not C_TooltipInfo.GetBagItem then
         return false
     end
@@ -272,17 +289,17 @@ local function IsItemOpenable(bag, slot, info)
         return false
     end
 
-    -- Fast Check 1: Skip permanently/hardcoded blacklisted items (Data/Blacklist.lua)
+    -- Skip permanently/hardcoded blacklisted items (Data/Blacklist.lua)
     if addon.hardcodedBlacklist and addon.hardcodedBlacklist[itemID] then
         return false
     end
 
-    -- Fast Check 2: Skip user-blacklisted items
+    -- Skip user-blacklisted items
     if IsBlacklisted(itemID) then
         return false
     end
 
-    -- Fast Check 3: Skip snoozed items until timer expires
+    -- Skip snoozed items until timer expires
     local snoozeUntil = OpenItDB.snoozed[itemID]
     if snoozeUntil then
         if time() < snoozeUntil then
@@ -292,12 +309,12 @@ local function IsItemOpenable(bag, slot, info)
         end
     end
 
-    -- Fast Check 4: Never trigger on equippable gear with "Use:" effects
+    -- Never trigger on equippable gear with "Use:" effects
     if C_Item.IsEquippableItem(itemID) then
         return false
     end
 
-    -- Fast Check 5: Class/Subclass & Spell pre-filter before doing expensive tooltip scans
+    -- Class/Subclass & Spell pre-filter before doing expensive tooltip scans
     if not FastCanBeOpenable(itemID, info) then
         return false
     end
@@ -377,6 +394,20 @@ button.icon:SetPoint("TOPLEFT", button, "TOPLEFT", 3, -3)
 button.icon:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", -3, 3)
 button.icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
 
+-- Native hover highlight texture
+local highlight = button:CreateTexture(nil, "HIGHLIGHT")
+highlight:SetTexture("Interface\\Buttons\\ButtonHilight-Square")
+highlight:SetPoint("TOPLEFT", button, "TOPLEFT", 3, -3)
+highlight:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", -3, 3)
+highlight:SetBlendMode("ADD")
+
+-- Native pushed down texture
+local pushed = button:CreateTexture(nil, "OVERLAY")
+pushed:SetTexture("Interface\\Buttons\\UI-Quickslot-Depress")
+pushed:SetPoint("TOPLEFT", button, "TOPLEFT", 3, -3)
+pushed:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", -3, 3)
+button:SetPushedTexture(pushed)
+
 -- Stack count overlay
 button.count = button:CreateFontString(nil, "OVERLAY", "NumberFontNormal")
 button.count:SetPoint("BOTTOMRIGHT", -2, 2)
@@ -391,28 +422,9 @@ button:SetBackdrop({
 })
 button:SetBackdropBorderColor(0.6, 0.4, 1.0, 1)
 
--- Visual pressed-down state handlers
-button:SetScript("OnMouseDown", function(self, btn)
-    if btn == "LeftButton" then
-        self.icon:SetPoint("TOPLEFT", self, "TOPLEFT", 5, -5)
-        self.icon:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -1, 1)
-        self.icon:SetVertexColor(0.7, 0.7, 0.7)
-    end
-end)
-
-local function ResetButtonVisualState(self)
-    self.icon:SetPoint("TOPLEFT", self, "TOPLEFT", 3, -3)
-    self.icon:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -3, 3)
-    self.icon:SetVertexColor(1, 1, 1)
-end
-
-button:SetScript("OnMouseUp", ResetButtonVisualState)
-button:SetScript("OnHide", ResetButtonVisualState)
-
 -- Drag handling (Respects isLocked setting)
 button:SetScript("OnDragStart", function(self)
     if not InCombatLockdown() and not OpenItDB.isLocked then
-        ResetButtonVisualState(self)
         self:StartMoving()
     end
 end)
@@ -466,6 +478,7 @@ button:SetScript("PreClick", function(_, btn)
 
     if IsShiftKeyDown() then
         AddToBlacklist(itemID)
+        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF or 857)
         addon:Print("Blacklisted " .. itemName .. " (ID: " .. itemID .. ")")
         if addon.optionsFrame and addon.optionsFrame.RefreshList and addon.optionsFrame:IsShown() then
             addon.optionsFrame:RefreshList()
@@ -473,6 +486,7 @@ button:SetScript("PreClick", function(_, btn)
     else
         -- Snooze for 3 hours
         OpenItDB.snoozed[itemID] = time() + (3 * 3600)
+        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON or 856)
         addon:Print("Snoozed " .. itemName .. " for 3 hours.")
     end
 
@@ -569,6 +583,7 @@ local function CreateOptionsPanel()
     lockCB.text:SetText("Lock button position")
     lockCB:SetScript("OnClick", function(cb)
         OpenItDB.isLocked = cb:GetChecked()
+        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON or 856)
     end)
 
     -- Size Slider
@@ -768,6 +783,7 @@ local function CreateOptionsPanel()
 
             row.deleteBtn:SetScript("OnClick", function()
                 RemoveFromBlacklist(itemID)
+                PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF or 857)
                 panel:RefreshList()
                 addon:Update()
             end)
@@ -806,6 +822,7 @@ addon.frame:SetScript("OnEvent", function(_, event, arg1)
             end
         end
 
+        PurgeExpiredSnoozes()
         RestorePosition()
         CreateOptionsPanel()
         addon:Update()
