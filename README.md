@@ -68,10 +68,8 @@ addon.knownItems = {
 
 ## Installation
 
-1. Download or clone this repository:
-   ```bash
-   git clone [https://github.com/ticstyle/WoW-OpenIt.git](https://github.com/ticstyle/WoW-OpenIt.git) OpenIt
-   ```
+1. Download from Curse:
+   https://www.curseforge.com/wow/addons/openit
 2. Place the `OpenIt` folder into your WoW interface directory:
    `World of Warcraft\_retail_\Interface\AddOns\`
 3. Restart WoW or run `/reload` in-game.
