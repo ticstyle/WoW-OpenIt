@@ -14,7 +14,7 @@ local optionsCategory = nil
 local defaultDB = {
     blacklist = {},
     snoozed = {},
-    position = { point = "CENTER", x = 0, y = 0 },
+    position = {},
     isLocked = false,
     buttonSize = 48,
     buttonAlpha = 1.0,
@@ -329,12 +329,15 @@ function addon:Update()
 end
 
 local function RestorePosition()
-    if OpenItDB and OpenItDB.position then
+    if OpenItDB and OpenItDB.position and OpenItDB.position.x then
         local pos = OpenItDB.position
         button:ClearAllPoints()
-        button:SetPoint(pos.point or "CENTER", UIParent, pos.relativePoint or "CENTER", pos.x or 0, pos.y or 0)
+        button:SetPoint(pos.point or "CENTER", UIParent, pos.relativePoint or "CENTER", pos.x, pos.y or 0)
     else
-        button:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+        -- Calculate default position: halfway to the left from screen center
+        local defaultX = -(UIParent:GetWidth() / 4)
+        button:ClearAllPoints()
+        button:SetPoint("CENTER", UIParent, "CENTER", defaultX, 0)
     end
 end
 
@@ -586,9 +589,10 @@ SLASH_OPENIT1 = "/openit"
 SlashCmdList["OPENIT"] = function(msg)
     msg = msg and msg:lower():gsub("^%s*(.-)%s*$", "%1") or ""
     if msg == "reset" then
-        OpenItDB.position = { point = "CENTER", x = 0, y = 0 }
+        local defaultX = -(UIParent:GetWidth() / 4)
+        OpenItDB.position = { point = "CENTER", relativePoint = "CENTER", x = defaultX, y = 0 }
         RestorePosition()
-        addon:Print("Position reset to screen center.")
+        addon:Print("Position reset to default.")
     else
         if optionsCategory then
             Settings.OpenToCategory(optionsCategory:GetID())
