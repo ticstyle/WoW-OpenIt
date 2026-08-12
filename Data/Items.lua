@@ -15,6 +15,8 @@ local itemIDs = {
 	207002, -- Heavy Dragonscale Chest
 	211413, -- Radiant Cache
 	202081, -- Dreamsurge Crate
+	270244, -- Field Pouch
+	264184, -- [Arsenal: Heirlooms of Atal'Aman]
 
 	-- Lockboxes, Geodes & Clams
 	5523, -- Small Barnacled Clam
@@ -30,6 +32,7 @@ local itemIDs = {
 	202091, -- Unexplored Geode
 
 	-- Profession Knowledge & Research
+	201300, -- MINING [Iridescent Ore Fragments]
 	113992, -- Scribe's Research Notes
 	114002, -- Encoded Message
 	114171, -- Crate Restored Artifact
