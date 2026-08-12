@@ -96,10 +96,14 @@ end
 
 -- Check RGB values for red requirement warning colors
 local function IsRedColor(r, g, b)
+	if type(r) == "table" then
+		local c = r
+		r, g, b = c.r, c.g, c.b
+	end
 	if not r or not g or not b then
 		return false
 	end
-	return (r > 0.75 and g < 0.35 and b < 0.35)
+	return (r > 0.75 and g < 0.45 and b < 0.45)
 end
 
 -- Parse hex color codes in raw text strings for red requirement warnings
@@ -170,16 +174,30 @@ local function HasUnmetRequirements(bag, slot, itemID, info)
 		local left = lineData.leftText or ""
 		local right = lineData.rightText or ""
 
+		-- Direct line color check
+		if lineData.leftColor and IsRedColor(lineData.leftColor) then
+			return true
+		end
+		if lineData.rightColor and IsRedColor(lineData.rightColor) then
+			return true
+		end
+
+		local lineTextAccumulator = left .. " " .. right
+
+		-- Deep scan argument colors and string values inside component lists
 		if lineData.args then
 			for _, arg in ipairs(lineData.args) do
+				if arg.color and IsRedColor(arg.color) then
+					return true
+				end
 				if arg.stringVal then
-					left = left .. " " .. arg.stringVal
+					lineTextAccumulator = lineTextAccumulator .. " " .. arg.stringVal
 				end
 			end
 		end
 
 		-- Currency Overcap Protection
-		local currencyID = left:match("|Hcurrency:(%d+)") or right:match("|Hcurrency:(%d+)")
+		local currencyID = lineTextAccumulator:match("|Hcurrency:(%d+)")
 		if currencyID then
 			local cID = tonumber(currencyID)
 			if cID and C_CurrencyInfo and C_CurrencyInfo.GetCurrencyInfo then
@@ -190,50 +208,16 @@ local function HasUnmetRequirements(bag, slot, itemID, info)
 			end
 		end
 
-		-- Red Color Warnings (Target/Profession/Reagent requirements)
-		if ContainsRedColorCode(left) or ContainsRedColorCode(right) then
+		-- Red Color Warnings
+		if ContainsRedColorCode(lineTextAccumulator) then
 			return true
 		end
 
-		if lineData.leftColor and IsRedColor(lineData.leftColor.r, lineData.leftColor.g, lineData.leftColor.b) then
-			return true
-		end
-		if lineData.rightColor and IsRedColor(lineData.rightColor.r, lineData.rightColor.g, lineData.rightColor.b) then
-			return true
-		end
+		local cleanLine = CleanTooltipText(lineTextAccumulator)
+		local lowerLine = cleanLine:lower()
 
-		local cleanLeft = CleanTooltipText(left)
-		local cleanRight = CleanTooltipText(right)
-		local combinedClean = cleanLeft .. " " .. cleanRight
-		local lowerClean = combinedClean:lower()
-
-		-- Exclude standard stat/health/mana consumables and gear enchants
-		if
-			lowerClean:find("restores %d+ health")
-			or lowerClean:find("restores %d+ mana")
-			or lowerClean:find("must remain seated")
-			or lowerClean:find("permanently enchant")
-			or lowerClean:find("attaches an enchantment")
-		then
-			return true
-		end
-
-		-- Already Collected Mounts & Pets
-		if
-			lowerClean:find("already known")
-			or lowerClean:find("already collected")
-			or lowerClean:find("<already known>")
-		then
-			return true
-		end
-
-		-- Filter readable books/ledgers
-		if lowerClean:find("right click to read") or lowerClean:find("<right click to read>") then
-			return true
-		end
-
-		-- Fraction progress counters (e.g. "10/15" or "10 / 15")
-		for cur, maxVal in combinedClean:gmatch("(%d+)%s*/%s*(%d+)") do
+		-- Check fraction progress counters (e.g. "0/1" or "10/15")
+		for cur, maxVal in cleanLine:gmatch("(%d+)%s*/%s*(%d+)") do
 			local numCur = tonumber(cur)
 			local numMax = tonumber(maxVal)
 			if numCur and numMax and numCur < numMax then
@@ -241,9 +225,34 @@ local function HasUnmetRequirements(bag, slot, itemID, info)
 			end
 		end
 
+		-- Exclude standard stat/health/mana consumables and gear enchants
+		if
+			lowerLine:find("restores %d+ health")
+			or lowerLine:find("restores %d+ mana")
+			or lowerLine:find("must remain seated")
+			or lowerLine:find("permanently enchant")
+			or lowerLine:find("attaches an enchantment")
+		then
+			return true
+		end
+
+		-- Already Collected Mounts & Pets
+		if
+			lowerLine:find("already known")
+			or lowerLine:find("already collected")
+			or lowerLine:find("<already known>")
+		then
+			return true
+		end
+
+		-- Filter readable books/ledgers
+		if lowerLine:find("right click to read") or lowerLine:find("<right click to read>") then
+			return true
+		end
+
 		-- Compare required amounts in "Use:" text against total bag count
-		if cleanLeft:find("Use:") or cleanLeft:find("Använda:") then
-			for reqCount in cleanLeft:gmatch("(%d+)") do
+		if cleanLine:find("Use:") or cleanLine:find("Använda:") then
+			for reqCount in cleanLine:gmatch("(%d+)") do
 				local req = tonumber(reqCount)
 				if req and req > 1 and req > totalItemCount then
 					return true
@@ -427,6 +436,7 @@ button:SetClampedToScreen(true)
 
 -- Execute clicks on button release (Up) to allow dragging when unlocked
 button:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+button:SetAttribute("useondown", false)
 button:RegisterForDrag("LeftButton")
 button:Hide()
 
@@ -577,7 +587,8 @@ function addon.Update(_)
 			button.count:Hide()
 		end
 
-		-- Configure left-click macro action to use bag slot
+		-- Configure left-click macro action to use bag slot on mouse release
+		button:SetAttribute("useondown", false)
 		button:SetAttribute("type1", "macro")
 		button:SetAttribute("macrotext1", "/use " .. item.bag .. " " .. item.slot)
 		button:Show()
