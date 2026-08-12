@@ -270,6 +270,8 @@ local itemIDs = {
 	209417, -- Ensemble: Thundering Stormrider's Attire
 	209604, -- Ensemble: Raiment of Amirdrassil
 	210790, -- Ensemble: Elegant Green Dragon Outerwear
+
+	--Mounts
 	268557, -- [Akiki]
 
 	-- General Openables & Consumables
@@ -280,6 +282,9 @@ local itemIDs = {
 	146328, -- Petrified Wyrmtongue
 	178512, -- Celebration Package (16th Anniversary)
 	178513, -- Celebration Packages
+
+	-- Decor and housing items
+	271851, -- [Oozing Vilescar Barricade]
 }
 
 -- Build a fast lookup table on load
