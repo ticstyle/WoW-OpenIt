@@ -270,6 +270,7 @@ local itemIDs = {
 	209417, -- Ensemble: Thundering Stormrider's Attire
 	209604, -- Ensemble: Raiment of Amirdrassil
 	210790, -- Ensemble: Elegant Green Dragon Outerwear
+	268557, -- [Akiki]
 
 	-- General Openables & Consumables
 	21813, -- Bag of Heart Candies
