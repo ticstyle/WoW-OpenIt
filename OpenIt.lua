@@ -434,8 +434,8 @@ button:SetMovable(true)
 button:EnableMouse(true)
 button:SetClampedToScreen(true)
 
--- Execute clicks on button release (Up) to allow dragging when unlocked
-button:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+-- Allow dragging and button release execution
+button:RegisterForClicks("AnyUp", "AnyDown")
 button:SetAttribute("useondown", false)
 button:RegisterForDrag("LeftButton")
 button:Hide()
@@ -447,18 +447,21 @@ button.icon:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", -3, 3)
 button.icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
 
 -- Native hover highlight texture
-local highlight = button:CreateTexture(nil, "HIGHLIGHT")
-highlight:SetTexture("Interface\\Buttons\\ButtonHilight-Square")
-highlight:SetPoint("TOPLEFT", button, "TOPLEFT", 3, -3)
-highlight:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", -3, 3)
-highlight:SetBlendMode("ADD")
+button:SetHighlightTexture("Interface\\Buttons\\ButtonHilight-Square")
+local highlight = button:GetHighlightTexture()
+if highlight then
+	highlight:SetPoint("TOPLEFT", button, "TOPLEFT", 3, -3)
+	highlight:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", -3, 3)
+	highlight:SetBlendMode("ADD")
+end
 
 -- Native pushed down texture
-local pushed = button:CreateTexture(nil, "OVERLAY")
-pushed:SetTexture("Interface\\Buttons\\UI-Quickslot-Depress")
-pushed:SetPoint("TOPLEFT", button, "TOPLEFT", 3, -3)
-pushed:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", -3, 3)
-button:SetPushedTexture(pushed)
+button:SetPushedTexture("Interface\\Buttons\\UI-Quickslot-Depress")
+local pushed = button:GetPushedTexture()
+if pushed then
+	pushed:SetPoint("TOPLEFT", button, "TOPLEFT", 3, -3)
+	pushed:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", -3, 3)
+end
 
 -- Stack count overlay
 button.count = button:CreateFontString(nil, "OVERLAY", "NumberFontNormal")
@@ -587,10 +590,13 @@ function addon.Update(_)
 			button.count:Hide()
 		end
 
-		-- Configure left-click macro action to use bag slot on mouse release
+		-- Configure left-click macro action to use bag slot on release
+		local macroCmd = "/use " .. item.bag .. " " .. item.slot
 		button:SetAttribute("useondown", false)
+		button:SetAttribute("type", "macro")
+		button:SetAttribute("macrotext", macroCmd)
 		button:SetAttribute("type1", "macro")
-		button:SetAttribute("macrotext1", "/use " .. item.bag .. " " .. item.slot)
+		button:SetAttribute("macrotext1", macroCmd)
 		button:Show()
 	else
 		currentItem = nil
