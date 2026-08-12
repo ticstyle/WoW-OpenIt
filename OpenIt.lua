@@ -91,15 +91,22 @@ local function CleanTooltipText(text)
 	if not text then
 		return ""
 	end
-	return text:gsub("\194\160", " "):gsub("|c%x%x%x%x%x%x%x%x", ""):gsub("|r", ""):gsub("|T.-|t", "")
+	return text:gsub("\194\160", " "):gsub("\160", " "):gsub("|c%x%x%x%x%x%x%x%x", ""):gsub("|r", ""):gsub("|T.-|t", "")
 end
 
 -- Check RGB values for red requirement warning colors
 local function IsRedColor(r, g, b)
-	if type(r) == "table" then
-		local c = r
-		r, g, b = c.r, c.g, c.b
+	if type(r) == "table" or type(r) == "userdata" then
+		local colorObj = r
+		if colorObj.GetRGB then
+			r, g, b = colorObj:GetRGB()
+		elseif colorObj.r and colorObj.g and colorObj.b then
+			r, g, b = colorObj.r, colorObj.g, colorObj.b
+		else
+			return false
+		end
 	end
+
 	if not r or not g or not b then
 		return false
 	end
@@ -111,7 +118,8 @@ local function IsRedColor(r, g, b)
 		b = b / 255
 	end
 
-	return (r > 0.70 and g < 0.45 and b < 0.45)
+	-- Red channel must be clearly dominant over green and blue
+	return (r > 0.50 and (r - g) > 0.25 and (r - b) > 0.25)
 end
 
 -- Parse hex color codes in raw text strings for red requirement warnings
@@ -195,7 +203,7 @@ local function HasUnmetRequirements(bag, slot, itemID, info)
 		-- Deep scan argument colors and string/numeric values inside component lists
 		if lineData.args then
 			for _, arg in ipairs(lineData.args) do
-				if arg.color and type(arg.color) == "table" and IsRedColor(arg.color) then
+				if arg.color and IsRedColor(arg.color) then
 					return true
 				end
 				if arg.stringVal then
@@ -208,8 +216,8 @@ local function HasUnmetRequirements(bag, slot, itemID, info)
 			end
 		end
 
-		-- Replace UTF-8 non-breaking spaces with standard spaces before parsing
-		lineTextAccumulator = lineTextAccumulator:gsub("\194\160", " ")
+		-- Clean non-breaking spaces before pattern checking
+		lineTextAccumulator = lineTextAccumulator:gsub("\194\160", " "):gsub("\160", " ")
 
 		-- Currency Overcap Protection
 		local currencyID = lineTextAccumulator:match("|Hcurrency:(%d+)")
@@ -223,7 +231,7 @@ local function HasUnmetRequirements(bag, slot, itemID, info)
 			end
 		end
 
-		-- Red Color Warnings
+		-- Red Color Warnings in hex strings
 		if ContainsRedColorCode(lineTextAccumulator) then
 			return true
 		end
