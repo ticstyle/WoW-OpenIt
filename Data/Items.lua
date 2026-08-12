@@ -16,7 +16,6 @@ local itemIDs = {
 	211413, -- Radiant Cache
 	202081, -- Dreamsurge Crate
 	270244, -- Field Pouch
-	264184, -- [Arsenal: Heirlooms of Atal'Aman]
 
 	-- Lockboxes, Geodes & Clams
 	5523, -- Small Barnacled Clam
@@ -285,6 +284,11 @@ local itemIDs = {
 
 	-- Decor and housing items
 	271851, -- [Oozing Vilescar Barricade]
+	279452, -- ["Summoning of Ula'tek" Mural]
+	279285, -- [Lost Tortollan Scroll]
+
+	-- Transmogs
+	264184, -- [Arsenal: Heirlooms of Atal'Aman]
 }
 
 -- Build a fast lookup table on load
