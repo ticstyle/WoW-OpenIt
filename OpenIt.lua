@@ -87,7 +87,7 @@ local function RemoveFromBlacklist(itemID)
 	end
 end
 
--- Check RGB values for red requirement warning colors
+-- Check RGB values for strict red requirement warning colors
 local function IsRedColor(r, g, b)
 	if type(r) == "table" or type(r) == "userdata" then
 		local colorObj = r
@@ -110,7 +110,8 @@ local function IsRedColor(r, g, b)
 		b = b / 255
 	end
 
-	return (r > 0.45 and (r - g) > 0.15 and (r - b) > 0.15)
+	-- Strict red warning text check: high red, low green and blue (prevents yellow flavor text from triggering)
+	return (r > 0.8 and g < 0.3 and b < 0.3)
 end
 
 -- Parse hex color codes for red requirement warnings
