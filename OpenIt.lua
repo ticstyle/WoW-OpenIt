@@ -118,8 +118,8 @@ local function IsRedColor(r, g, b)
 		b = b / 255
 	end
 
-	-- Red channel must be clearly dominant over green and blue
-	return (r > 0.50 and (r - g) > 0.25 and (r - b) > 0.25)
+	-- Red channel must be dominant over green and blue
+	return (r > 0.50 and (r - g) > 0.20 and (r - b) > 0.20)
 end
 
 -- Parse hex color codes in raw text strings for red requirement warnings
@@ -139,26 +139,26 @@ local function ContainsRedColorCode(text)
 end
 
 -------------------------------------------------------------------------------
--- Advanced Requirement & Reagent Validation
+-- Single-Pass Tooltip Evaluator
 -------------------------------------------------------------------------------
 
-local function HasUnmetRequirements(bag, slot, itemID, info)
+local function EvaluateItemTooltip(bag, slot, itemID, info)
 	-- Check Cooldowns
 	local _, duration = C_Container.GetContainerItemCooldown(bag, slot)
 	if duration and duration > 1.5 then
-		return true
+		return false
 	end
 
 	-- Check Minimum Quality Threshold
 	local quality = (info and info.quality) or select(3, C_Item.GetItemInfo(itemID))
 	local minQuality = OpenItDB.minQuality or 0
 	if quality and quality < minQuality then
-		return true
+		return false
 	end
 
 	-- Check Already Collected Toys
 	if C_ToyBox and C_ToyBox.IsToyCollected and C_ToyBox.IsToyCollected(itemID) then
-		return true
+		return false
 	end
 
 	-- Check Quest Start Items (Completed or Active in Log)
@@ -168,34 +168,36 @@ local function HasUnmetRequirements(bag, slot, itemID, info)
 			(C_QuestLog.IsQuestFlaggedCompleted and C_QuestLog.IsQuestFlaggedCompleted(questID))
 			or (C_QuestLog.GetLogIndexForQuestID and C_QuestLog.GetLogIndexForQuestID(questID))
 		then
-			return true
+			return false
 		end
 	end
 
-	-- Tooltip Inspection
 	if not C_TooltipInfo or not C_TooltipInfo.GetBagItem then
 		return false
 	end
 
 	local tooltipData = C_TooltipInfo.GetBagItem(bag, slot)
 	if not tooltipData or not tooltipData.lines or #tooltipData.lines == 0 then
+		C_Item.RequestLoadItemDataByID(itemID)
 		return false
 	end
 
 	local totalItemCount = (C_Item and C_Item.GetItemCount) and C_Item.GetItemCount(itemID)
 		or (info and info.stackCount)
 		or 1
+	local hasUnmetRequirement = false
+	local isOpenableTriggerFound = false
 
 	for _, lineData in ipairs(tooltipData.lines) do
 		local left = lineData.leftText or ""
 		local right = lineData.rightText or ""
 
 		-- Direct line color check
-		if lineData.leftColor and IsRedColor(lineData.leftColor) then
-			return true
-		end
-		if lineData.rightColor and IsRedColor(lineData.rightColor) then
-			return true
+		if
+			(lineData.leftColor and IsRedColor(lineData.leftColor))
+			or (lineData.rightColor and IsRedColor(lineData.rightColor))
+		then
+			hasUnmetRequirement = true
 		end
 
 		local lineTextAccumulator = left .. " " .. right
@@ -204,7 +206,7 @@ local function HasUnmetRequirements(bag, slot, itemID, info)
 		if lineData.args then
 			for _, arg in ipairs(lineData.args) do
 				if arg.color and IsRedColor(arg.color) then
-					return true
+					hasUnmetRequirement = true
 				end
 				if arg.stringVal then
 					lineTextAccumulator = lineTextAccumulator .. " " .. tostring(arg.stringVal)
@@ -226,14 +228,14 @@ local function HasUnmetRequirements(bag, slot, itemID, info)
 			if cID and C_CurrencyInfo and C_CurrencyInfo.GetCurrencyInfo then
 				local cInfo = C_CurrencyInfo.GetCurrencyInfo(cID)
 				if cInfo and cInfo.maxQuantity and cInfo.maxQuantity > 0 and (cInfo.quantity >= cInfo.maxQuantity) then
-					return true
+					hasUnmetRequirement = true
 				end
 			end
 		end
 
 		-- Red Color Warnings in hex strings
 		if ContainsRedColorCode(lineTextAccumulator) then
-			return true
+			hasUnmetRequirement = true
 		end
 
 		local cleanLine = CleanTooltipText(lineTextAccumulator)
@@ -244,7 +246,7 @@ local function HasUnmetRequirements(bag, slot, itemID, info)
 			local numCur = tonumber(cur)
 			local numMax = tonumber(maxVal)
 			if numCur and numMax and numCur < numMax then
-				return true
+				hasUnmetRequirement = true
 			end
 		end
 
@@ -255,22 +257,13 @@ local function HasUnmetRequirements(bag, slot, itemID, info)
 			or lowerLine:find("must remain seated")
 			or lowerLine:find("permanently enchant")
 			or lowerLine:find("attaches an enchantment")
-		then
-			return true
-		end
-
-		-- Already Collected Mounts & Pets
-		if
-			lowerLine:find("already known")
+			or lowerLine:find("already known")
 			or lowerLine:find("already collected")
 			or lowerLine:find("<already known>")
+			or lowerLine:find("right click to read")
+			or lowerLine:find("<right click to read>")
 		then
-			return true
-		end
-
-		-- Filter readable books/ledgers
-		if lowerLine:find("right click to read") or lowerLine:find("<right click to read>") then
-			return true
+			hasUnmetRequirement = true
 		end
 
 		-- Compare required amounts in "Use:" text against total bag count
@@ -278,13 +271,57 @@ local function HasUnmetRequirements(bag, slot, itemID, info)
 			for reqCount in cleanLine:gmatch("(%d+)") do
 				local req = tonumber(reqCount)
 				if req and req > 1 and req > totalItemCount then
-					return true
+					hasUnmetRequirement = true
 				end
+			end
+		end
+
+		-- Evaluate Openable / Usable Triggers
+		if ITEM_OPENABLE and cleanLine:find(ITEM_OPENABLE, 1, true) then
+			isOpenableTriggerFound = true
+		end
+
+		if lowerLine:find("right click") or cleanLine:find("<Right Click") then
+			if
+				lowerLine:find("open")
+				or lowerLine:find("combine")
+				or lowerLine:find("assemble")
+				or lowerLine:find("use")
+				or lowerLine:find("extract")
+				or lowerLine:find("unwrap")
+			then
+				isOpenableTriggerFound = true
+			end
+		end
+
+		if cleanLine:find("Use:") or cleanLine:find("Använda:") then
+			if
+				lowerLine:find("study to increase")
+				or lowerLine:find("knowledge")
+				or lowerLine:find("grant")
+				or lowerLine:find("receive")
+				or lowerLine:find("obtain")
+				or lowerLine:find("open")
+				or lowerLine:find("combine")
+				or lowerLine:find("assemble")
+			then
+				isOpenableTriggerFound = true
+			end
+		end
+
+		if ITEM_SPELL_TRIGGER_ONUSE and cleanLine:find(ITEM_SPELL_TRIGGER_ONUSE, 1, true) then
+			if lowerLine:find("knowledge") or lowerLine:find("study") then
+				isOpenableTriggerFound = true
 			end
 		end
 	end
 
-	return false
+	-- Reject immediately if any requirement is unmet
+	if hasUnmetRequirement then
+		return false
+	end
+
+	return isOpenableTriggerFound
 end
 
 -------------------------------------------------------------------------------
@@ -333,17 +370,17 @@ local function IsItemOpenable(bag, slot, info)
 		return false
 	end
 
-	-- Fast Check 1: Skip permanently/hardcoded blacklisted items (Data/Blacklist.lua)
+	-- Skip permanently/hardcoded blacklisted items (Data/Blacklist.lua)
 	if addon.hardcodedBlacklist and addon.hardcodedBlacklist[itemID] then
 		return false
 	end
 
-	-- Fast Check 2: Skip user-blacklisted items
+	-- Skip user-blacklisted items
 	if IsBlacklisted(itemID) then
 		return false
 	end
 
-	-- Fast Check 3: Skip snoozed items until timer expires
+	-- Skip snoozed items until timer expires
 	local snoozeUntil = OpenItDB.snoozed[itemID]
 	if snoozeUntil then
 		if time() < snoozeUntil then
@@ -353,7 +390,7 @@ local function IsItemOpenable(bag, slot, info)
 		end
 	end
 
-	-- Fast Check 4: Never trigger on equippable gear with "Use:" effects
+	-- Never trigger on equippable gear with "Use:" effects
 	if C_Item.IsEquippableItem(itemID) then
 		return false
 	end
@@ -363,67 +400,8 @@ local function IsItemOpenable(bag, slot, info)
 		return false
 	end
 
-	-- Reject items failing smart requirement checks
-	if HasUnmetRequirements(bag, slot, itemID, info) then
-		return false
-	end
-
-	-- Tooltip inspection for container/loot/knowledge triggers
-	if C_TooltipInfo and C_TooltipInfo.GetBagItem then
-		local tooltipData = C_TooltipInfo.GetBagItem(bag, slot)
-		if tooltipData and tooltipData.lines then
-			for _, lineData in ipairs(tooltipData.lines) do
-				local text = lineData.leftText
-				if text and text ~= "" then
-					local cleanText = CleanTooltipText(text)
-					local lowerText = cleanText:lower()
-
-					-- Match standard engine openable strings
-					if ITEM_OPENABLE and cleanText:find(ITEM_OPENABLE, 1, true) then
-						return true
-					end
-
-					-- Match explicit green/formatted click triggers
-					if lowerText:find("right click") or cleanText:find("<Right Click") then
-						if
-							lowerText:find("open")
-							or lowerText:find("combine")
-							or lowerText:find("assemble")
-							or lowerText:find("use")
-							or lowerText:find("extract")
-							or lowerText:find("unwrap")
-						then
-							return true
-						end
-					end
-
-					-- Match profession knowledge and reward triggers ("Use: Study to increase...")
-					if cleanText:find("Use:") or cleanText:find("Använda:") then
-						if
-							lowerText:find("study to increase")
-							or lowerText:find("knowledge")
-							or lowerText:find("grant")
-							or lowerText:find("receive")
-							or lowerText:find("obtain")
-							or lowerText:find("open")
-							or lowerText:find("combine")
-							or lowerText:find("assemble")
-						then
-							return true
-						end
-					end
-
-					if ITEM_SPELL_TRIGGER_ONUSE and cleanText:find(ITEM_SPELL_TRIGGER_ONUSE, 1, true) then
-						if lowerText:find("knowledge") or lowerText:find("study") then
-							return true
-						end
-					end
-				end
-			end
-		end
-	end
-
-	return false
+	-- Single-pass tooltip evaluation
+	return EvaluateItemTooltip(bag, slot, itemID, info)
 end
 
 -- Scan player inventory for the first openable item
