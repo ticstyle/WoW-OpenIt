@@ -285,6 +285,7 @@ local itemIDs = {
 	-- Decor and housing items
 	271851, -- [Oozing Vilescar Barricade]
 	279452, -- ["Summoning of Ula'tek" Mural]
+	279285, -- [Lost Tortollan Scroll]
 
 	-- Transmogs
 	264184, -- [Arsenal: Heirlooms of Atal'Aman]
