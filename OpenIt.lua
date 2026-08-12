@@ -5,7 +5,7 @@
 -- luacheck: globals C_ToyBox C_QuestLog C_CurrencyInfo Settings InCombatLockdown
 -- luacheck: globals IsShiftKeyDown GameTooltip GameTooltip_Hide SlashCmdList SLASH_OPENIT1
 -- luacheck: globals Enum time pairs ipairs table math print _G ITEM_OPENABLE
--- luacheck: globals ITEM_SPELL_TRIGGER_ONUSE tonumber tostring ITEM_QUALITY_COLORS PlaySound SOUNDKIT
+-- luacheck: globals ITEM_SPELL_TRIGGER_ONUSE tonumber tostring ITEM_QUALITY_COLORS PlaySound SOUNDKIT type
 
 local addonName, addon = ...
 addon.frame = CreateFrame("Frame")
@@ -103,7 +103,15 @@ local function IsRedColor(r, g, b)
 	if not r or not g or not b then
 		return false
 	end
-	return (r > 0.75 and g < 0.45 and b < 0.45)
+
+	-- Normalize 0-255 integer ranges if present
+	if r > 1 or g > 1 or b > 1 then
+		r = r / 255
+		g = g / 255
+		b = b / 255
+	end
+
+	return (r > 0.70 and g < 0.45 and b < 0.45)
 end
 
 -- Parse hex color codes in raw text strings for red requirement warnings
@@ -184,14 +192,18 @@ local function HasUnmetRequirements(bag, slot, itemID, info)
 
 		local lineTextAccumulator = left .. " " .. right
 
-		-- Deep scan argument colors and string values inside component lists
+		-- Deep scan argument colors and string/numeric values inside component lists
 		if lineData.args then
 			for _, arg in ipairs(lineData.args) do
 				if arg.color and IsRedColor(arg.color) then
 					return true
 				end
 				if arg.stringVal then
-					lineTextAccumulator = lineTextAccumulator .. " " .. arg.stringVal
+					lineTextAccumulator = lineTextAccumulator .. " " .. tostring(arg.stringVal)
+				elseif arg.intVal then
+					lineTextAccumulator = lineTextAccumulator .. " " .. tostring(arg.intVal)
+				elseif arg.floatVal then
+					lineTextAccumulator = lineTextAccumulator .. " " .. tostring(arg.floatVal)
 				end
 			end
 		end
