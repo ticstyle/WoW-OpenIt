@@ -3,7 +3,7 @@
 
 -- luacheck: globals OpenItDB CreateFrame UIParent C_Container C_Item C_TooltipInfo
 -- luacheck: globals C_ToyBox C_QuestLog C_CurrencyInfo Settings InCombatLockdown
--- luacheck: globals IsShiftKeyDown GameTooltip GameTooltip_Hide SlashCmdList SLASH_OPENIT1
+-- luacheck: globals IsShiftKeyDown IsAltKeyDown GameTooltip GameTooltip_Hide SlashCmdList SLASH_OPENIT1
 -- luacheck: globals Enum time pairs ipairs table math print _G ITEM_OPENABLE
 -- luacheck: globals ITEM_SPELL_TRIGGER_ONUSE tonumber tostring ITEM_QUALITY_COLORS PlaySound SOUNDKIT type
 
@@ -24,6 +24,7 @@ local defaultDB = {
 	buttonSize = 48,
 	buttonAlpha = 1.0,
 	minQuality = 0, -- Default: 0 (Poor / Junk)
+	showForPositioning = false, -- Show button for moving when bags are empty
 }
 
 -- Print helper for addon chat output
@@ -331,13 +332,9 @@ button:SetBackdrop({
 })
 button:SetBackdropBorderColor(0.6, 0.4, 1.0, 1)
 
--- Drag handling (Respects isLocked setting & clears secure attributes during drag)
+-- Drag handling (Allows moving freely in positioning mode, or holding Alt when unlocked)
 button:SetScript("OnDragStart", function(_)
-	if not InCombatLockdown() and not OpenItDB.isLocked then
-		button:SetAttribute("type", nil)
-		button:SetAttribute("macrotext", nil)
-		button:SetAttribute("type1", nil)
-		button:SetAttribute("macrotext1", nil)
+	if not InCombatLockdown() and (OpenItDB.showForPositioning or (not OpenItDB.isLocked and IsAltKeyDown())) then
 		button:StartMoving()
 	end
 end)
@@ -351,7 +348,6 @@ button:SetScript("OnDragStop", function(_)
 		x = x,
 		y = y,
 	}
-	addon:Update()
 end)
 
 -- Refresh tooltip live when hovering or when bag contents change
@@ -368,9 +364,15 @@ local function RefreshTooltip(self)
 		GameTooltip:AddLine("|cffffcc00Right-Click:|r Snooze for 3 hours", 1, 1, 1)
 		GameTooltip:AddLine("|cffff3333Shift + Right-Click:|r Blacklist item", 1, 1, 1)
 		if not OpenItDB.isLocked then
-			GameTooltip:AddLine("|cff888888Drag to move button|r", 0.7, 0.7, 0.7)
+			GameTooltip:AddLine("|cff888888Hold Alt + Drag to move button|r", 0.7, 0.7, 0.7)
 		end
 		GameTooltip:AddLine("Item ID: " .. currentItem.itemID, 0.5, 0.5, 0.5)
+		GameTooltip:Show()
+	elseif OpenItDB.showForPositioning then
+		GameTooltip:SetOwner(self, "ANCHOR_TOP")
+		GameTooltip:AddLine("|cff9966ffOpenIt - Positioning Mode|r", 1, 1, 1)
+		GameTooltip:AddLine("Click and drag this button to reposition it anywhere.", 0.9, 0.9, 0.9)
+		GameTooltip:AddLine("|cff888888Disable this mode in settings when finished.|r", 0.6, 0.6, 0.6)
 		GameTooltip:Show()
 	else
 		GameTooltip_Hide()
@@ -461,6 +463,16 @@ function addon.Update(_)
 		button:SetAttribute("type1", "macro")
 		button:SetAttribute("macrotext1", macroCmd)
 		button:Show()
+	elseif OpenItDB.showForPositioning then
+		currentItem = nil
+		button.icon:SetTexture(133633) -- Placeholder bag icon
+		button.count:Hide()
+		-- Clear secure attributes so clicking/dragging doesn't trigger macros
+		button:SetAttribute("type", nil)
+		button:SetAttribute("macrotext", nil)
+		button:SetAttribute("type1", nil)
+		button:SetAttribute("macrotext1", nil)
+		button:Show()
 	else
 		currentItem = nil
 		button:Hide()
@@ -506,6 +518,18 @@ local function CreateOptionsPanel()
 	lockCB:SetScript("OnClick", function(cb)
 		OpenItDB.isLocked = cb:GetChecked()
 		PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON or 856)
+	end)
+
+	-- Positioning Mode Checkbox
+	local positionCB = CreateFrame("CheckButton", "OpenItPositionCheckbox", panel, "UICheckButtonTemplate")
+	positionCB:SetPoint("LEFT", lockCB, "RIGHT", 140, 0)
+	positionCB.text = positionCB:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
+	positionCB.text:SetPoint("LEFT", positionCB, "RIGHT", 4, 0)
+	positionCB.text:SetText("Show positioning button")
+	positionCB:SetScript("OnClick", function(cb)
+		OpenItDB.showForPositioning = cb:GetChecked()
+		PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON or 856)
+		addon:Update()
 	end)
 
 	-- Size Slider
@@ -600,6 +624,7 @@ local function CreateOptionsPanel()
 	function panel.RefreshList(_)
 		-- Sync form values
 		lockCB:SetChecked(OpenItDB.isLocked or false)
+		positionCB:SetChecked(OpenItDB.showForPositioning or false)
 		sizeSlider:SetValue(OpenItDB.buttonSize or 48)
 		sizeSlider.valText:SetText((OpenItDB.buttonSize or 48) .. " px")
 
