@@ -123,14 +123,6 @@ end
 -------------------------------------------------------------------------------
 
 local function HasUnmetRequirements(bag, slot, itemID, info)
-	-- Native engine usability check
-	if C_Item and C_Item.IsUsableItem then
-		local isUsable, noMana = C_Item.IsUsableItem(itemID)
-		if not isUsable and not noMana then
-			return true
-		end
-	end
-
 	-- Check Cooldowns
 	local _, duration = C_Container.GetContainerItemCooldown(bag, slot)
 	if duration and duration > 1.5 then
@@ -215,7 +207,7 @@ local function HasUnmetRequirements(bag, slot, itemID, info)
 		local combinedClean = cleanLeft .. " " .. cleanRight
 		local lowerClean = combinedClean:lower()
 
-		-- Exclude standard stat/health/mana consumables that bypass subclass checks
+		-- Exclude standard stat/health/mana consumables and gear enchants
 		if
 			lowerClean:find("restores %d+ health")
 			or lowerClean:find("restores %d+ mana")
@@ -278,9 +270,20 @@ local function FastCanBeOpenable(itemID, info)
 		return true
 	end
 
-	-- Verify item has an associated spell or use action
-	local _, spellID = C_Item.GetItemSpell(itemID)
-	return spellID ~= nil
+	-- Filter out equippable gear, armor, weapons, and gems
+	local classID = select(12, C_Item.GetItemInfo(itemID))
+	if classID then
+		if
+			classID == Enum.ItemClass.Armor
+			or classID == Enum.ItemClass.Weapon
+			or classID == Enum.ItemClass.Recipe
+			or classID == Enum.ItemClass.Gem
+		then
+			return false
+		end
+	end
+
+	return true
 end
 
 -------------------------------------------------------------------------------
@@ -323,7 +326,7 @@ local function IsItemOpenable(bag, slot, info)
 		return false
 	end
 
-	-- Pre-filter before doing tooltip scans
+	-- Pre-filter non-usable item classes
 	if not FastCanBeOpenable(itemID, info) then
 		return false
 	end
@@ -333,7 +336,7 @@ local function IsItemOpenable(bag, slot, info)
 		return false
 	end
 
-	-- Tooltip inspection for container/loot triggers
+	-- Tooltip inspection for container/loot/knowledge triggers
 	if C_TooltipInfo and C_TooltipInfo.GetBagItem then
 		local tooltipData = C_TooltipInfo.GetBagItem(bag, slot)
 		if tooltipData and tooltipData.lines then
@@ -343,24 +346,45 @@ local function IsItemOpenable(bag, slot, info)
 					local cleanText = CleanTooltipText(text)
 					local lowerText = cleanText:lower()
 
+					-- Match standard engine openable strings
 					if ITEM_OPENABLE and cleanText:find(ITEM_OPENABLE, 1, true) then
 						return true
 					end
 
-					if lowerText:find("right click to open") or cleanText:find("<Right Click") then
-						return true
+					-- Match explicit green/formatted click triggers
+					if lowerText:find("right click") or cleanText:find("<Right Click") then
+						if
+							lowerText:find("open")
+							or lowerText:find("combine")
+							or lowerText:find("assemble")
+							or lowerText:find("use")
+							or lowerText:find("extract")
+							or lowerText:find("unwrap")
+						then
+							return true
+						end
 					end
 
-					if
-						lowerText:find("right click to combine")
-						or lowerText:find("right click to assemble")
-						or lowerText:find("right click to use")
-					then
-						return true
+					-- Match profession knowledge and reward triggers ("Use: Study to increase...")
+					if cleanText:find("Use:") or cleanText:find("Använda:") then
+						if
+							lowerText:find("study to increase")
+							or lowerText:find("knowledge")
+							or lowerText:find("grant")
+							or lowerText:find("receive")
+							or lowerText:find("obtain")
+							or lowerText:find("open")
+							or lowerText:find("combine")
+							or lowerText:find("assemble")
+						then
+							return true
+						end
 					end
 
 					if ITEM_SPELL_TRIGGER_ONUSE and cleanText:find(ITEM_SPELL_TRIGGER_ONUSE, 1, true) then
-						return true
+						if lowerText:find("knowledge") or lowerText:find("study") then
+							return true
+						end
 					end
 				end
 			end
