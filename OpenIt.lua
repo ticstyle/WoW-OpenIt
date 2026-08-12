@@ -91,7 +91,11 @@ local function CleanTooltipText(text)
 	if not text then
 		return ""
 	end
-	return text:gsub("\194\160", " "):gsub("\160", " "):gsub("|c%x%x%x%x%x%x%x%x", ""):gsub("|r", ""):gsub("|T.-|t", "")
+	return text:gsub("\194\160", " ")
+		:gsub("\160", " ")
+		:gsub("|[cC]%x%x%x%x%x%x%x%x", "")
+		:gsub("|r", "")
+		:gsub("|T.-|t", "")
 end
 
 -- Check RGB values for red requirement warning colors
@@ -127,7 +131,7 @@ local function ContainsRedColorCode(text)
 	if not text or text == "" then
 		return false
 	end
-	for hex in text:gmatch("|c(%x%x%x%x%x%x%x%x)") do
+	for hex in text:gmatch("|[cC](%x%x%x%x%x%x%x%x)") do
 		local r = tonumber(hex:sub(3, 4), 16) or 0
 		local g = tonumber(hex:sub(5, 6), 16) or 0
 		local b = tonumber(hex:sub(7, 8), 16) or 0
@@ -200,6 +204,11 @@ local function EvaluateItemTooltip(bag, slot, itemID, info)
 			hasUnmetRequirement = true
 		end
 
+		-- Check formatted hex color codes directly on raw left/right strings
+		if ContainsRedColorCode(left) or ContainsRedColorCode(right) then
+			hasUnmetRequirement = true
+		end
+
 		local lineTextAccumulator = left .. " " .. right
 
 		-- Deep scan argument colors and string/numeric values inside component lists
@@ -233,7 +242,7 @@ local function EvaluateItemTooltip(bag, slot, itemID, info)
 			end
 		end
 
-		-- Red Color Warnings in hex strings
+		-- Red Color Warnings in accumulated strings
 		if ContainsRedColorCode(lineTextAccumulator) then
 			hasUnmetRequirement = true
 		end
@@ -241,13 +250,18 @@ local function EvaluateItemTooltip(bag, slot, itemID, info)
 		local cleanLine = CleanTooltipText(lineTextAccumulator)
 		local lowerLine = cleanLine:lower()
 
-		-- Check fraction progress counters (e.g. "0 / 1" or "10/15")
-		for cur, maxVal in cleanLine:gmatch("(%d+)%s*/%s*(%d+)") do
+		-- Check fraction progress counters (e.g. "0 / 1", "0/1", "0 of 1")
+		for cur, maxVal in cleanLine:gmatch("(%d+)%s*[/of%-]%s*(%d+)") do
 			local numCur = tonumber(cur)
 			local numMax = tonumber(maxVal)
 			if numCur and numMax and numCur < numMax then
 				hasUnmetRequirement = true
 			end
+		end
+
+		-- Catch component list items starting with 0 count
+		if cleanLine:match("^%s*[%*%-%s]*%s*0%s*[/of%-]") or cleanLine:match("%s0%s*[/of%-]") then
+			hasUnmetRequirement = true
 		end
 
 		-- Exclude standard stat/health/mana consumables and gear enchants
