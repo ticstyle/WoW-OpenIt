@@ -289,8 +289,8 @@ button:SetMovable(true)
 button:EnableMouse(true)
 button:SetClampedToScreen(true)
 
--- Allow dragging and button release execution
-button:RegisterForClicks("AnyUp", "AnyDown")
+-- Trigger actions strictly on mouse release
+button:RegisterForClicks("LeftButtonUp", "RightButtonUp")
 button:SetAttribute("useondown", false)
 button:RegisterForDrag("LeftButton")
 button:Hide()
@@ -379,7 +379,7 @@ local function RefreshTooltip(self)
 	end
 end
 
--- Handle Right-Click (Snooze) and Shift + Right-Click (Blacklist) securely on PreClick to prevent double firing
+-- Handle Right-Click (Snooze) and Shift + Right-Click (Blacklist) securely on PreClick upon release
 button:SetScript("PreClick", function(_, btn)
 	if btn ~= "RightButton" or not currentItem or isProcessingClick then
 		return
@@ -443,39 +443,41 @@ function addon.Update(_)
 
 	addon:ApplyVisualSettings()
 
-	local item = addon:ScanBags()
-	if item then
-		currentItem = item
-		button.icon:SetTexture(item.icon)
-
-		if item.count > 1 then
-			button.count:SetText(item.count)
-			button.count:Show()
-		else
-			button.count:Hide()
-		end
-
-		-- Configure left-click macro action to use bag slot on release
-		local macroCmd = "/use " .. item.bag .. " " .. item.slot
-		button:SetAttribute("useondown", false)
-		button:SetAttribute("type", "macro")
-		button:SetAttribute("macrotext", macroCmd)
-		button:SetAttribute("type1", "macro")
-		button:SetAttribute("macrotext1", macroCmd)
-		button:Show()
-	elseif OpenItDB.showForPositioning then
+	-- Positioning mode takes top priority so it never triggers items
+	if OpenItDB.showForPositioning then
 		currentItem = nil
 		button.icon:SetTexture(133633) -- Placeholder bag icon
 		button.count:Hide()
-		-- Clear secure attributes so clicking/dragging doesn't trigger macros
 		button:SetAttribute("type", nil)
 		button:SetAttribute("macrotext", nil)
 		button:SetAttribute("type1", nil)
 		button:SetAttribute("macrotext1", nil)
 		button:Show()
 	else
-		currentItem = nil
-		button:Hide()
+		local item = addon:ScanBags()
+		if item then
+			currentItem = item
+			button.icon:SetTexture(item.icon)
+
+			if item.count > 1 then
+				button.count:SetText(item.count)
+				button.count:Show()
+			else
+				button.count:Hide()
+			end
+
+			-- Configure left-click macro action to use bag slot on release
+			local macroCmd = "/use " .. item.bag .. " " .. item.slot
+			button:SetAttribute("useondown", false)
+			button:SetAttribute("type", "macro")
+			button:SetAttribute("macrotext", macroCmd)
+			button:SetAttribute("type1", "macro")
+			button:SetAttribute("macrotext1", macroCmd)
+			button:Show()
+		else
+			currentItem = nil
+			button:Hide()
+		end
 	end
 
 	-- Force tooltip refresh if cursor is hovering over the button during update
