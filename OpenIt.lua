@@ -250,17 +250,20 @@ local function EvaluateItemTooltip(bag, slot, itemID, info)
 		local lowerLine = cleanLine:lower()
 
 		-- Check fraction progress counters (e.g. "0 / 1", "0/1", "0 of 1")
-		for cur, maxVal in cleanLine:gmatch("(%d+)%s*[/of%-]%s*(%d+)") do
-			local numCur = tonumber(cur)
-			local numMax = tonumber(maxVal)
-			if numCur and numMax and numCur < numMax then
+		-- Exclude collection state lines (e.g. "Collected Appearances 0/7")
+		if not (lowerLine:find("collected") or lowerLine:find("appearance") or lowerLine:find("known")) then
+			for cur, maxVal in cleanLine:gmatch("(%d+)%s*[/of%-]%s*(%d+)") do
+				local numCur = tonumber(cur)
+				local numMax = tonumber(maxVal)
+				if numCur and numMax and numCur < numMax then
+					hasUnmetRequirement = true
+				end
+			end
+
+			-- Catch component list lines starting with 0 count
+			if cleanLine:match("^%s*[%*%-%s]*%s*0%s*[/of%-]") or cleanLine:match("%s0%s*[/of%-]") then
 				hasUnmetRequirement = true
 			end
-		end
-
-		-- Catch component list lines starting with 0 count
-		if cleanLine:match("^%s*[%*%-%s]*%s*0%s*[/of%-]") or cleanLine:match("%s0%s*[/of%-]") then
-			hasUnmetRequirement = true
 		end
 
 		-- Exclude standard stat/health/mana consumables and gear enchants
@@ -279,8 +282,8 @@ local function EvaluateItemTooltip(bag, slot, itemID, info)
 			hasUnmetRequirement = true
 		end
 
-		-- Compare required amounts in "Use:" text against total bag count
-		if cleanLine:find("Use:") or cleanLine:find("Använda:") then
+		-- Compare required amounts ONLY on explicit multi-item combination lines (e.g. "Combine 5 Fragments")
+		if lowerLine:find("combine %d+") or lowerLine:find("requires %d+") or lowerLine:find("need %d+") then
 			for reqCount in cleanLine:gmatch("(%d+)") do
 				local req = tonumber(reqCount)
 				if req and req > 1 and req > totalItemCount then
@@ -318,13 +321,27 @@ local function EvaluateItemTooltip(bag, slot, itemID, info)
 				or lowerLine:find("combine")
 				or lowerLine:find("assemble")
 				or lowerLine:find("reform")
+				or lowerLine:find("collect")
+				or lowerLine:find("teach")
+				or lowerLine:find("learn")
+				or lowerLine:find("add")
+				or lowerLine:find("summon")
+				or lowerLine:find("mount")
+				or lowerLine:find("companion")
+				or lowerLine:find("pet")
+				or lowerLine:find("toy")
 			then
 				isOpenableTriggerFound = true
 			end
 		end
 
 		if ITEM_SPELL_TRIGGER_ONUSE and cleanLine:find(ITEM_SPELL_TRIGGER_ONUSE, 1, true) then
-			if lowerLine:find("knowledge") or lowerLine:find("study") then
+			if
+				lowerLine:find("knowledge")
+				or lowerLine:find("study")
+				or lowerLine:find("mount")
+				or lowerLine:find("summon")
+			then
 				isOpenableTriggerFound = true
 			end
 		end
