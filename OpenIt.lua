@@ -86,12 +86,12 @@ local function RemoveFromBlacklist(itemID)
 	end
 end
 
--- Strip color codes and escape sequences from tooltip text
+-- Strip color codes, non-breaking spaces, and escape sequences from tooltip text
 local function CleanTooltipText(text)
 	if not text then
 		return ""
 	end
-	return text:gsub("|c%x%x%x%x%x%x%x%x", ""):gsub("|r", ""):gsub("|T.-|t", "")
+	return text:gsub("\194\160", " "):gsub("|c%x%x%x%x%x%x%x%x", ""):gsub("|r", ""):gsub("|T.-|t", "")
 end
 
 -- Check RGB values for red requirement warning colors
@@ -195,7 +195,7 @@ local function HasUnmetRequirements(bag, slot, itemID, info)
 		-- Deep scan argument colors and string/numeric values inside component lists
 		if lineData.args then
 			for _, arg in ipairs(lineData.args) do
-				if arg.color and IsRedColor(arg.color) then
+				if arg.color and type(arg.color) == "table" and IsRedColor(arg.color) then
 					return true
 				end
 				if arg.stringVal then
@@ -207,6 +207,9 @@ local function HasUnmetRequirements(bag, slot, itemID, info)
 				end
 			end
 		end
+
+		-- Replace UTF-8 non-breaking spaces with standard spaces before parsing
+		lineTextAccumulator = lineTextAccumulator:gsub("\194\160", " ")
 
 		-- Currency Overcap Protection
 		local currencyID = lineTextAccumulator:match("|Hcurrency:(%d+)")
@@ -228,7 +231,7 @@ local function HasUnmetRequirements(bag, slot, itemID, info)
 		local cleanLine = CleanTooltipText(lineTextAccumulator)
 		local lowerLine = cleanLine:lower()
 
-		-- Check fraction progress counters (e.g. "0/1" or "10/15")
+		-- Check fraction progress counters (e.g. "0 / 1" or "10/15")
 		for cur, maxVal in cleanLine:gmatch("(%d+)%s*/%s*(%d+)") do
 			local numCur = tonumber(cur)
 			local numMax = tonumber(maxVal)
