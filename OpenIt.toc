@@ -1,8 +1,8 @@
-## Interface: 120100, 120007, 120005
+## Interface: 120100, 120007
 ## Title: OpenIt |cff9966ff<dualityps>
 ## Notes: An easy way to open stuff that can be opened.
 ## Author: dualityps
-## Version: v1.2.4
+## Version: v1.3.5
 ## IconTexture: Interface\AddOns\OpenIt\Media\icon.tga
 ## SavedVariables: OpenItDB
 ## DefaultState: enabled
