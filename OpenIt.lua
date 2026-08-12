@@ -215,6 +215,17 @@ local function HasUnmetRequirements(bag, slot, itemID, info)
 		local combinedClean = cleanLeft .. " " .. cleanRight
 		local lowerClean = combinedClean:lower()
 
+		-- Exclude standard stat/health/mana consumables that bypass subclass checks
+		if
+			lowerClean:find("restores %d+ health")
+			or lowerClean:find("restores %d+ mana")
+			or lowerClean:find("must remain seated")
+			or lowerClean:find("permanently enchant")
+			or lowerClean:find("attaches an enchantment")
+		then
+			return true
+		end
+
 		-- Already Collected Mounts & Pets
 		if
 			lowerClean:find("already known")
@@ -267,9 +278,46 @@ local function FastCanBeOpenable(itemID, info)
 		return true
 	end
 
-	-- Check Item Class / Subclass to avoid tooltip building on trade goods, reagents, armor, etc.
-	local classID = select(12, C_Item.GetItemInfo(itemID))
+	local classID, subClassID = select(12, C_Item.GetItemInfo(itemID))
 	if classID then
+		-- Explicitly allow Blizzard's Container item class (Class 1)
+		if classID == Enum.ItemClass.Container then
+			return true
+		end
+
+		-- Filter out Consumable subclasses (Potions, Elixirs, Flasks, Scrolls, Food/Drink, Enchants, Bandages, etc.)
+		if classID == Enum.ItemClass.Consumable and subClassID then
+			local sub = Enum.ItemConsumableSubclass
+			if sub then
+				if
+					subClassID == sub.Potion
+					or subClassID == sub.Elixir
+					or subClassID == sub.Flask
+					or subClassID == sub.Scroll
+					or subClassID == sub.FoodAndDrink
+					or subClassID == sub.ItemEnhancement
+					or subClassID == sub.Bandage
+					or subClassID == sub.VantusRune
+					or subClassID == sub.Utility
+				then
+					return false
+				end
+			elseif
+				subClassID == 1
+				or subClassID == 2
+				or subClassID == 3
+				or subClassID == 4
+				or subClassID == 5
+				or subClassID == 6
+				or subClassID == 7
+				or subClassID == 9
+				or subClassID == 10
+			then
+				return false
+			end
+		end
+
+		-- Skip non-container categories
 		if
 			classID == Enum.ItemClass.Tradegoods
 			or classID == Enum.ItemClass.Armor
@@ -278,7 +326,9 @@ local function FastCanBeOpenable(itemID, info)
 			or classID == Enum.ItemClass.Gem
 			or classID == Enum.ItemClass.ItemEnhancement
 		then
-			return false
+			if not (subClassID and subClassID == Enum.ItemMiscellaneousSubclass.Junk) then
+				return false
+			end
 		end
 	end
 
