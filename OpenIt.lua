@@ -331,9 +331,13 @@ button:SetBackdrop({
 })
 button:SetBackdropBorderColor(0.6, 0.4, 1.0, 1)
 
--- Drag handling (Respects isLocked setting)
+-- Drag handling (Respects isLocked setting & clears secure attributes during drag)
 button:SetScript("OnDragStart", function(_)
 	if not InCombatLockdown() and not OpenItDB.isLocked then
+		button:SetAttribute("type", nil)
+		button:SetAttribute("macrotext", nil)
+		button:SetAttribute("type1", nil)
+		button:SetAttribute("macrotext1", nil)
 		button:StartMoving()
 	end
 end)
@@ -347,6 +351,7 @@ button:SetScript("OnDragStop", function(_)
 		x = x,
 		y = y,
 	}
+	addon:Update()
 end)
 
 -- Refresh tooltip live when hovering or when bag contents change
