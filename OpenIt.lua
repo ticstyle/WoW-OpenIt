@@ -604,7 +604,7 @@ local function CreateOptionsPanel()
                 row.name:SetText("Item #" .. itemID .. " |cff888888(ID: " .. itemID .. ")|r")
             end
 
-5            row.deleteBtn:SetScript("OnClick", function()
+            row.deleteBtn:SetScript("OnClick", function()
                 RemoveFromBlacklist(itemID)
                 PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF or 857)
                 panel:RefreshList()
