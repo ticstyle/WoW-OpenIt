@@ -257,34 +257,91 @@ end
 -------------------------------------------------------------------------------
 
 local function FastCanBeOpenable(itemID, info)
-	-- Instant lookup for known openable items
-	if addon.knownItems and addon.knownItems[itemID] then
-		return true
-	end
+    -- Instant lookup for known openable items
+    if addon.knownItems and addon.knownItems[itemID] then
+        return true
+    end
 
-	-- Engine container loot flag
-	if info and info.hasLoot then
-		return true
-	end
+    -- Engine container loot flag
+    if info and info.hasLoot then
+        return true
+    end
 
-	-- Check Item Class / Subclass to avoid tooltip building on trade goods, reagents, armor, etc.
-	local classID = select(12, C_Item.GetItemInfo(itemID))
-	if classID then
-		if
-			classID == Enum.ItemClass.Tradegoods
-			or classID == Enum.ItemClass.Armor
-			or classID == Enum.ItemClass.Weapon
-			or classID == Enum.ItemClass.Recipe
-			or classID == Enum.ItemClass.Gem
-			or classID == Enum.ItemClass.ItemEnhancement
-		then
-			return false
-		end
-	end
+    local classID, subClassID = select(12, C_Item.GetItemInfo(itemID))
+    if classID then
+        -- Explicitly allow Blizzard's Container item class (Class 1)
+        if classID == Enum.ItemClass.Container then
+            return true
+        end
 
-	-- Verify item has an associated spell cast action before tooltip inspection
-	local _, spellID = C_Item.GetItemSpell(itemID)
-	return spellID ~= nil
+        -- Skip non-container categories
+        if classID == Enum.ItemClass.Tradegoods
+            or classID == Enum.ItemClass.Armor
+            or classID == Enum.ItemClass.Weapon
+            or classID == Enum.ItemClass.Recipe
+            or classID == Enum.ItemClass.Gem
+            or classID == Enum.ItemClass.ItemEnhancement
+        then
+            -- Allow lockboxes living under Miscellaneous / Junk subclasses
+            if not (subClassID and subClassID == Enum.ItemMiscellaneousSubclass.Junk) then
+                return false
+            end
+        end
+    end
+
+    -- Verify item has an associated spell cast action or spell name
+    local spellName, spellID = C_Item.GetItemSpell(itemID)
+    if spellName then
+        local lowerSpell = spellName:lower()
+        if lowerSpell:find("open") or lowerSpell:find("unpack") or stroke or lowerSpell:find("combine") or lowerClean:find("assemble") then
+            return true
+        end
+    end
+
+    return spellID ~= nil
+end
+
+-------------------------------------------------------------------------------
+-- Expanded Tooltip & Keyword Inspection
+-------------------------------------------------------------------------------
+
+-- Extended action verbs used by Blizzard for openable/combinable items
+local openableVerbs = {
+    "right click to open",
+    "right click to combine",
+    "right click to assemble",
+    "right click to extract",
+    "right click to merge",
+    "right click to unwrap",
+    "right click to unpack",
+    "click to open",
+    "click to combine",
+    "click to assemble",
+    "<right click to open>",
+    "<right click to combine>",
+}
+
+local function ContainsOpenableKeyword(cleanText)
+    local lowerText = cleanText:lower()
+
+    -- Check global engine strings first
+    if ITEM_OPENABLE and cleanText:find(ITEM_OPENABLE, 1, true) then
+        return true
+    end
+
+    -- Check expanded action verb list
+    for _, verb in ipairs(openableVerbs) do
+        if lowerText:find(verb, 1, true) then
+            return true
+        end
+    end
+
+    -- Check for generic "Use:" spell triggers
+    if ITEM_SPELL_TRIGGER_ONUSE and cleanText:find(ITEM_SPELL_TRIGGER_ONUSE, 1, true) then
+        return true
+    end
+
+    return false
 end
 
 -------------------------------------------------------------------------------
