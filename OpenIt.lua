@@ -1,7 +1,7 @@
 -- OpenIt.lua
 -- https://github.com/ticstyle/WoW-OpenIt
 
--- luacheck: globals OpenItDB CreateFrame UIParent C_Container C_Item C_TooltipInfo
+-- luacheck: globals OpenItDB CreateFrame UIParent C_Container C_Item C_TooltipInfo ItemLocation
 -- luacheck: globals C_ToyBox C_QuestLog C_CurrencyInfo Settings InCombatLockdown
 -- luacheck: globals IsShiftKeyDown GameTooltip GameTooltip_Hide SlashCmdList SLASH_OPENIT1
 -- luacheck: globals Enum time pairs ipairs table math print _G ITEM_OPENABLE
@@ -9,6 +9,10 @@
 
 local addonName, addon = ...
 addon.frame = CreateFrame("Frame")
+
+-- Hidden tooltip scanner frame to capture dynamically processed tooltip lines
+local scanner = CreateFrame("GameTooltip", "OpenItScannerTooltip", nil, "GameTooltipTemplate")
+scanner:SetOwner(UIParent, "ANCHOR_NONE")
 
 -- Local state variables
 local currentItem = nil
@@ -143,14 +147,25 @@ local function ContainsRedColorCode(text)
 end
 
 -------------------------------------------------------------------------------
--- Single-Pass Tooltip Evaluator
+-- Single-Pass Live Tooltip Evaluator
 -------------------------------------------------------------------------------
 
 local function EvaluateItemTooltip(bag, slot, itemID, info)
-	-- Check Cooldowns
+	-- Check Engine Cooldowns
 	local _, duration = C_Container.GetContainerItemCooldown(bag, slot)
 	if duration and duration > 1.5 then
 		return false
+	end
+
+	-- Check Item Location Usability via Engine
+	if ItemLocation and ItemLocation.CreateFromBagAndSlot and C_Item and C_Item.IsUsableItem then
+		local itemLoc = ItemLocation:CreateFromBagAndSlot(bag, slot)
+		if itemLoc and itemLoc:IsValid() then
+			local isUsable, noMana = C_Item.IsUsableItem(itemLoc)
+			if not isUsable and not noMana then
+				return false
+			end
+		end
 	end
 
 	-- Check Minimum Quality Threshold
@@ -176,12 +191,12 @@ local function EvaluateItemTooltip(bag, slot, itemID, info)
 		end
 	end
 
-	if not C_TooltipInfo or not C_TooltipInfo.GetBagItem then
-		return false
-	end
+	-- Render Hidden Scanner Tooltip
+	scanner:ClearLines()
+	scanner:SetBagItem(bag, slot)
 
-	local tooltipData = C_TooltipInfo.GetBagItem(bag, slot)
-	if not tooltipData or not tooltipData.lines or #tooltipData.lines == 0 then
+	local numLines = scanner:NumLines()
+	if numLines == 0 then
 		C_Item.RequestLoadItemDataByID(itemID)
 		return false
 	end
@@ -192,46 +207,38 @@ local function EvaluateItemTooltip(bag, slot, itemID, info)
 	local hasUnmetRequirement = false
 	local isOpenableTriggerFound = false
 
-	for _, lineData in ipairs(tooltipData.lines) do
-		local left = lineData.leftText or ""
-		local right = lineData.rightText or ""
+	for i = 1, numLines do
+		local leftFontString = _G["OpenItScannerTooltipTextLeft" .. i]
+		local rightFontString = _G["OpenItScannerTooltipTextRight" .. i]
 
-		-- Direct line color check
-		if
-			(lineData.leftColor and IsRedColor(lineData.leftColor))
-			or (lineData.rightColor and IsRedColor(lineData.rightColor))
-		then
-			hasUnmetRequirement = true
-		end
+		local leftText = leftFontString and leftFontString:GetText() or ""
+		local rightText = rightFontString and rightFontString:GetText() or ""
 
-		-- Check formatted hex color codes directly on raw left/right strings
-		if ContainsRedColorCode(left) or ContainsRedColorCode(right) then
-			hasUnmetRequirement = true
-		end
-
-		local lineTextAccumulator = left .. " " .. right
-
-		-- Deep scan argument colors and string/numeric values inside component lists
-		if lineData.args then
-			for _, arg in ipairs(lineData.args) do
-				if arg.color and IsRedColor(arg.color) then
-					hasUnmetRequirement = true
-				end
-				if arg.stringVal then
-					lineTextAccumulator = lineTextAccumulator .. " " .. tostring(arg.stringVal)
-				elseif arg.intVal then
-					lineTextAccumulator = lineTextAccumulator .. " " .. tostring(arg.intVal)
-				elseif arg.floatVal then
-					lineTextAccumulator = lineTextAccumulator .. " " .. tostring(arg.floatVal)
-				end
+		-- Direct FontString Text Color Inspection
+		if leftFontString and leftFontString:IsShown() then
+			local r, g, b = leftFontString:GetTextColor()
+			if IsRedColor(r, g, b) then
+				hasUnmetRequirement = true
 			end
 		end
 
-		-- Clean non-breaking spaces before pattern checking
-		lineTextAccumulator = lineTextAccumulator:gsub("\194\160", " "):gsub("\160", " ")
+		if rightFontString and rightFontString:IsShown() then
+			local r, g, b = rightFontString:GetTextColor()
+			if IsRedColor(r, g, b) then
+				hasUnmetRequirement = true
+			end
+		end
+
+		local rawLineText = leftText .. " " .. rightText
+		rawLineText = rawLineText:gsub("\194\160", " "):gsub("\160", " ")
+
+		-- Check Inline Red Color Codes
+		if ContainsRedColorCode(rawLineText) then
+			hasUnmetRequirement = true
+		end
 
 		-- Currency Overcap Protection
-		local currencyID = lineTextAccumulator:match("|Hcurrency:(%d+)")
+		local currencyID = rawLineText:match("|Hcurrency:(%d+)")
 		if currencyID then
 			local cID = tonumber(currencyID)
 			if cID and C_CurrencyInfo and C_CurrencyInfo.GetCurrencyInfo then
@@ -242,12 +249,7 @@ local function EvaluateItemTooltip(bag, slot, itemID, info)
 			end
 		end
 
-		-- Red Color Warnings in accumulated strings
-		if ContainsRedColorCode(lineTextAccumulator) then
-			hasUnmetRequirement = true
-		end
-
-		local cleanLine = CleanTooltipText(lineTextAccumulator)
+		local cleanLine = CleanTooltipText(rawLineText)
 		local lowerLine = cleanLine:lower()
 
 		-- Check fraction progress counters (e.g. "0 / 1", "0/1", "0 of 1")
@@ -259,12 +261,12 @@ local function EvaluateItemTooltip(bag, slot, itemID, info)
 			end
 		end
 
-		-- Catch component list items starting with 0 count
+		-- Catch bulleted component lines starting with 0 count
 		if cleanLine:match("^%s*[%*%-%s]*%s*0%s*[/of%-]") or cleanLine:match("%s0%s*[/of%-]") then
 			hasUnmetRequirement = true
 		end
 
-		-- Exclude standard stat/health/mana consumables and gear enchants
+		-- Exclude non-container consumables, gear enchants, and readable books
 		if
 			lowerLine:find("restores %d+ health")
 			or lowerLine:find("restores %d+ mana")
@@ -384,17 +386,17 @@ local function IsItemOpenable(bag, slot, info)
 		return false
 	end
 
-	-- Skip permanently/hardcoded blacklisted items (Data/Blacklist.lua)
+	-- Fast Check 1: Skip permanently/hardcoded blacklisted items (Data/Blacklist.lua)
 	if addon.hardcodedBlacklist and addon.hardcodedBlacklist[itemID] then
 		return false
 	end
 
-	-- Skip user-blacklisted items
+	-- Fast Check 2: Skip user-blacklisted items
 	if IsBlacklisted(itemID) then
 		return false
 	end
 
-	-- Skip snoozed items until timer expires
+	-- Fast Check 3: Skip snoozed items until timer expires
 	local snoozeUntil = OpenItDB.snoozed[itemID]
 	if snoozeUntil then
 		if time() < snoozeUntil then
@@ -404,7 +406,7 @@ local function IsItemOpenable(bag, slot, info)
 		end
 	end
 
-	-- Never trigger on equippable gear with "Use:" effects
+	-- Fast Check 4: Never trigger on equippable gear with "Use:" effects
 	if C_Item.IsEquippableItem(itemID) then
 		return false
 	end
@@ -414,7 +416,7 @@ local function IsItemOpenable(bag, slot, info)
 		return false
 	end
 
-	-- Single-pass tooltip evaluation
+	-- Single-pass live tooltip evaluation
 	return EvaluateItemTooltip(bag, slot, itemID, info)
 end
 
@@ -884,6 +886,8 @@ end
 addon.frame:RegisterEvent("ADDON_LOADED")
 addon.frame:RegisterEvent("BAG_UPDATE_DELAYED")
 addon.frame:RegisterEvent("PLAYER_REGEN_ENABLED")
+addon.frame:RegisterEvent("GET_ITEM_INFO_RECEIVED")
+addon.frame:RegisterEvent("ITEM_DATA_LOAD_RESULT")
 
 addon.frame:SetScript("OnEvent", function(_, event, arg1)
 	if event == "ADDON_LOADED" and arg1 == addonName then
@@ -900,7 +904,10 @@ addon.frame:SetScript("OnEvent", function(_, event, arg1)
 		RestorePosition()
 		CreateOptionsPanel()
 		addon:Update()
-	elseif event == "BAG_UPDATE_DELAYED" then
+	elseif event == "BAG_UPDATE_DELAYED" or event == "GET_ITEM_INFO_RECEIVED" or event == "ITEM_DATA_LOAD_RESULT" then
+		if addon.optionsFrame and addon.optionsFrame.RefreshList and addon.optionsFrame:IsShown() then
+			addon.optionsFrame:RefreshList()
+		end
 		addon:Update()
 	elseif event == "PLAYER_REGEN_ENABLED" then
 		if addon.pendingUpdate then
