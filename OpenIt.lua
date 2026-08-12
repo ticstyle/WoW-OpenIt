@@ -86,321 +86,11 @@ local function RemoveFromBlacklist(itemID)
 	end
 end
 
--- Strip color codes, non-breaking spaces, and escape sequences from tooltip text
-local function CleanTooltipText(text)
-	if not text then
-		return ""
-	end
-	return text:gsub("\194\160", " ")
-		:gsub("\160", " ")
-		:gsub("|[cC]%x%x%x%x%x%x%x%x", "")
-		:gsub("|[cC]%x%x%x%x%x%x", "")
-		:gsub("|r", "")
-		:gsub("|T.-|t", "")
-end
-
--- Check RGB values for red requirement warning colors
-local function IsRedColor(r, g, b)
-	if type(r) == "table" or type(r) == "userdata" then
-		local colorObj = r
-		if colorObj.GetRGB then
-			r, g, b = colorObj:GetRGB()
-		elseif colorObj.r and colorObj.g and colorObj.b then
-			r, g, b = colorObj.r, colorObj.g, colorObj.b
-		else
-			return false
-		end
-	end
-
-	if not r or not g or not b then
-		return false
-	end
-
-	-- Normalize 0-255 integer ranges if present
-	if r > 1 or g > 1 or b > 1 then
-		r = r / 255
-		g = g / 255
-		b = b / 255
-	end
-
-	-- Red channel must be dominant over green and blue
-	return (r > 0.45 and (r - g) > 0.15 and (r - b) > 0.15)
-end
-
--- Parse 6-digit and 8-digit hex color codes for red requirement warnings
-local function ContainsRedColorCode(text)
-	if not text or text == "" then
-		return false
-	end
-	for hex in text:gmatch("|[cC](%x+)") do
-		local r, g, b
-		if #hex == 8 then
-			-- Format: AARRGGBB
-			r = tonumber(hex:sub(3, 4), 16)
-			g = tonumber(hex:sub(5, 6), 16)
-			b = tonumber(hex:sub(7, 8), 16)
-		elseif #hex >= 6 then
-			-- Format: RRGGBB
-			r = tonumber(hex:sub(1, 2), 16)
-			g = tonumber(hex:sub(3, 4), 16)
-			b = tonumber(hex:sub(5, 6), 16)
-		end
-		if r and g and b and IsRedColor(r / 255, g / 255, b / 255) then
-			return true
-		end
-	end
-	return false
-end
-
--------------------------------------------------------------------------------
--- Fast Single-Pass Tooltip Evaluator
--------------------------------------------------------------------------------
-
-local function EvaluateItemTooltip(bag, slot, itemID, info)
-	-- Check Cooldowns
-	local _, duration = C_Container.GetContainerItemCooldown(bag, slot)
-	if duration and duration > 1.5 then
-		return false
-	end
-
-	-- Check Minimum Quality Threshold
-	local quality = (info and info.quality) or select(3, C_Item.GetItemInfo(itemID))
-	local minQuality = OpenItDB.minQuality or 0
-	if quality and quality < minQuality then
-		return false
-	end
-
-	-- Check Already Collected Toys
-	if C_ToyBox and C_ToyBox.IsToyCollected and C_ToyBox.IsToyCollected(itemID) then
-		return false
-	end
-
-	-- Check Quest Start Items (Completed or Active in Log)
-	local questID = (C_Item and C_Item.GetItemQuestMetaData) and C_Item.GetItemQuestMetaData(itemID)
-	if questID then
-		if
-			(C_QuestLog.IsQuestFlaggedCompleted and C_QuestLog.IsQuestFlaggedCompleted(questID))
-			or (C_QuestLog.GetLogIndexForQuestID and C_QuestLog.GetLogIndexForQuestID(questID))
-		then
-			return false
-		end
-	end
-
-	if not C_TooltipInfo or not C_TooltipInfo.GetBagItem then
-		return false
-	end
-
-	local tooltipData = C_TooltipInfo.GetBagItem(bag, slot)
-	if not tooltipData or not tooltipData.lines or #tooltipData.lines == 0 then
-		return false
-	end
-
-	local totalItemCount = (C_Item and C_Item.GetItemCount) and C_Item.GetItemCount(itemID)
-		or (info and info.stackCount)
-		or 1
-	local hasUnmetRequirement = false
-	local isOpenableTriggerFound = false
-
-	for _, lineData in ipairs(tooltipData.lines) do
-		local left = lineData.leftText or ""
-		local right = lineData.rightText or ""
-
-		-- Direct line color check
-		if
-			(lineData.leftColor and IsRedColor(lineData.leftColor))
-			or (lineData.rightColor and IsRedColor(lineData.rightColor))
-		then
-			hasUnmetRequirement = true
-		end
-
-		-- Check formatted hex color codes directly on raw left/right strings
-		if ContainsRedColorCode(left) or ContainsRedColorCode(right) then
-			hasUnmetRequirement = true
-		end
-
-		local lineTextAccumulator = left .. " " .. right
-
-		-- Deep scan argument colors and string/numeric values inside component lists
-		if lineData.args then
-			for _, arg in ipairs(lineData.args) do
-				if arg.color and IsRedColor(arg.color) then
-					hasUnmetRequirement = true
-				end
-				if arg.stringVal then
-					lineTextAccumulator = lineTextAccumulator .. " " .. tostring(arg.stringVal)
-				elseif arg.intVal then
-					lineTextAccumulator = lineTextAccumulator .. " " .. tostring(arg.intVal)
-				elseif arg.floatVal then
-					lineTextAccumulator = lineTextAccumulator .. " " .. tostring(arg.floatVal)
-				end
-			end
-		end
-
-		-- Clean non-breaking spaces before pattern checking
-		lineTextAccumulator = lineTextAccumulator:gsub("\194\160", " "):gsub("\160", " ")
-
-		-- Currency Overcap Protection
-		local currencyID = lineTextAccumulator:match("|Hcurrency:(%d+)")
-		if currencyID then
-			local cID = tonumber(currencyID)
-			if cID and C_CurrencyInfo and C_CurrencyInfo.GetCurrencyInfo then
-				local cInfo = C_CurrencyInfo.GetCurrencyInfo(cID)
-				if cInfo and cInfo.maxQuantity and cInfo.maxQuantity > 0 and (cInfo.quantity >= cInfo.maxQuantity) then
-					hasUnmetRequirement = true
-				end
-			end
-		end
-
-		-- Red Color Warnings in accumulated strings
-		if ContainsRedColorCode(lineTextAccumulator) then
-			hasUnmetRequirement = true
-		end
-
-		local cleanLine = CleanTooltipText(lineTextAccumulator)
-		local lowerLine = cleanLine:lower()
-
-		-- Check fraction progress counters (e.g. "0 / 1", "0/1", "0 of 1")
-		-- Exclude collection state lines (e.g. "Collected Appearances 0/7")
-		if not (lowerLine:find("collected") or lowerLine:find("appearance") or lowerLine:find("known")) then
-			for cur, maxVal in cleanLine:gmatch("(%d+)%s*[/of%-]%s*(%d+)") do
-				local numCur = tonumber(cur)
-				local numMax = tonumber(maxVal)
-				if numCur and numMax and numCur < numMax then
-					hasUnmetRequirement = true
-				end
-			end
-
-			-- Catch component list lines starting with 0 count
-			if cleanLine:match("^%s*[%*%-%s]*%s*0%s*[/of%-]") or cleanLine:match("%s0%s*[/of%-]") then
-				hasUnmetRequirement = true
-			end
-		end
-
-		-- Exclude standard stat/health/mana consumables and gear enchants
-		if
-			lowerLine:find("restores %d+ health")
-			or lowerLine:find("restores %d+ mana")
-			or lowerLine:find("must remain seated")
-			or lowerLine:find("permanently enchant")
-			or lowerLine:find("attaches an enchantment")
-			or lowerLine:find("already known")
-			or lowerLine:find("already collected")
-			or lowerLine:find("<already known>")
-			or lowerLine:find("right click to read")
-			or lowerLine:find("<right click to read>")
-		then
-			hasUnmetRequirement = true
-		end
-
-		-- Compare required amounts ONLY on explicit multi-item combination lines
-		if lowerLine:find("combine %d+") or lowerLine:find("requires %d+") or lowerLine:find("need %d+") then
-			for reqCount in cleanLine:gmatch("(%d+)") do
-				local req = tonumber(reqCount)
-				if req and req > 1 and req > totalItemCount then
-					hasUnmetRequirement = true
-				end
-			end
-		end
-
-		-- Evaluate Openable / Usable Triggers
-		if ITEM_OPENABLE and cleanLine:find(ITEM_OPENABLE, 1, true) then
-			isOpenableTriggerFound = true
-		end
-
-		if lowerLine:find("right click") or cleanLine:find("<Right Click") then
-			if
-				lowerLine:find("open")
-				or lowerLine:find("combine")
-				or lowerLine:find("assemble")
-				or lowerLine:find("use")
-				or lowerLine:find("extract")
-				or lowerLine:find("unwrap")
-			then
-				isOpenableTriggerFound = true
-			end
-		end
-
-		if cleanLine:find("Use:") or cleanLine:find("Använda:") then
-			if
-				lowerLine:find("study to increase")
-				or lowerLine:find("knowledge")
-				or lowerLine:find("grant")
-				or lowerLine:find("receive")
-				or lowerLine:find("obtain")
-				or lowerLine:find("open")
-				or lowerLine:find("combine")
-				or lowerLine:find("assemble")
-				or lowerLine:find("reform")
-				or lowerLine:find("collect")
-				or lowerLine:find("teach")
-				or lowerLine:find("learn")
-				or lowerLine:find("add")
-				or lowerLine:find("summon")
-				or lowerLine:find("mount")
-				or lowerLine:find("companion")
-				or lowerLine:find("pet")
-				or lowerLine:find("toy")
-			then
-				isOpenableTriggerFound = true
-			end
-		end
-
-		if ITEM_SPELL_TRIGGER_ONUSE and cleanLine:find(ITEM_SPELL_TRIGGER_ONUSE, 1, true) then
-			if
-				lowerLine:find("knowledge")
-				or lowerLine:find("study")
-				or lowerLine:find("mount")
-				or lowerLine:find("summon")
-			then
-				isOpenableTriggerFound = true
-			end
-		end
-	end
-
-	-- Reject immediately if any requirement is unmet
-	if hasUnmetRequirement then
-		return false
-	end
-
-	return isOpenableTriggerFound
-end
-
--------------------------------------------------------------------------------
--- Fast Pre-Filter Logic
--------------------------------------------------------------------------------
-
-local function FastCanBeOpenable(itemID, info)
-	-- Instant lookup for known openable items
-	if addon.knownItems and addon.knownItems[itemID] then
-		return true
-	end
-
-	-- Engine container loot flag
-	if info and info.hasLoot then
-		return true
-	end
-
-	-- Filter out equippable gear, armor, weapons, and gems
-	local classID = select(12, C_Item.GetItemInfo(itemID))
-	if classID then
-		if
-			classID == Enum.ItemClass.Armor
-			or classID == Enum.ItemClass.Weapon
-			or classID == Enum.ItemClass.Recipe
-			or classID == Enum.ItemClass.Gem
-		then
-			return false
-		end
-	end
-
-	return true
-end
-
 -------------------------------------------------------------------------------
 -- Item Detection Core Logic
 -------------------------------------------------------------------------------
 
--- Determine if an item in bags can be opened or used as a container
+-- Determine if an item in bags can be opened or used
 local function IsItemOpenable(bag, slot, info)
 	if not info or not info.itemID then
 		return false
@@ -436,13 +126,92 @@ local function IsItemOpenable(bag, slot, info)
 		return false
 	end
 
-	-- Pre-filter non-usable item classes
-	if not FastCanBeOpenable(itemID, info) then
+	-- Check Minimum Quality Threshold
+	local quality = (info and info.quality) or select(3, C_Item.GetItemInfo(itemID))
+	local minQuality = OpenItDB.minQuality or 0
+	if quality and quality < minQuality then
 		return false
 	end
 
-	-- Single-pass tooltip evaluation
-	return EvaluateItemTooltip(bag, slot, itemID, info)
+	-- Check Cooldowns
+	local _, duration = C_Container.GetContainerItemCooldown(bag, slot)
+	if duration and duration > 1.5 then
+		return false
+	end
+
+	-- Check Already Collected Toys
+	if C_ToyBox and C_ToyBox.IsToyCollected and C_ToyBox.IsToyCollected(itemID) then
+		return false
+	end
+
+	-- Check Quest Start Items (Completed or Active in Log)
+	local questID = (C_Item and C_Item.GetItemQuestMetaData) and C_Item.GetItemQuestMetaData(itemID)
+	if questID then
+		if
+			(C_QuestLog.IsQuestFlaggedCompleted and C_QuestLog.IsQuestFlaggedCompleted(questID))
+			or (C_QuestLog.GetLogIndexForQuestID and C_QuestLog.GetLogIndexForQuestID(questID))
+		then
+			return false
+		end
+	end
+
+	-- Instant lookup for known openable items
+	if addon.knownItems and addon.knownItems[itemID] then
+		return true
+	end
+
+	-- Engine container loot flag
+	if info and info.hasLoot then
+		return true
+	end
+
+	-- Filter out obvious non-openable item classes
+	local classID = select(12, C_Item.GetItemInfo(itemID))
+	if classID then
+		if
+			classID == Enum.ItemClass.Armor
+			or classID == Enum.ItemClass.Weapon
+			or classID == Enum.ItemClass.Recipe
+			or classID == Enum.ItemClass.Gem
+		then
+			return false
+		end
+	end
+
+	-- Verify item has an associated spell or use action
+	local spellName, spellID = C_Item.GetItemSpell(itemID)
+	if not spellID then
+		return false
+	end
+
+	-- Allow knowledge items, chisels, mounts, pouches, and containers explicitly
+	if spellName then
+		local lowerSpell = spellName:lower()
+		if
+			lowerSpell:find("open")
+			or lowerSpell:find("study")
+			or lowerSpell:find("knowledge")
+			or lowerSpell:find("combine")
+			or lowerSpell:find("assemble")
+			or lowerSpell:find("extract")
+			or lowerSpell:find("unwrap")
+			or lowerSpell:find("teach")
+			or lowerSpell:find("summon")
+		then
+			return true
+		end
+	end
+
+	-- Fallback for standard container classes and miscellaneous items with spells
+	if
+		classID == Enum.ItemClass.Container
+		or classID == Enum.ItemClass.Miscellaneous
+		or classID == Enum.ItemClass.Quest
+	then
+		return true
+	end
+
+	return false
 end
 
 -- Scan player inventory for the first openable item
