@@ -86,19 +86,6 @@ local function RemoveFromBlacklist(itemID)
 	end
 end
 
--- Strip color codes and escape sequences
-local function CleanTooltipText(text)
-	if not text then
-		return ""
-	end
-	return text:gsub("\194\160", " ")
-		:gsub("\160", " ")
-		:gsub("|[cC]%x%x%x%x%x%x%x%x", "")
-		:gsub("|[cC]%x%x%x%x%x%x", "")
-		:gsub("|r", "")
-		:gsub("|T.-|t", "")
-end
-
 -- Check RGB values for red requirement warning colors
 local function IsRedColor(r, g, b)
 	if type(r) == "table" or type(r) == "userdata" then
@@ -153,10 +140,8 @@ local function HasUnmetRequirements(bag, slot)
 
 		local combined = (left .. " " .. right):lower()
 
-		-- Allow collection/appearance progress (e.g. "0/7 collected")
-		if combined:find("collected") or combined:find("appearance") or combined:find("known") then
-			-- Skip requirement block for collections
-		else
+		-- Skip requirement block for collection/appearance progress (e.g. "0/7 collected")
+		if not (combined:find("collected") or combined:find("appearance") or combined:find("known")) then
 			-- Check for missing crafting/combination reagents (e.g. "0/1")
 			for cur, maxVal in combined:gmatch("(%d+)%s*[/of%-]%s*(%d+)") do
 				local numCur = tonumber(cur)
