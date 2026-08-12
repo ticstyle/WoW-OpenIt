@@ -2,7 +2,7 @@
 ## Title: OpenIt |cff9966ff<dualityps>
 ## Notes: An easy way to open stuff that can be opened.
 ## Author: dualityps
-## Version: 1.0.3
+## Version: 1.0.4
 ## IconTexture: Interface\AddOns\OpenIt\Media\icon.tga
 ## SavedVariables: OpenItDB
 ## DefaultState: enabled
