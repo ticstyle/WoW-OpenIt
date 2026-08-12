@@ -13,6 +13,7 @@ addon.frame = CreateFrame("Frame")
 -- Local state variables
 local currentItem = nil
 local optionsCategory = nil
+local isProcessingClick = false
 
 -- Default configuration structure
 local defaultDB = {
@@ -86,6 +87,90 @@ local function RemoveFromBlacklist(itemID)
 	end
 end
 
+-- Check RGB values for red requirement warning colors
+local function IsRedColor(r, g, b)
+	if type(r) == "table" or type(r) == "userdata" then
+		local colorObj = r
+		if colorObj.GetRGB then
+			r, g, b = colorObj:GetRGB()
+		elseif colorObj.r and colorObj.g and colorObj.b then
+			r, g, b = colorObj.r, colorObj.g, colorObj.b
+		else
+			return false
+		end
+	end
+
+	if not r or not g or not b then
+		return false
+	end
+
+	if r > 1 or g > 1 or b > 1 then
+		r = r / 255
+		g = g / 255
+		b = b / 255
+	end
+
+	return (r > 0.45 and (r - g) > 0.15 and (r - b) > 0.15)
+end
+
+-- Parse hex color codes for red requirement warnings
+local function ContainsRedColorCode(text)
+	if not text or text == "" then
+		return false
+	end
+	for hex in text:gmatch("|[cC](%x+)") do
+		local r, g, b
+		if #hex == 8 then
+			r = tonumber(hex:sub(3, 4), 16)
+			g = tonumber(hex:sub(5, 6), 16)
+			b = tonumber(hex:sub(7, 8), 16)
+		elseif #hex >= 6 then
+			r = tonumber(hex:sub(1, 2), 16)
+			g = tonumber(hex:sub(3, 4), 16)
+			b = tonumber(hex:sub(5, 6), 16)
+		end
+		if r and g and b and IsRedColor(r / 255, g / 255, b / 255) then
+			return true
+		end
+	end
+	return false
+end
+
+-------------------------------------------------------------------------------
+-- Dynamic Tooltip Requirement Evaluator
+-------------------------------------------------------------------------------
+
+local function HasUnmetRequirements(bag, slot)
+	if not C_TooltipInfo or not C_TooltipInfo.GetBagItem then
+		return false
+	end
+
+	local tooltipData = C_TooltipInfo.GetBagItem(bag, slot)
+	if not tooltipData or not tooltipData.lines then
+		return false
+	end
+
+	for _, lineData in ipairs(tooltipData.lines) do
+		local left = lineData.leftText or ""
+		local right = lineData.rightText or ""
+
+		-- Direct color check on line text structure
+		if
+			(lineData.leftColor and IsRedColor(lineData.leftColor))
+			or (lineData.rightColor and IsRedColor(lineData.rightColor))
+		then
+			return true
+		end
+
+		-- Check inline hex color codes for red requirement warnings
+		if ContainsRedColorCode(left) or ContainsRedColorCode(right) then
+			return true
+		end
+	end
+
+	return false
+end
+
 -------------------------------------------------------------------------------
 -- Item Detection Core Logic (Registry & Engine Driven)
 -------------------------------------------------------------------------------
@@ -155,17 +240,20 @@ local function IsItemOpenable(bag, slot, info)
 		end
 	end
 
-	-- Tier 1: Check curated known items list (Data/Items.lua)
-	if addon.knownItems and addon.knownItems[itemID] then
-		return true
+	-- Check if item is in our known database OR flagged as engine loot
+	local isKnown = addon.knownItems and addon.knownItems[itemID]
+	local isLootContainer = info.hasLoot
+
+	if not isKnown and not isLootContainer then
+		return false
 	end
 
-	-- Tier 2: Native engine container / loot flag
-	if info.hasLoot then
-		return true
+	-- Dynamically check if the player has unmet profession/level requirements
+	if HasUnmetRequirements(bag, slot) then
+		return false
 	end
 
-	return false
+	return true
 end
 
 -- Scan player inventory for the first openable item
@@ -283,36 +371,38 @@ local function RefreshTooltip(self)
 	end
 end
 
--- Handle Right-Click (Snooze) and Shift + Right-Click (Blacklist) using PostClick to prevent double triggers
-button:SetScript("PostClick", function(_, btn)
-	if btn ~= "RightButton" or not currentItem then
+-- Handle Right-Click (Snooze) and Shift + Right-Click (Blacklist) securely on PreClick to prevent double firing
+button:SetScript("PreClick", function(_, btn)
+	if btn ~= "RightButton" or not currentItem or isProcessingClick then
 		return
 	end
+
+	isProcessingClick = true
 
 	local itemID = tonumber(currentItem.itemID)
-	if not itemID then
-		return
-	end
+	if itemID then
+		local itemName = C_Item.GetItemInfo(itemID) or currentItem.hyperlink or ("Item #" .. itemID)
 
-	local itemName = C_Item.GetItemInfo(itemID) or currentItem.hyperlink or ("Item #" .. itemID)
-
-	if IsShiftKeyDown() then
-		if not IsBlacklisted(itemID) then
-			AddToBlacklist(itemID)
-			PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF or 857)
-			addon:Print("Blacklisted " .. itemName .. " (ID: " .. itemID .. ")")
-			if addon.optionsFrame and addon.optionsFrame.RefreshList and addon.optionsFrame:IsShown() then
-				addon.optionsFrame:RefreshList()
+		if IsShiftKeyDown() then
+			if not IsBlacklisted(itemID) then
+				AddToBlacklist(itemID)
+				PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF or 857)
+				addon:Print("Blacklisted " .. itemName .. " (ID: " .. itemID .. ")")
+				if addon.optionsFrame and addon.optionsFrame.RefreshList and addon.optionsFrame:IsShown() then
+					addon.optionsFrame:RefreshList()
+				end
 			end
+		else
+			-- Snooze for 3 hours
+			OpenItDB.snoozed[itemID] = time() + (3 * 3600)
+			PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON or 856)
+			addon:Print("Snoozed " .. itemName .. " for 3 hours.")
 		end
-	else
-		-- Snooze for 3 hours
-		OpenItDB.snoozed[itemID] = time() + (3 * 3600)
-		PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON or 856)
-		addon:Print("Snoozed " .. itemName .. " for 3 hours.")
+
+		addon:Update()
 	end
 
-	addon:Update()
+	isProcessingClick = false
 end)
 
 -- Tooltip display handlers
@@ -565,6 +655,17 @@ local function CreateOptionsPanel()
 				row.icon = row:CreateTexture(nil, "ARTWORK")
 				row.icon:SetSize(24, 24)
 				row.icon:SetPoint("LEFT", 8, 0)
+
+				-- Add tooltips when hovering over the options blacklist item icon
+				row.icon:SetScript("OnEnter", function(iconSelf)
+					GameTooltip:SetOwner(iconSelf, "ANCHOR_RIGHT")
+					GameTooltip:SetItemByID(itemID)
+					GameTooltip:Show()
+				end)
+				row.icon:SetScript("OnLeave", function()
+					GameTooltip_Hide()
+				end)
+				row.icon:SetMouseMotionEnabled(true)
 
 				row.deleteBtn = CreateFrame("Button", nil, row)
 				row.deleteBtn:SetSize(24, 24)
