@@ -10,10 +10,6 @@
 local addonName, addon = ...
 addon.frame = CreateFrame("Frame")
 
--- Hidden tooltip scanner frame to capture dynamically processed tooltip lines
-local scanner = CreateFrame("GameTooltip", "OpenItScannerTooltip", nil, "GameTooltipTemplate")
-scanner:SetOwner(UIParent, "ANCHOR_NONE")
-
 -- Local state variables
 local currentItem = nil
 local optionsCategory = nil
@@ -147,11 +143,11 @@ local function ContainsRedColorCode(text)
 end
 
 -------------------------------------------------------------------------------
--- Single-Pass Live Tooltip Evaluator
+-- Single-Pass Tooltip Evaluator
 -------------------------------------------------------------------------------
 
 local function EvaluateItemTooltip(bag, slot, itemID, info)
-	-- Check Engine Cooldowns
+	-- Check Cooldowns
 	local _, duration = C_Container.GetContainerItemCooldown(bag, slot)
 	if duration and duration > 1.5 then
 		return false
@@ -180,12 +176,12 @@ local function EvaluateItemTooltip(bag, slot, itemID, info)
 		end
 	end
 
-	-- Render Hidden Scanner Tooltip
-	scanner:ClearLines()
-	scanner:SetBagItem(bag, slot)
+	if not C_TooltipInfo or not C_TooltipInfo.GetBagItem then
+		return false
+	end
 
-	local numLines = scanner:NumLines()
-	if numLines == 0 then
+	local tooltipData = C_TooltipInfo.GetBagItem(bag, slot)
+	if not tooltipData or not tooltipData.lines or #tooltipData.lines == 0 then
 		C_Item.RequestLoadItemDataByID(itemID)
 		return false
 	end
@@ -195,39 +191,49 @@ local function EvaluateItemTooltip(bag, slot, itemID, info)
 		or 1
 	local hasUnmetRequirement = false
 	local isOpenableTriggerFound = false
+	local isCombineItem = false
+	local hasComponentLines = false
 
-	for i = 1, numLines do
-		local leftFontString = _G["OpenItScannerTooltipTextLeft" .. i]
-		local rightFontString = _G["OpenItScannerTooltipTextRight" .. i]
+	for _, lineData in ipairs(tooltipData.lines) do
+		local left = lineData.leftText or ""
+		local right = lineData.rightText or ""
 
-		local leftText = leftFontString and leftFontString:GetText() or ""
-		local rightText = rightFontString and rightFontString:GetText() or ""
-
-		-- Direct FontString Text Color Inspection
-		if leftFontString and leftFontString:IsShown() then
-			local r, g, b = leftFontString:GetTextColor()
-			if IsRedColor(r, g, b) then
-				hasUnmetRequirement = true
-			end
-		end
-
-		if rightFontString and rightFontString:IsShown() then
-			local r, g, b = rightFontString:GetTextColor()
-			if IsRedColor(r, g, b) then
-				hasUnmetRequirement = true
-			end
-		end
-
-		local rawLineText = leftText .. " " .. rightText
-		rawLineText = rawLineText:gsub("\194\160", " "):gsub("\160", " ")
-
-		-- Check Inline Red Color Codes
-		if ContainsRedColorCode(rawLineText) then
+		-- Direct line color check
+		if
+			(lineData.leftColor and IsRedColor(lineData.leftColor))
+			or (lineData.rightColor and IsRedColor(lineData.rightColor))
+		then
 			hasUnmetRequirement = true
 		end
 
+		-- Check formatted hex color codes directly on raw left/right strings
+		if ContainsRedColorCode(left) or ContainsRedColorCode(right) then
+			hasUnmetRequirement = true
+		end
+
+		local lineTextAccumulator = left .. " " .. right
+
+		-- Deep scan argument colors and string/numeric values inside component lists
+		if lineData.args then
+			for _, arg in ipairs(lineData.args) do
+				if arg.color and IsRedColor(arg.color) then
+					hasUnmetRequirement = true
+				end
+				if arg.stringVal then
+					lineTextAccumulator = lineTextAccumulator .. " " .. tostring(arg.stringVal)
+				elseif arg.intVal then
+					lineTextAccumulator = lineTextAccumulator .. " " .. tostring(arg.intVal)
+				elseif arg.floatVal then
+					lineTextAccumulator = lineTextAccumulator .. " " .. tostring(arg.floatVal)
+				end
+			end
+		end
+
+		-- Clean non-breaking spaces before pattern checking
+		lineTextAccumulator = lineTextAccumulator:gsub("\194\160", " "):gsub("\160", " ")
+
 		-- Currency Overcap Protection
-		local currencyID = rawLineText:match("|Hcurrency:(%d+)")
+		local currencyID = lineTextAccumulator:match("|Hcurrency:(%d+)")
 		if currencyID then
 			local cID = tonumber(currencyID)
 			if cID and C_CurrencyInfo and C_CurrencyInfo.GetCurrencyInfo then
@@ -238,24 +244,35 @@ local function EvaluateItemTooltip(bag, slot, itemID, info)
 			end
 		end
 
-		local cleanLine = CleanTooltipText(rawLineText)
+		-- Red Color Warnings in accumulated strings
+		if ContainsRedColorCode(lineTextAccumulator) then
+			hasUnmetRequirement = true
+		end
+
+		local cleanLine = CleanTooltipText(lineTextAccumulator)
 		local lowerLine = cleanLine:lower()
 
 		-- Check fraction progress counters (e.g. "0 / 1", "0/1", "0 of 1")
 		for cur, maxVal in cleanLine:gmatch("(%d+)%s*[/of%-]%s*(%d+)") do
 			local numCur = tonumber(cur)
 			local numMax = tonumber(maxVal)
+			hasComponentLines = true
 			if numCur and numMax and numCur < numMax then
 				hasUnmetRequirement = true
 			end
 		end
 
-		-- Catch bulleted component lines starting with 0 count
+		-- Catch component list lines starting with 0 count
 		if cleanLine:match("^%s*[%*%-%s]*%s*0%s*[/of%-]") or cleanLine:match("%s0%s*[/of%-]") then
 			hasUnmetRequirement = true
 		end
 
-		-- Exclude non-container consumables, gear enchants, and readable books
+		-- Detect component list presence
+		if cleanLine:find("%d+%s*[/of%-]%s*%d+") then
+			hasComponentLines = true
+		end
+
+		-- Exclude standard stat/health/mana consumables and gear enchants
 		if
 			lowerLine:find("restores %d+ health")
 			or lowerLine:find("restores %d+ mana")
@@ -300,15 +317,16 @@ local function EvaluateItemTooltip(bag, slot, itemID, info)
 		end
 
 		if cleanLine:find("Use:") or cleanLine:find("Använda:") then
-			if
+			if lowerLine:find("combine") or lowerLine:find("assemble") or lowerLine:find("reform") then
+				isCombineItem = true
+				isOpenableTriggerFound = true
+			elseif
 				lowerLine:find("study to increase")
 				or lowerLine:find("knowledge")
 				or lowerLine:find("grant")
 				or lowerLine:find("receive")
 				or lowerLine:find("obtain")
 				or lowerLine:find("open")
-				or lowerLine:find("combine")
-				or lowerLine:find("assemble")
 			then
 				isOpenableTriggerFound = true
 			end
@@ -318,6 +336,23 @@ local function EvaluateItemTooltip(bag, slot, itemID, info)
 			if lowerLine:find("knowledge") or lowerLine:find("study") then
 				isOpenableTriggerFound = true
 			end
+		end
+	end
+
+	-- Strict verification for combination/assembly items
+	if isCombineItem then
+		-- Engine check: reject if C_Item says item cannot be used directly
+		if C_Item and C_Item.IsUsableItem then
+			local isUsable, noMana = C_Item.IsUsableItem(itemID)
+			if not isUsable and not noMana then
+				return false
+			end
+		end
+
+		-- If tooltip data hasn't finished loading component lines yet, defer scan
+		if not hasComponentLines then
+			C_Item.RequestLoadItemDataByID(itemID)
+			return false
 		end
 	end
 
@@ -375,17 +410,17 @@ local function IsItemOpenable(bag, slot, info)
 		return false
 	end
 
-	-- Fast Check 1: Skip permanently/hardcoded blacklisted items (Data/Blacklist.lua)
+	-- Skip permanently/hardcoded blacklisted items (Data/Blacklist.lua)
 	if addon.hardcodedBlacklist and addon.hardcodedBlacklist[itemID] then
 		return false
 	end
 
-	-- Fast Check 2: Skip user-blacklisted items
+	-- Skip user-blacklisted items
 	if IsBlacklisted(itemID) then
 		return false
 	end
 
-	-- Fast Check 3: Skip snoozed items until timer expires
+	-- Skip snoozed items until timer expires
 	local snoozeUntil = OpenItDB.snoozed[itemID]
 	if snoozeUntil then
 		if time() < snoozeUntil then
@@ -395,7 +430,7 @@ local function IsItemOpenable(bag, slot, info)
 		end
 	end
 
-	-- Fast Check 4: Never trigger on equippable gear with "Use:" effects
+	-- Never trigger on equippable gear with "Use:" effects
 	if C_Item.IsEquippableItem(itemID) then
 		return false
 	end
@@ -405,7 +440,7 @@ local function IsItemOpenable(bag, slot, info)
 		return false
 	end
 
-	-- Single-pass live tooltip evaluation
+	-- Single-pass tooltip evaluation
 	return EvaluateItemTooltip(bag, slot, itemID, info)
 end
 
