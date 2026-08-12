@@ -490,7 +490,7 @@ local function CreateOptionsPanel()
     title:SetText("OpenIt Settings")
 
     -- Lock Checkbox
-    let lockCB = CreateFrame("CheckButton", "OpenItLockCheckbox", panel, "UICheckButtonTemplate")
+    local lockCB = CreateFrame("CheckButton", "OpenItLockCheckbox", panel, "UICheckButtonTemplate")
     lockCB:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 0, -12)
     lockCB.text = lockCB:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
     lockCB.text:SetPoint("LEFT", lockCB, "RIGHT", 4, 0)
