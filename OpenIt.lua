@@ -278,59 +278,7 @@ local function FastCanBeOpenable(itemID, info)
 		return true
 	end
 
-	local classID, subClassID = select(12, C_Item.GetItemInfo(itemID))
-	if classID then
-		-- Containers (1), Quest items (12), and Miscellaneous (15) can be reward pouches/packages
-		if
-			classID == Enum.ItemClass.Container
-			or classID == Enum.ItemClass.Quest
-			or classID == Enum.ItemClass.Miscellaneous
-		then
-			return true
-		end
-
-		-- Filter out Consumable subclasses except generic/other packages (Subclasses 0 and 8)
-		if classID == Enum.ItemClass.Consumable then
-			if subClassID and (subClassID == 0 or subClassID == 8) then
-				return true
-			end
-
-			local sub = Enum.ItemConsumableSubclass
-			if sub then
-				if
-					subClassID == sub.Potion
-					or subClassID == sub.Elixir
-					or subClassID == sub.Flask
-					or subClassID == sub.Scroll
-					or subClassID == sub.FoodAndDrink
-					or subClassID == sub.ItemEnhancement
-					or subClassID == sub.Bandage
-					or subClassID == sub.VantusRune
-					or subClassID == sub.Utility
-				then
-					return false
-				end
-			end
-		end
-
-		-- Skip non-openable categories
-		if
-			classID == Enum.ItemClass.Tradegoods
-			or classID == Enum.ItemClass.Armor
-			or classID == Enum.ItemClass.Weapon
-			or classID == Enum.ItemClass.Recipe
-			or classID == Enum.ItemClass.Gem
-			or classID == Enum.ItemClass.ItemEnhancement
-		then
-			return false
-		end
-	end
-
-	-- If item info isn't cached yet, allow it through so tooltip inspection evaluates it
-	if not classID then
-		return true
-	end
-
+	-- Verify item has an associated spell or use action
 	local _, spellID = C_Item.GetItemSpell(itemID)
 	return spellID ~= nil
 end
@@ -375,7 +323,7 @@ local function IsItemOpenable(bag, slot, info)
 		return false
 	end
 
-	-- Class/Subclass & Spell pre-filter before doing expensive tooltip scans
+	-- Pre-filter before doing tooltip scans
 	if not FastCanBeOpenable(itemID, info) then
 		return false
 	end
@@ -393,12 +341,21 @@ local function IsItemOpenable(bag, slot, info)
 				local text = lineData.leftText
 				if text and text ~= "" then
 					local cleanText = CleanTooltipText(text)
+					local lowerText = cleanText:lower()
 
 					if ITEM_OPENABLE and cleanText:find(ITEM_OPENABLE, 1, true) then
 						return true
 					end
 
-					if cleanText:lower():find("right click to open") or cleanText:find("<Right Click") then
+					if lowerText:find("right click to open") or cleanText:find("<Right Click") then
+						return true
+					end
+
+					if
+						lowerText:find("right click to combine")
+						or lowerText:find("right click to assemble")
+						or lowerText:find("right click to use")
+					then
 						return true
 					end
 
