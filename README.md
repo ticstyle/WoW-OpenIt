@@ -16,10 +16,8 @@
 
 ## Features
 
-* **Automatic Bag Scanning:** Detects openable items, caches, lockboxes, geodes, and usable packages in your inventory automatically.
-* **Smart Requirement Validation:** Ignores items if you don't meet their requirements yet (e.g., reagent/fragment progress like `10/15`, missing professions, or insufficient character levels).
-* **Smart Collection & Currency Checks:** Automatically skips already collected toys, mounts, and pets, active/completed quest-start items, and currency containers when at max currency caps.
-* **Smart Filtering & Performance:** $O(1)$ fast pre-filtering skips trade goods, armor, crafting reagents, and gems before building tooltips, keeping bag updates lag-free. Automatically excludes equippable gear with "Use" effects, readable books/ledgers, hearthstones, and teleportation toys.
+* **Automatic Bag Scanning:** Detects openable items, caches, lockboxes, geodes, and usable packages in your inventory automatically via a curated database and native engine flags.
+* **Smart Filtering & Performance:** $O(1)$ fast pre-filtering skips trade goods, armor, crafting reagents, and gems before building lookups, keeping bag updates completely lag-free. Automatically excludes equippable gear with "Use" effects, hearthstones, and teleportation toys.
 * **Minimum Quality Control:** Configurable item quality threshold (Junk to Epic) so you can choose exactly what tier of items triggers the button.
 * **Snooze Functionality:** Temporarily hide an item for 3 hours with a single click. Expired snoozes are automatically purged on login to keep your saved data clean.
 * **Custom Blacklist:** Permanently blacklist annoying items straight from the floating button or manage them in the options menu (sorted alphabetically A-Z).
@@ -43,8 +41,8 @@
 Access the options panel via the standard WoW AddOn Settings menu or by using the slash command:
 
 ```text
-/openit        - Opens the OpenIt settings panel
-/openit reset  - Resets the button position to default (halfway left of screen center)
+/openit     - Opens the OpenIt settings panel
+/openit reset - Resets the button position to default (halfway left of screen center)
 ```
 
 ### Settings Include:
@@ -63,20 +61,6 @@ OpenIt uses dedicated data files inside the `Data/` subdirectory to manage item 
 * **`Data/Items.lua`**: Contains known item IDs that should always trigger the button.
 * **`Data/Blacklist.lua`**: Contains hardcoded, permanently ignored item IDs (Hearthstones, toys, utility items).
 
-### Adding Known Items Manually
-
-If you find an openable item that isn't automatically picked up, you can add its ID directly to `Data/Items.lua`:
-
-```lua
-addon.knownItems = {
-    [207002] = true, -- Heavy Dragonscale Chest
-    [211413] = true, -- Radiant Cache
-    [219191] = true, -- Hastily Scrawled Notes
-}
-```
-
-*Tip: Hover over the OpenIt floating button in-game to see the Item ID listed at the bottom of the tooltip.*
-
 ---
 
 ## Installation
@@ -85,7 +69,7 @@ addon.knownItems = {
    https://www.curseforge.com/wow/addons/openit
 2. Place the `OpenIt` folder into your WoW interface directory:
    `World of Warcraft\_retail_\Interface\AddOns\`
-3. Restart WoW or run `/reload` in-game.
+3. Restart WoW.
 
 ---
 

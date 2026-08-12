@@ -86,78 +86,8 @@ local function RemoveFromBlacklist(itemID)
 	end
 end
 
--- Check RGB values for red requirement warning colors
-local function IsRedColor(r, g, b)
-	if type(r) == "table" or type(r) == "userdata" then
-		local colorObj = r
-		if colorObj.GetRGB then
-			r, g, b = colorObj:GetRGB()
-		elseif colorObj.r and colorObj.g and colorObj.b then
-			r, g, b = colorObj.r, colorObj.g, colorObj.b
-		else
-			return false
-		end
-	end
-
-	if not r or not g or not b then
-		return false
-	end
-
-	if r > 1 or g > 1 or b > 1 then
-		r = r / 255
-		g = g / 255
-		b = b / 255
-	end
-
-	return (r > 0.45 and (r - g) > 0.15 and (r - b) > 0.15)
-end
-
 -------------------------------------------------------------------------------
--- Tooltip Requirement Evaluator
--------------------------------------------------------------------------------
-
-local function HasUnmetRequirements(bag, slot)
-	if not C_TooltipInfo or not C_TooltipInfo.GetBagItem then
-		return false
-	end
-
-	local tooltipData = C_TooltipInfo.GetBagItem(bag, slot)
-	if not tooltipData or not tooltipData.lines then
-		return false
-	end
-
-	for _, lineData in ipairs(tooltipData.lines) do
-		local left = lineData.leftText or ""
-		local right = lineData.rightText or ""
-
-		-- Direct color check on line text
-		if
-			(lineData.leftColor and IsRedColor(lineData.leftColor))
-			or (lineData.rightColor and IsRedColor(lineData.rightColor))
-		then
-			return true
-		end
-
-		local combined = (left .. " " .. right):lower()
-
-		-- Skip requirement block for collection/appearance progress (e.g. "0/7 collected")
-		if not (combined:find("collected") or combined:find("appearance") or combined:find("known")) then
-			-- Check for missing crafting/combination reagents (e.g. "0/1")
-			for cur, maxVal in combined:gmatch("(%d+)%s*[/of%-]%s*(%d+)") do
-				local numCur = tonumber(cur)
-				local numMax = tonumber(maxVal)
-				if numCur and numMax and numCur < numMax then
-					return true
-				end
-			end
-		end
-	end
-
-	return false
-end
-
--------------------------------------------------------------------------------
--- Item Detection Core Logic
+-- Item Detection Core Logic (Registry & Engine Driven)
 -------------------------------------------------------------------------------
 
 -- Determine if an item in bags can be opened or used
@@ -225,64 +155,13 @@ local function IsItemOpenable(bag, slot, info)
 		end
 	end
 
-	-- Reject items with missing combination ingredients (e.g. 0/1 parts)
-	if HasUnmetRequirements(bag, slot) then
-		return false
-	end
-
-	-- Instant lookup for known openable items
+	-- Tier 1: Check curated known items list (Data/Items.lua)
 	if addon.knownItems and addon.knownItems[itemID] then
 		return true
 	end
 
-	-- Engine container loot flag
+	-- Tier 2: Native engine container / loot flag
 	if info.hasLoot then
-		return true
-	end
-
-	-- Filter out obvious non-openable item classes
-	local classID = select(12, C_Item.GetItemInfo(itemID))
-	if classID then
-		if
-			classID == Enum.ItemClass.Armor
-			or classID == Enum.ItemClass.Weapon
-			or classID == Enum.ItemClass.Recipe
-			or classID == Enum.ItemClass.Gem
-		then
-			return false
-		end
-	end
-
-	-- Verify item has an associated spell or use action
-	local spellName, spellID = C_Item.GetItemSpell(itemID)
-	if not spellID then
-		return false
-	end
-
-	-- Allow knowledge items, arsenals, mounts, pouches, and containers explicitly
-	if spellName then
-		local lowerSpell = spellName:lower()
-		if
-			lowerSpell:find("open")
-			or lowerSpell:find("study")
-			or lowerSpell:find("knowledge")
-			or lowerSpell:find("combine")
-			or lowerSpell:find("assemble")
-			or lowerSpell:find("extract")
-			or lowerSpell:find("unwrap")
-			or lowerSpell:find("teach")
-			or lowerSpell:find("summon")
-			or lowerSpell:find("collect")
-		then
-			return true
-		end
-	end
-
-	if
-		classID == Enum.ItemClass.Container
-		or classID == Enum.ItemClass.Miscellaneous
-		or classID == Enum.ItemClass.Quest
-	then
 		return true
 	end
 
@@ -404,8 +283,8 @@ local function RefreshTooltip(self)
 	end
 end
 
--- Handle Right-Click (Snooze) and Shift + Right-Click (Blacklist)
-button:SetScript("PreClick", function(_, btn)
+-- Handle Right-Click (Snooze) and Shift + Right-Click (Blacklist) using PostClick to prevent double triggers
+button:SetScript("PostClick", function(_, btn)
 	if btn ~= "RightButton" or not currentItem then
 		return
 	end
@@ -418,11 +297,13 @@ button:SetScript("PreClick", function(_, btn)
 	local itemName = C_Item.GetItemInfo(itemID) or currentItem.hyperlink or ("Item #" .. itemID)
 
 	if IsShiftKeyDown() then
-		AddToBlacklist(itemID)
-		PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF or 857)
-		addon:Print("Blacklisted " .. itemName .. " (ID: " .. itemID .. ")")
-		if addon.optionsFrame and addon.optionsFrame.RefreshList and addon.optionsFrame:IsShown() then
-			addon.optionsFrame:RefreshList()
+		if not IsBlacklisted(itemID) then
+			AddToBlacklist(itemID)
+			PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF or 857)
+			addon:Print("Blacklisted " .. itemName .. " (ID: " .. itemID .. ")")
+			if addon.optionsFrame and addon.optionsFrame.RefreshList and addon.optionsFrame:IsShown() then
+				addon.optionsFrame:RefreshList()
+			end
 		end
 	else
 		-- Snooze for 3 hours
