@@ -290,7 +290,7 @@ button:EnableMouse(true)
 button:SetClampedToScreen(true)
 
 -- Trigger actions strictly on mouse release
-button:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+button:RegisterForClicks("AnyUp", "AnyDown")
 button:SetAttribute("useondown", false)
 button:RegisterForDrag("LeftButton")
 button:Hide()
@@ -356,7 +356,7 @@ local function RefreshTooltip(self)
 		return
 	end
 
-	if currentItem then
+	if currentItem and not OpenItDB.showForPositioning then
 		GameTooltip:SetOwner(self, "ANCHOR_TOP")
 		GameTooltip:SetBagItem(currentItem.bag, currentItem.slot)
 		GameTooltip:AddLine(" ")
@@ -381,7 +381,7 @@ end
 
 -- Handle Right-Click (Snooze) and Shift + Right-Click (Blacklist) securely on PreClick upon release
 button:SetScript("PreClick", function(_, btn)
-	if btn ~= "RightButton" or not currentItem or isProcessingClick then
+	if btn ~= "RightButton" or not currentItem or OpenItDB.showForPositioning or isProcessingClick then
 		return
 	end
 
@@ -443,11 +443,23 @@ function addon.Update(_)
 
 	addon:ApplyVisualSettings()
 
-	-- Positioning mode takes top priority so it never triggers items
 	if OpenItDB.showForPositioning then
-		currentItem = nil
-		button.icon:SetTexture(133633) -- Placeholder bag icon
-		button.count:Hide()
+		-- Positioning Mode: show button as a movement handle, clear item-use attributes
+		local item = addon:ScanBags()
+		if item then
+			currentItem = item
+			button.icon:SetTexture(item.icon)
+			if item.count > 1 then
+				button.count:SetText(item.count)
+				button.count:Show()
+			else
+				button.count:Hide()
+			end
+		else
+			currentItem = nil
+			button.icon:SetTexture(133633) -- Placeholder bag icon
+			button.count:Hide()
+		end
 		button:SetAttribute("type", nil)
 		button:SetAttribute("macrotext", nil)
 		button:SetAttribute("type1", nil)
