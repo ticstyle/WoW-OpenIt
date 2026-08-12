@@ -1,7 +1,7 @@
 -- OpenIt.lua
 -- https://github.com/ticstyle/WoW-OpenIt
 
--- luacheck: globals OpenItDB CreateFrame UIParent C_Container C_Item C_TooltipInfo ItemLocation
+-- luacheck: globals OpenItDB CreateFrame UIParent C_Container C_Item C_TooltipInfo
 -- luacheck: globals C_ToyBox C_QuestLog C_CurrencyInfo Settings InCombatLockdown
 -- luacheck: globals IsShiftKeyDown GameTooltip GameTooltip_Hide SlashCmdList SLASH_OPENIT1
 -- luacheck: globals Enum time pairs ipairs table math print _G ITEM_OPENABLE
@@ -155,17 +155,6 @@ local function EvaluateItemTooltip(bag, slot, itemID, info)
 	local _, duration = C_Container.GetContainerItemCooldown(bag, slot)
 	if duration and duration > 1.5 then
 		return false
-	end
-
-	-- Check Item Location Usability via Engine
-	if ItemLocation and ItemLocation.CreateFromBagAndSlot and C_Item and C_Item.IsUsableItem then
-		local itemLoc = ItemLocation:CreateFromBagAndSlot(bag, slot)
-		if itemLoc and itemLoc:IsValid() then
-			local isUsable, noMana = C_Item.IsUsableItem(itemLoc)
-			if not isUsable and not noMana then
-				return false
-			end
-		end
 	end
 
 	-- Check Minimum Quality Threshold
