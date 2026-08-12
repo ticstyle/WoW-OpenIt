@@ -280,13 +280,21 @@ local function FastCanBeOpenable(itemID, info)
 
 	local classID, subClassID = select(12, C_Item.GetItemInfo(itemID))
 	if classID then
-		-- Explicitly allow Blizzard's Container item class (Class 1)
-		if classID == Enum.ItemClass.Container then
+		-- Containers (1), Quest items (12), and Miscellaneous (15) can be reward pouches/packages
+		if
+			classID == Enum.ItemClass.Container
+			or classID == Enum.ItemClass.Quest
+			or classID == Enum.ItemClass.Miscellaneous
+		then
 			return true
 		end
 
-		-- Filter out Consumable subclasses (Potions, Elixirs, Flasks, Scrolls, Food/Drink, Enchants, Bandages, etc.)
-		if classID == Enum.ItemClass.Consumable and subClassID then
+		-- Filter out Consumable subclasses except generic/other packages (Subclasses 0 and 8)
+		if classID == Enum.ItemClass.Consumable then
+			if subClassID and (subClassID == 0 or subClassID == 8) then
+				return true
+			end
+
 			local sub = Enum.ItemConsumableSubclass
 			if sub then
 				if
@@ -302,22 +310,10 @@ local function FastCanBeOpenable(itemID, info)
 				then
 					return false
 				end
-			elseif
-				subClassID == 1
-				or subClassID == 2
-				or subClassID == 3
-				or subClassID == 4
-				or subClassID == 5
-				or subClassID == 6
-				or subClassID == 7
-				or subClassID == 9
-				or subClassID == 10
-			then
-				return false
 			end
 		end
 
-		-- Skip non-container categories
+		-- Skip non-openable categories
 		if
 			classID == Enum.ItemClass.Tradegoods
 			or classID == Enum.ItemClass.Armor
@@ -326,13 +322,15 @@ local function FastCanBeOpenable(itemID, info)
 			or classID == Enum.ItemClass.Gem
 			or classID == Enum.ItemClass.ItemEnhancement
 		then
-			if not (subClassID and subClassID == Enum.ItemMiscellaneousSubclass.Junk) then
-				return false
-			end
+			return false
 		end
 	end
 
-	-- Verify item has an associated spell cast action before tooltip inspection
+	-- If item info isn't cached yet, allow it through so tooltip inspection evaluates it
+	if not classID then
+		return true
+	end
+
 	local _, spellID = C_Item.GetItemSpell(itemID)
 	return spellID ~= nil
 end
