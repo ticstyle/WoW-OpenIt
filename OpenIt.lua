@@ -94,6 +94,7 @@ local function CleanTooltipText(text)
 	return text:gsub("\194\160", " ")
 		:gsub("\160", " ")
 		:gsub("|[cC]%x%x%x%x%x%x%x%x", "")
+		:gsub("|[cC]%x%x%x%x%x%x", "")
 		:gsub("|r", "")
 		:gsub("|T.-|t", "")
 end
@@ -123,19 +124,28 @@ local function IsRedColor(r, g, b)
 	end
 
 	-- Red channel must be dominant over green and blue
-	return (r > 0.50 and (r - g) > 0.20 and (r - b) > 0.20)
+	return (r > 0.45 and (r - g) > 0.15 and (r - b) > 0.15)
 end
 
--- Parse hex color codes in raw text strings for red requirement warnings
+-- Parse 6-digit and 8-digit hex color codes for red requirement warnings
 local function ContainsRedColorCode(text)
 	if not text or text == "" then
 		return false
 	end
-	for hex in text:gmatch("|[cC](%x%x%x%x%x%x%x%x)") do
-		local r = tonumber(hex:sub(3, 4), 16) or 0
-		local g = tonumber(hex:sub(5, 6), 16) or 0
-		local b = tonumber(hex:sub(7, 8), 16) or 0
-		if IsRedColor(r / 255, g / 255, b / 255) then
+	for hex in text:gmatch("|[cC](%x+)") do
+		local r, g, b
+		if #hex == 8 then
+			-- Format: AARRGGBB
+			r = tonumber(hex:sub(3, 4), 16)
+			g = tonumber(hex:sub(5, 6), 16)
+			b = tonumber(hex:sub(7, 8), 16)
+		elseif #hex >= 6 then
+			-- Format: RRGGBB
+			r = tonumber(hex:sub(1, 2), 16)
+			g = tonumber(hex:sub(3, 4), 16)
+			b = tonumber(hex:sub(5, 6), 16)
+		end
+		if r and g and b and IsRedColor(r / 255, g / 255, b / 255) then
 			return true
 		end
 	end
@@ -282,7 +292,7 @@ local function EvaluateItemTooltip(bag, slot, itemID, info)
 			hasUnmetRequirement = true
 		end
 
-		-- Compare required amounts ONLY on explicit multi-item combination lines (e.g. "Combine 5 Fragments")
+		-- Compare required amounts ONLY on explicit multi-item combination lines
 		if lowerLine:find("combine %d+") or lowerLine:find("requires %d+") or lowerLine:find("need %d+") then
 			for reqCount in cleanLine:gmatch("(%d+)") do
 				local req = tonumber(reqCount)
