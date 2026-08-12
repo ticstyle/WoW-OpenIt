@@ -74,7 +74,7 @@ local function AddToBlacklist(itemID)
 	end
 end
 
--- Remove an item from the user blacklist
+-- Remove from blacklist
 local function RemoveFromBlacklist(itemID)
 	if not OpenItDB or not OpenItDB.blacklist then
 		return
@@ -84,6 +84,91 @@ local function RemoveFromBlacklist(itemID)
 		OpenItDB.blacklist[numID] = nil
 		OpenItDB.blacklist[tostring(numID)] = nil
 	end
+end
+
+-- Strip color codes and escape sequences
+local function CleanTooltipText(text)
+	if not text then
+		return ""
+	end
+	return text:gsub("\194\160", " ")
+		:gsub("\160", " ")
+		:gsub("|[cC]%x%x%x%x%x%x%x%x", "")
+		:gsub("|[cC]%x%x%x%x%x%x", "")
+		:gsub("|r", "")
+		:gsub("|T.-|t", "")
+end
+
+-- Check RGB values for red requirement warning colors
+local function IsRedColor(r, g, b)
+	if type(r) == "table" or type(r) == "userdata" then
+		local colorObj = r
+		if colorObj.GetRGB then
+			r, g, b = colorObj:GetRGB()
+		elseif colorObj.r and colorObj.g and colorObj.b then
+			r, g, b = colorObj.r, colorObj.g, colorObj.b
+		else
+			return false
+		end
+	end
+
+	if not r or not g or not b then
+		return false
+	end
+
+	if r > 1 or g > 1 or b > 1 then
+		r = r / 255
+		g = g / 255
+		b = b / 255
+	end
+
+	return (r > 0.45 and (r - g) > 0.15 and (r - b) > 0.15)
+end
+
+-------------------------------------------------------------------------------
+-- Tooltip Requirement Evaluator
+-------------------------------------------------------------------------------
+
+local function HasUnmetRequirements(bag, slot)
+	if not C_TooltipInfo or not C_TooltipInfo.GetBagItem then
+		return false
+	end
+
+	local tooltipData = C_TooltipInfo.GetBagItem(bag, slot)
+	if not tooltipData or not tooltipData.lines then
+		return false
+	end
+
+	for _, lineData in ipairs(tooltipData.lines) do
+		local left = lineData.leftText or ""
+		local right = lineData.rightText or ""
+
+		-- Direct color check on line text
+		if
+			(lineData.leftColor and IsRedColor(lineData.leftColor))
+			or (lineData.rightColor and IsRedColor(lineData.rightColor))
+		then
+			return true
+		end
+
+		local combined = (left .. " " .. right):lower()
+
+		-- Allow collection/appearance progress (e.g. "0/7 collected")
+		if combined:find("collected") or combined:find("appearance") or combined:find("known") then
+			-- Skip requirement block for collections
+		else
+			-- Check for missing crafting/combination reagents (e.g. "0/1")
+			for cur, maxVal in combined:gmatch("(%d+)%s*[/of%-]%s*(%d+)") do
+				local numCur = tonumber(cur)
+				local numMax = tonumber(maxVal)
+				if numCur and numMax and numCur < numMax then
+					return true
+				end
+			end
+		end
+	end
+
+	return false
 end
 
 -------------------------------------------------------------------------------
@@ -155,13 +240,18 @@ local function IsItemOpenable(bag, slot, info)
 		end
 	end
 
+	-- Reject items with missing combination ingredients (e.g. 0/1 parts)
+	if HasUnmetRequirements(bag, slot) then
+		return false
+	end
+
 	-- Instant lookup for known openable items
 	if addon.knownItems and addon.knownItems[itemID] then
 		return true
 	end
 
 	-- Engine container loot flag
-	if info and info.hasLoot then
+	if info.hasLoot then
 		return true
 	end
 
@@ -184,7 +274,7 @@ local function IsItemOpenable(bag, slot, info)
 		return false
 	end
 
-	-- Allow knowledge items, chisels, mounts, pouches, and containers explicitly
+	-- Allow knowledge items, arsenals, mounts, pouches, and containers explicitly
 	if spellName then
 		local lowerSpell = spellName:lower()
 		if
@@ -197,12 +287,12 @@ local function IsItemOpenable(bag, slot, info)
 			or lowerSpell:find("unwrap")
 			or lowerSpell:find("teach")
 			or lowerSpell:find("summon")
+			or lowerSpell:find("collect")
 		then
 			return true
 		end
 	end
 
-	-- Fallback for standard container classes and miscellaneous items with spells
 	if
 		classID == Enum.ItemClass.Container
 		or classID == Enum.ItemClass.Miscellaneous
