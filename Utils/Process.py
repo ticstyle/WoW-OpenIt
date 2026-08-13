@@ -1,0 +1,571 @@
+# Utils/Process.py
+
+# ==============================================================================
+# FUTURE UPDATE & DATABASE REQUIREMENTS INSTRUCTIONS:
+# To update this item database in the future, you must export the following  
+# 5 database tables as SQL files from your local game files using 'wow.export':
+#   1. ItemClass.sql    - Maps main class IDs to category names (Weapon, Armor, etc.)[cite: 1]
+#   2. ItemSubClass.sql - Maps subcategories (One-Handed Swords, Cloth, etc.)
+#   3. Item.sql         - Links each item ID to its corresponding ClassID and SubclassID
+#   4. ItemSparse.sql   - Contains raw item names, levels, sell prices, and allowable classes
+#   5. ItemEffect.sql   - Contains active use/open effects for items that can be opened or used
+#
+# Place all five files in the exact same folder as this script before running.
+# ==============================================================================
+
+import datetime
+import os
+import re
+
+# File paths for the required relational SQL tables
+FILE_ITEM_CLASS = "ItemClass.sql"
+FILE_ITEM_SUBCLASS = "ItemSubClass.sql"
+FILE_ITEM_BASE = "Item.sql"
+FILE_ITEM_SPARSE = "ItemSparse.sql"
+FILE_ITEM_EFFECT = "ItemEffect.sql"
+OUTPUT_PY_PATH = "item_database.py"
+OUTPUT_LUA_PATH = "Items.lua"
+
+# Master Toggle: Set to False to bypass all category/subclass filtering and get unfiltered data
+ENABLE_FILTERS = True
+
+# Toggle to restrict items strictly to containers, mounts, pets, or items with usable/openable effects
+FILTER_USABLE_OR_OPENABLE = False
+
+# ------------------------------------------------------------------------------
+# 1. HUMAN-READABLE CLASS & SUBCLASS TOGGLES (Player Class Combos Excluded)
+# ------------------------------------------------------------------------------
+ENABLED_CLASS_SUBCLASSES = {
+    # Armor
+    "Armor": False,
+    "Armor > Cloth": False,
+    "Armor > Cosmetic": False,
+    "Armor > Leather": False,
+    "Armor > Mail": False,
+    "Armor > Miscellaneous": False,
+    "Armor > Plate": False,
+    "Armor > Shield": False,
+
+    # Battle Pets
+    "Battle Pets": True,
+    "Battle Pets > Battle Pet": True,
+    "Battle Pets > BattlePet": True,
+
+    # Consumables
+    "Consumable": True,
+    "Consumable > Consumable": True,
+    "Consumable > Potion": False,
+    "Consumable > Potions": False,
+    "Consumable > Elixir": False,
+    "Consumable > Elixirs": False,
+    "Consumable > Flask": False,
+    "Consumable > Flasks & Phials": False,
+    "Consumable > Scroll": False,
+    "Consumable > Scrolls": False,
+    "Consumable > Food & Drink": False,
+    "Consumable > Item Enhancement": False,
+    "Consumable > Bandages": False,
+    "Consumable > Explosives and Devices": False,
+    "Consumable > Vantus Runes": False,
+    "Consumable > Combat Curio": False,
+    "Consumable > Utility Curio": False,
+    "Consumable > Other": True,
+
+    # Containers
+    "Container": True,
+    "Container > Bag": False,
+    "Container > Cooking Bag": False,
+    "Container > Enchanting Bag": False,
+    "Container > Engineering Bag": False,
+    "Container > Gem Bag": False,
+    "Container > Herb Bag": False,
+    "Container > Inscription Bag": False,
+    "Container > Leatherworking Bag": False,
+    "Container > Mining Bag": False,
+    "Container > Reagent Bag": False,
+    "Container > Tackle Box": False,
+    "Container > Soul Bag": False,
+
+    # Gems
+    "Gem": False,
+    "Gem > Agility": True,
+    "Gem > Artifact Relic": True,
+    "Gem > Critical Strike": True,
+    "Gem > Haste": True,
+    "Gem > Intellect": True,
+    "Gem > Mastery": True,
+    "Gem > Multiple Stats": True,
+    "Gem > Other": True,
+    "Gem > Stamina": True,
+    "Gem > Strength": True,
+    "Gem > Versatility": True,
+
+    # Housing
+    "Housing": True,
+    "Housing > Decor": True,
+    "Housing > Exterior Customization": True,
+    "Housing > Housing Dye": True,
+    "Housing > Room": True,
+    "Housing > Service Item": True,
+
+    # Item Enhancements
+    "Item Enhancement": True,
+    "Item Enhancement > Chest": True,
+    "Item Enhancement > Cloak": True,
+    "Item Enhancement > Feet": True,
+    "Item Enhancement > Finger": True,
+    "Item Enhancement > Hands": True,
+    "Item Enhancement > Head": True,
+    "Item Enhancement > Legs": True,
+    "Item Enhancement > Misc": True,
+    "Item Enhancement > Miscellaneous": True,
+    "Item Enhancement > Neck": True,
+    "Item Enhancement > Shield/Off-hand": True,
+    "Item Enhancement > Shoulder": True,
+    "Item Enhancement > Two-Handed Weapon": True,
+    "Item Enhancement > Waist": True,
+    "Item Enhancement > Weapon": True,
+    "Item Enhancement > Wrist": True,
+
+    # Keys & Quests
+    "Key": False,
+    "Key > Key": False,
+    "Quest": False,
+    "Quest > Quest": False,
+
+    # Miscellaneous
+    "Miscellaneous": True,
+    "Miscellaneous > Companion Pets": True,
+    "Miscellaneous > Holiday": True,
+    "Miscellaneous > Junk": False,
+    "Miscellaneous > Mount": True,
+    "Miscellaneous > Mount Equipment": True,
+    "Miscellaneous > Other": True,
+    "Miscellaneous > Reagent": False,
+    "Miscellaneous > Unknown": True,
+
+    # Professions
+    "Profession": True,
+    "Profession > Alchemy": True,
+    "Profession > Blacksmithing": True,
+    "Profession > Cooking": True,
+    "Profession > Enchanting": True,
+    "Profession > Engineering": True,
+    "Profession > Fishing": True,
+    "Profession > Herbalism": True,
+    "Profession > Inscription": True,
+    "Profession > Jewelcrafting": True,
+    "Profession > Mining": True,
+    "Profession > Skinning": True,
+    "Profession > Tailoring": True,
+
+    # Projectiles
+    "Projectile": False,
+    "Projectile > Arrow": True,
+    "Projectile > Bullet": True,
+
+    # Reagents
+    "Reagent": False,
+    "Reagent > Context Token": True,
+    "Reagent > Keystone": True,
+    "Reagent > Reagent": True,
+
+    # Recipes
+    "Recipe": True,
+    "Recipe > Alchemy": True,
+    "Recipe > Blacksmithing": True,
+    "Recipe > Book": True,
+    "Recipe > Cooking": True,
+    "Recipe > Enchanting": True,
+    "Recipe > Engineering": True,
+    "Recipe > First Aid": True,
+    "Recipe > Fishing": True,
+    "Recipe > Inscription": True,
+    "Recipe > Jewelcrafting": True,
+    "Recipe > Leatherworking": True,
+    "Recipe > Tailoring": True,
+
+    # Tradeskills
+    "Tradeskill": True,
+    "Tradeskill > Cloth": True,
+    "Tradeskill > Cooking": True,
+    "Tradeskill > Elemental": True,
+    "Tradeskill > Enchanting": True,
+    "Tradeskill > Finishing Reagents": True,
+    "Tradeskill > Herb": True,
+    "Tradeskill > Inscription": True,
+    "Tradeskill > Jewelcrafting": True,
+    "Tradeskill > Leather": True,
+    "Tradeskill > Metal & Stone": True,
+    "Tradeskill > Optional Reagents": True,
+    "Tradeskill > Other": True,
+    "Tradeskill > Parts": True,
+    "Tradeskill > Unknown": True,
+
+    # Unknown / Housing / Token
+    "Unknown > Unknown": True,
+    "WoW Token": False,
+    "WoW Token > WoW Token": False,
+
+    # Weapons
+    "Weapon": False,
+    "Weapon > Axe": False,
+    "Weapon > Bow": False,
+    "Weapon > Crossbow": False,
+    "Weapon > Dagger": False,
+    "Weapon > Fishing Pole": False,
+    "Weapon > Fist Weapon": False,
+    "Weapon > Gun": False,
+    "Weapon > Mace": False,
+    "Weapon > Miscellaneous": False,
+    "Weapon > Polearm": False,
+    "Weapon > Staff": False,
+    "Weapon > Sword": False,
+    "Weapon > Thrown": False,
+    "Weapon > Wand": False,
+    "Weapon > Warglaives": False,
+}
+
+# ------------------------------------------------------------------------------
+# 2. HUMAN-READABLE COLUMN / ATTRIBUTE TOGGLES
+# ------------------------------------------------------------------------------
+ENABLED_ATTRIBUTES = {
+    "class_id": False,
+    "class_name": True,
+    "subclass_id": False,
+    "subclass_name": True,
+    "item_level": True,
+    "required_level": True,
+    "sell_price": False,
+    "quality": True,
+    "inventory_type": True,
+    "allowed_classes": True,  # Decodes AllowableClass bitmask into class names
+    "openable": True,         # 1 for true (containers/effects), 0 for false
+}
+
+# Standard World of Warcraft class bitmask flag definitions
+CLASS_FLAGS = {
+    1: "Warrior",
+    2: "Paladin",
+    4: "Hunter",
+    8: "Rogue",
+    16: "Priest",
+    32: "Death Knight",
+    64: "Shaman",
+    128: "Mage",
+    256: "Warlock",
+    512: "Monk",
+    1024: "Druid",
+    2048: "Demon Hunter",
+    4096: "Evoker",
+}
+
+# Common internal developer terms used by Blizzard to tag test or unused items
+JUNK_PATTERNS = ["test", "placeholder", "obsolete", "unused", "repair", "debug"]
+
+
+def is_valid_item(name):
+  if not name or name.strip() == "":
+    return False
+  name_lower = name.lower()
+  for pattern in JUNK_PATTERNS:
+    if pattern in name_lower:
+      return False
+  return True
+
+
+def decode_allowable_classes(mask_val):
+  if mask_val == -1 or mask_val == 0:
+    return ["All Classes"]
+  allowed = []
+  for bit, class_name in CLASS_FLAGS.items():
+    if mask_val & bit:
+      allowed.append(class_name)
+  return allowed if allowed else ["All Classes"]
+
+
+def parse_sql_values(sql_line):
+  match = re.search(r"\((.*?)\)", sql_line)
+  if not match:
+    return None
+
+  raw_values = match.group(1)
+  values = []
+  current_val = []
+  in_string = False
+
+  i = 0
+  while i < len(raw_values):
+    char = raw_values[i]
+    if char == "'":
+      if in_string and i + 1 < len(raw_values) and raw_values[i + 1] == "'":
+        current_val.append("'")
+        i += 2
+        continue
+      else:
+        in_string = not in_string
+        current_val.append(char)
+    elif char == "," and not in_string:
+      values.append("".join(current_val).strip())
+      current_val = []
+    else:
+      current_val.append(char)
+    i += 1
+  values.append("".join(current_val).strip())
+
+  cleaned = []
+  for v in values:
+    if v.startswith("'") and v.endswith("'"):
+      v = v[1:-1].replace("''", "'")
+    cleaned.append(v)
+  return cleaned
+
+
+def load_table(file_path):
+  rows = []
+  if not os.path.exists(file_path):
+    print(f"Notice: {file_path} not found. Skipping.")
+    return rows
+
+  print(f"Reading {file_path}...")
+  with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
+    for line in f:
+      stripped = line.strip()
+      if stripped.startswith("("):
+        vals = parse_sql_values(stripped)
+        if vals:
+          rows.append(vals)
+  return rows
+
+
+# Build Class ID mapping table[cite: 1]
+class_map = {}
+for row in load_table(FILE_ITEM_CLASS):
+  if len(row) >= 3:
+    try:
+      class_map[int(row[2])] = row[1]
+    except ValueError:
+      continue
+
+# Build Subclass ID mapping table
+subclass_map = {}
+for row in load_table(FILE_ITEM_SUBCLASS):
+  if len(row) >= 5:
+    try:
+      c_id = int(row[3])
+      sc_id = int(row[4])
+      subclass_map[(c_id, sc_id)] = row[1] if row[1] else row[2]
+    except ValueError:
+      continue
+
+# Load base item relational links
+item_base_data = {}
+for row in load_table(FILE_ITEM_BASE):
+  if len(row) >= 6:
+    try:
+      item_id = int(row[0])
+      item_base_data[item_id] = {
+          "class_id": int(row[1]) if row[1].isdigit() else 0,
+          "subclass_id": (
+              int(row[2])
+              if row[2].isdigit()
+              or (row[2].startswith("-") and row[2][1:].isdigit())
+              else 0
+          ),
+          "inventory_type": int(row[4]) if row[4].isdigit() else 0,
+      }
+    except ValueError:
+      continue
+
+# Load ItemEffect to identify items with usable/openable effects
+item_effects_set = set()
+for row in load_table(FILE_ITEM_EFFECT):
+  if len(row) >= 2:
+    try:
+      for val in row[:3]:
+        if val.isdigit():
+          item_effects_set.add(int(val))
+    except ValueError:
+      continue
+
+
+def is_openable_or_usable(item_id, class_name, subclass_name, row):
+  """Comprehensive check to determine if an item is openable, a container,
+
+  a mount, a companion pet, or has an active spell use effect.
+  """
+  if class_name == "Container":
+    return True
+  if class_name == "Miscellaneous" and subclass_name in [
+      "Mount",
+      "Companion Pets",
+      "Battle Pet",
+      "BattlePets",
+  ]:
+    return True
+  if item_id in item_effects_set:
+    return True
+  for col_idx in [13, 14, 15, 16, 17]:
+    if col_idx < len(row) and row[col_idx].isdigit():
+      if int(row[col_idx]) > 0:
+        return True
+  return False
+
+
+# Parse ItemSparse and apply category/subclass toggles, attribute toggles, and filtering
+master_items = {}
+for row in load_table(FILE_ITEM_SPARSE):
+  if len(row) >= 67:
+    try:
+      item_id = int(row[0])
+      name = row[5]
+
+      if not is_valid_item(name):
+        continue
+
+      base = item_base_data.get(item_id, {})
+      class_id = base.get("class_id", 0)
+      subclass_id = base.get("subclass_id", 0)
+
+      class_name = class_map.get(class_id, "Unknown")
+      subclass_name = subclass_map.get((class_id, subclass_id), "Unknown")
+
+      subclass_key = f"{class_name} > {subclass_name}"
+
+      # Only evaluate filtering toggles if ENABLED (master toggle is True)
+      if ENABLE_FILTERS:
+        # Evaluate main class toggle
+        if not ENABLED_CLASS_SUBCLASSES.get(class_name, True):
+          continue
+        # Evaluate specific class > subclass toggle
+        if (
+            subclass_key in ENABLED_CLASS_SUBCLASSES
+            and not ENABLED_CLASS_SUBCLASSES.get(subclass_key, True)
+        ):
+          continue
+
+        # Refined usable/openable check if master filter is active
+        if FILTER_USABLE_OR_OPENABLE:
+          if not is_openable_or_usable(
+              item_id, class_name, subclass_name, row
+          ):
+            continue
+
+      # Construct item dictionary dynamically based on ENABLED_ATTRIBUTES toggles
+      item_payload = {"name": name}
+
+      if ENABLED_ATTRIBUTES.get("class_id", True):
+        item_payload["class_id"] = class_id
+      if ENABLED_ATTRIBUTES.get("class_name", True):
+        item_payload["class_name"] = class_name
+      if ENABLED_ATTRIBUTES.get("subclass_id", True):
+        item_payload["subclass_id"] = subclass_id
+      if ENABLED_ATTRIBUTES.get("subclass_name", True):
+        item_payload["subclass_name"] = subclass_name
+      if ENABLED_ATTRIBUTES.get("item_level", True):
+        item_payload["item_level"] = int(row[51]) if row[51].isdigit() else 0
+      if ENABLED_ATTRIBUTES.get("required_level", True):
+        item_payload["required_level"] = int(row[64]) if row[64].isdigit() else 0
+      if ENABLED_ATTRIBUTES.get("sell_price", True):
+        item_payload["sell_price"] = int(row[23]) if row[23].isdigit() else 0
+      if ENABLED_ATTRIBUTES.get("quality", True):
+        item_payload["quality"] = int(row[66]) if row[66].isdigit() else 0
+      if ENABLED_ATTRIBUTES.get("inventory_type", True):
+        item_payload["inventory_type"] = base.get("inventory_type", 0)
+      if ENABLED_ATTRIBUTES.get("allowed_classes", True):
+        mask_val = (
+            int(row[52])
+            if row[52].isdigit()
+            or (row[52].startswith("-") and row[52][1:].isdigit())
+            else -1
+        )
+        item_payload["allowed_classes"] = decode_allowable_classes(mask_val)
+      if ENABLED_ATTRIBUTES.get("openable", True):
+        item_payload["openable"] = (
+            1
+            if is_openable_or_usable(item_id, class_name, subclass_name, row)
+            else 0
+        )
+
+      master_items[item_id] = item_payload
+    except ValueError:
+      continue
+
+sorted_ids = sorted(master_items.keys())
+current_timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+# 1. Export Python Database Module
+print(
+    f"Exporting {len(sorted_ids)} items to Python module {OUTPUT_PY_PATH}..."
+)
+with open(OUTPUT_PY_PATH, "w", encoding="utf-8") as out:
+  out.write(
+      f"# World of Warcraft Retail Item database for the addon OpenIt, created"
+      f" {current_timestamp}\n"
+  )
+  out.write(f"# Number of items {len(sorted_ids)}\n")
+  out.write("ITEMS = {\n")
+  for item_id in sorted_ids:
+    data = master_items[item_id]
+    out.write(f"    {item_id}: {{\n")
+    for key, val in data.items():
+      if isinstance(val, str):
+        safe_val = val.replace('"', '\\"')
+        out.write(f'        "{key}": "{safe_val}",\n')
+      elif isinstance(val, list):
+        out.write(f'        "{key}": {val},\n')
+      else:
+        out.write(f'        "{key}": {val},\n')
+    out.write("    },\n")
+  out.write("}\n")
+
+# 2. Export Lua Item Addon File (Items.lua) matching requested style
+lua_groups = {}
+for item_id in sorted_ids:
+  data = master_items[item_id]
+  allowed = data.get("allowed_classes", ["All Classes"])
+
+  if allowed == ["All Classes"]:
+    c_name = data.get("class_name", "Unknown")
+    sc_name = data.get("subclass_name", "Unknown")
+    group_key = f"{c_name} > {sc_name}"
+  else:
+    group_key = ", ".join(allowed)
+
+  if group_key not in lua_groups:
+    lua_groups[group_key] = []
+  lua_groups[group_key].append((item_id, data["name"]))
+
+print(f"Exporting items to Lua file {OUTPUT_LUA_PATH}...")
+with open(OUTPUT_LUA_PATH, "w", encoding="utf-8") as out:
+  out.write("-- Data/Items.lua\n")
+  out.write("-- https://github.com/ticstyle/WoW-OpenIt\n")
+  out.write(
+      f"-- World of Warcraft Retail Item database for the addon OpenIt, created"
+      f" {current_timestamp}\n"
+  )
+  out.write(f"-- Number of items {len(sorted_ids)}\n")
+  out.write("-- Included Groups:\n")
+  for group_key in sorted(lua_groups.keys()):
+    out.write(f"--   {group_key}\n")
+  out.write("\n")
+  out.write("-- luacheck: globals\n\n")
+  out.write("local _, addon = ...\n\n")
+  out.write("local itemIDs = {\n")
+
+  for group_key in sorted(lua_groups.keys()):
+    out.write(f"\t-- {group_key}\n")
+    sorted_group_items = sorted(lua_groups[group_key], key=lambda x: x[0])
+    for item_id, name in sorted_group_items:
+      safe_name = name.replace('"', '\\"')
+      out.write(f"\t{item_id}, -- {safe_name}\n")
+    out.write("\n")
+
+  out.write("}\n\n")
+  out.write("-- Build a fast lookup table on load\n")
+  out.write("addon.knownItems = {}\n")
+  out.write("for _, itemID in ipairs(itemIDs) do\n")
+  out.write("\taddon.knownItems[itemID] = true\n")
+  out.write("end\n")
+
+print("Generation complete.")
