@@ -1,4 +1,4 @@
--- Data/Items.lua
+-- Data/Whitelist.lua
 -- https://github.com/ticstyle/WoW-OpenIt
 
 -- luacheck: globals
