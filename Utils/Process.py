@@ -10,21 +10,30 @@
 #   4. ItemSparse.sql   - Contains raw item names, levels, sell prices, and allowable classes
 #   5. ItemEffect.sql   - Contains active use/open effects for items that can be opened or used
 #
-# Place all five files in the exact same folder as this script before running.
+# Place all five files in the exact same folder as this script (Utils/) before running.
 # ==============================================================================
 
 import datetime
 import os
 import re
 
+# Determine directories relative to the Utils script location
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+PARENT_DIR = os.path.dirname(SCRIPT_DIR)
+DATA_DIR = os.path.join(PARENT_DIR, "Data")
+
+# Ensure the Data directory exists
+os.makedirs(DATA_DIR, exist_ok=True)
+
 # File paths for the required relational SQL tables
-FILE_ITEM_CLASS = "ItemClass.sql"
-FILE_ITEM_SUBCLASS = "ItemSubClass.sql"
-FILE_ITEM_BASE = "Item.sql"
-FILE_ITEM_SPARSE = "ItemSparse.sql"
-FILE_ITEM_EFFECT = "ItemEffect.sql"
-OUTPUT_PY_PATH = "item_database.py"
-OUTPUT_LUA_PATH = "Items.lua"
+FILE_ITEM_CLASS = os.path.join(SCRIPT_DIR, "ItemClass.sql")
+FILE_ITEM_SUBCLASS = os.path.join(SCRIPT_DIR, "ItemSubClass.sql")
+FILE_ITEM_BASE = os.path.join(SCRIPT_DIR, "Item.sql")
+FILE_ITEM_SPARSE = os.path.join(SCRIPT_DIR, "ItemSparse.sql")
+FILE_ITEM_EFFECT = os.path.join(SCRIPT_DIR, "ItemEffect.sql")
+
+OUTPUT_PY_PATH = os.path.join(SCRIPT_DIR, "item_database.py")
+OUTPUT_LUA_PATH = os.path.join(DATA_DIR, "Items.lua")
 
 # Master Toggle: Set to False to bypass all category/subclass filtering and get unfiltered data
 ENABLE_FILTERS = True
@@ -69,7 +78,7 @@ ENABLED_CLASS_SUBCLASSES = {
     "Consumable > Vantus Runes": False,
     "Consumable > Combat Curio": False,
     "Consumable > Utility Curio": False,
-    "Consumable > Other": True,
+    "Consumable > Other": False,
 
     # Containers
     "Container": True,
@@ -109,7 +118,7 @@ ENABLED_CLASS_SUBCLASSES = {
     "Housing > Service Item": True,
 
     # Item Enhancements
-    "Item Enhancement": True,
+    "Item Enhancement": False,
     "Item Enhancement > Chest": True,
     "Item Enhancement > Cloak": True,
     "Item Enhancement > Feet": True,
