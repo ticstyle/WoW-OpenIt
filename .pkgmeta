@@ -1,0 +1,10 @@
+ignore:
+  - .github/                 # Ignore GitHub action workflows / templates
+  - Tests/                   # Ignore your unit testing folder
+  - scripts/                 # Ignore local build or dev scripts
+  - README.md                # Ignore documentation files
+  - .gitignore               # Ignore git settings
+  - Utils/                   # Ignore utilities due to filesizes
+  - .luacheckrc
+  - Media/icon.svg
+  - Media/icon.png

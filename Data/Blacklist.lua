@@ -15,4 +15,5 @@ addon.hardcodedBlacklist = {
 	[184504] = true,
 	[140749] = true,
 	[246492] = true,
+	[140093] = true, -- [Streamlined Relic]
 }
