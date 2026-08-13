@@ -863,7 +863,7 @@ local itemIDs = {
 	44065, -- Oracle Secret Solution
 	44067, -- Inscription of Triumph
 	44113, -- Small Spice Bag
-	44129, -- Lesser Inscription of the Storm 
+	44129, -- Lesser Inscription of the Storm
 	44130, -- Lesser Inscription of the Crag
 	44131, -- Lesser Inscription of the Axe
 	44132, -- Lesser Inscription of the Pinnacle
@@ -8794,7 +8794,7 @@ local itemIDs = {
 	246601, -- Bolt Chair
 	246602, -- Small H.O.M.E. Cog
 	246603, -- Gnomish Cog Stack
-	246604, -- Deactivated Atomic Recalibrator 
+	246604, -- Deactivated Atomic Recalibrator
 	246605, -- Mecha-Storage Mecha-Chest
 	246606, -- Mechagon Armory Rack
 	246607, -- Durable Hex Table
@@ -32658,7 +32658,6 @@ local itemIDs = {
 
 	-- Warrior, Rogue, Priest, Death Knight, Warlock, Demon Hunter
 	153067, -- Relinquished Shadow Relic
-
 }
 
 -- Build a fast lookup table on load
