@@ -52,6 +52,16 @@ EXCLUDE_ITEMS_WITH_PLAYER_CONDITIONS = True
 # Toggle to exclude items that require keys (via Lock.sql)
 EXCLUDE_ITEMS_REQUIRING_KEYS = True
 
+# Toggles to exclude items using specific new columns
+EXCLUDE_ITEMS_WITH_REQUIRED_PVP_MEDAL = True
+EXCLUDE_ITEMS_WITH_REQUIRED_PVP_RANK = True
+EXCLUDE_ITEMS_WITH_REQUIRED_SKILL_RANK = True
+EXCLUDE_ITEMS_WITH_REQUIRED_SKILL = True
+EXCLUDE_ITEMS_WITH_MIN_REPUTATION = True
+EXCLUDE_ITEMS_WITH_REQUIRED_ABILITY = True
+EXCLUDE_ITEMS_WITH_ALLOWABLE_RACES = True
+EXCLUDE_ITEMS_WITH_ZONE_BOUND = True
+
 # ------------------------------------------------------------------------------
 # 1. HUMAN-READABLE CLASS & SUBCLASS TOGGLES (Player Class Combos Excluded)
 # ------------------------------------------------------------------------------
@@ -263,6 +273,14 @@ ENABLED_ATTRIBUTES = {
     "openable": True,               # 1 for true (containers/effects), 0 for false
     "player_condition_id": False,   # Optional numeric condition ID
     "player_condition": True,       # 1 if condition present, 0 otherwise
+    "RequiredPVPMedal": True,
+    "RequiredPVPRank": True,
+    "RequiredSkillRank": True,
+    "RequiredSkill": True,
+    "MinReputation": True,
+    "RequiredAbility": True,
+    "AllowableRaces": True,
+    "ZoneBound": True,
 }
 
 # Standard World of Warcraft class bitmask flag definitions
@@ -304,6 +322,28 @@ def decode_allowable_classes(mask_val):
     if mask_val & bit:
       allowed.append(class_name)
   return allowed if allowed else ["All Classes"]
+
+
+def parse_sql_schema(file_path):
+  columns = []
+  if not os.path.exists(file_path):
+    return columns
+  with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
+    in_create = False
+    for line in f:
+      stripped = line.strip()
+      if "CREATE TABLE" in stripped.upper():
+        in_create = True
+        continue
+      if in_create:
+        if stripped.startswith(");") or stripped.startswith(")"):
+          break
+        match = re.search(r'[`"\[]?([A-Za-z0-9_]+)[`"\]]?', stripped)
+        if match:
+          col_name = match.group(1)
+          if col_name.upper() not in ["CREATE", "TABLE", "PRIMARY", "KEY", "DEFAULT", "CONSTRAINT", "UNIQUE"]:
+            columns.append(col_name)
+  return columns
 
 
 def parse_sql_values(sql_line):
@@ -440,10 +480,31 @@ for row in load_table(FILE_ITEM_EFFECT):
     except ValueError:
       continue
 
+# Parse schema for ItemSparse to dynamically map column names to indices
+sparse_columns = parse_sql_schema(FILE_ITEM_SPARSE)
+sparse_col_map = {col: idx for idx, col in enumerate(sparse_columns)}
+
+def get_sparse_val(row, col_names, default=0):
+  for col in col_names:
+    if col in sparse_col_map:
+      idx = sparse_col_map[col]
+      if idx < len(row):
+        val = row[idx]
+        if str(val).isdigit() or (str(val).startswith("-") and str(val)[1:].isdigit()):
+          return int(val)
+        return val
+  return default
+
+
+def safe_int(val, default=0):
+  try:
+    return int(val)
+  except (ValueError, TypeError):
+    return default
+
 
 def is_openable_or_usable(item_id, class_name, subclass_name, row):
   """Comprehensive check to determine if an item is openable, a container,
-
   a mount, a companion pet, or has an active spell use effect.
   """
   if class_name == "Container":
@@ -494,6 +555,15 @@ for row in load_table(FILE_ITEM_SPARSE):
             requires_key = True
             break
 
+      req_pvp_medal = get_sparse_val(row, ["RequiredPVPMedal"], 0)
+      req_pvp_rank = get_sparse_val(row, ["RequiredPVPRank"], 0)
+      req_skill_rank = get_sparse_val(row, ["RequiredSkillRank"], 0)
+      req_skill = get_sparse_val(row, ["RequiredSkill"], 0)
+      min_rep = get_sparse_val(row, ["MinReputation"], 0)
+      req_ability = get_sparse_val(row, ["RequiredAbility"], 0)
+      allow_races = get_sparse_val(row, ["AllowableRaces", "AllowableRace"], -1)
+      zone_bound = get_sparse_val(row, ["ZoneBound"], 0)
+
       # Only evaluate filtering toggles if ENABLED (master toggle is True)
       if ENABLE_FILTERS:
         # Evaluate main class toggle
@@ -512,6 +582,24 @@ for row in load_table(FILE_ITEM_SPARSE):
 
         # Exclude items requiring keys if toggle is active
         if EXCLUDE_ITEMS_REQUIRING_KEYS and requires_key:
+          continue
+
+        # Exclude items using the new columns if their respective toggles are active
+        if EXCLUDE_ITEMS_WITH_REQUIRED_PVP_MEDAL and safe_int(req_pvp_medal) > 0:
+          continue
+        if EXCLUDE_ITEMS_WITH_REQUIRED_PVP_RANK and safe_int(req_pvp_rank) > 0:
+          continue
+        if EXCLUDE_ITEMS_WITH_REQUIRED_SKILL_RANK and safe_int(req_skill_rank) > 0:
+          continue
+        if EXCLUDE_ITEMS_WITH_REQUIRED_SKILL and safe_int(req_skill) > 0:
+          continue
+        if EXCLUDE_ITEMS_WITH_MIN_REPUTATION and safe_int(min_rep) > 0:
+          continue
+        if EXCLUDE_ITEMS_WITH_REQUIRED_ABILITY and safe_int(req_ability) > 0:
+          continue
+        if EXCLUDE_ITEMS_WITH_ALLOWABLE_RACES and safe_int(allow_races, -1) not in [-1, 0]:
+          continue
+        if EXCLUDE_ITEMS_WITH_ZONE_BOUND and safe_int(zone_bound) > 0:
           continue
 
         # Refined usable/openable check if master filter is active
@@ -561,6 +649,24 @@ for row in load_table(FILE_ITEM_SPARSE):
           item_payload["player_condition_id"] = item_condition_map[item_id]
       if ENABLED_ATTRIBUTES.get("player_condition", True):
         item_payload["player_condition"] = 1 if has_condition else 0
+
+      # Additional requested ItemSparse attributes
+      if ENABLED_ATTRIBUTES.get("RequiredPVPMedal", True):
+        item_payload["RequiredPVPMedal"] = req_pvp_medal
+      if ENABLED_ATTRIBUTES.get("RequiredPVPRank", True):
+        item_payload["RequiredPVPRank"] = req_pvp_rank
+      if ENABLED_ATTRIBUTES.get("RequiredSkillRank", True):
+        item_payload["RequiredSkillRank"] = req_skill_rank
+      if ENABLED_ATTRIBUTES.get("RequiredSkill", True):
+        item_payload["RequiredSkill"] = req_skill
+      if ENABLED_ATTRIBUTES.get("MinReputation", True):
+        item_payload["MinReputation"] = min_rep
+      if ENABLED_ATTRIBUTES.get("RequiredAbility", True):
+        item_payload["RequiredAbility"] = req_ability
+      if ENABLED_ATTRIBUTES.get("AllowableRaces", True):
+        item_payload["AllowableRaces"] = allow_races
+      if ENABLED_ATTRIBUTES.get("ZoneBound", True):
+        item_payload["ZoneBound"] = zone_bound
 
       master_items[item_id] = item_payload
     except ValueError:
