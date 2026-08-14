@@ -19,13 +19,13 @@ jobs:
         with:
           ref: ${{ github.head_ref || github.ref_name }}
 
-      # Auto-format with StyLua (modifies files in place)
+      # Auto-format with StyLua (modifies files in place, skipping Utils/)
       - name: Auto-format with StyLua
         uses: JohnnyMorganz/stylua-action@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           version: 2.0.2
-          args: --exclude-path "Utils" .
+          args: --glob "!Utils/**" -- .
 
       # Automatically commit and push changes back if StyLua modified any files
       - name: Commit and push formatting fixes
