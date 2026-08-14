@@ -1,7 +1,9 @@
--- Utils/Items.lua
+-- Utils/preclean.lua
 -- https://github.com/ticstyle/WoW-OpenIt
--- World of Warcraft Retail Item database for the addon OpenIt, created 2026-08-14 11:23:50
+
+-- World of Warcraft Retail Item database for the addon OpenIt, created 2026-08-14 11:57:29
 -- Number of items 9719
+
 -- Included Groups:
 --   Consumable > Other
 --   Death Knight
@@ -2948,7 +2950,6 @@ local itemIDs = {
 	263576, -- Ensemble: Rampant Thorn Armor
 	263577, -- Arsenal: Rootlands Weaponry
 	263975, -- Feeling Fielder Mk. 7
-
 	-- Death Knight
 	136796, -- Necrophile Tome: Corpse Exploder
 	138955, -- Illusion: Rune of Razorice
@@ -2959,7 +2960,6 @@ local itemIDs = {
 	147678, -- Ensemble: Cruel Combatant's Dreadplate Armor
 	150252, -- Ensemble: Fierce Combatant's Dreadplate Armor
 	150253, -- Ensemble: Fierce Combatant's Dreadplate Armor
-
 	-- Druid
 	17683, -- Book: Gift of the Wild
 	21294, -- Book of Healing Touch
@@ -2982,7 +2982,6 @@ local itemIDs = {
 	150250, -- Ensemble: Fierce Combatant's Dragonhide Armor
 	150251, -- Ensemble: Fierce Combatant's Dragonhide Armor
 	171976, -- Ensemble: Wildheart Raiment
-
 	-- Housing > Decor
 	235523, -- Sturdy Wooden Chair
 	235633, -- Circular Woolen Rug
@@ -3598,14 +3597,11 @@ local itemIDs = {
 	280164, -- Spiral Wooden Stairs
 	280513, -- Color-Curious Candle
 	280846, -- Beguiling Memories of the Sea
-
 	-- Housing > Service Item
 	253580, -- Harvesting Hatchet
-
 	-- Hunter, Priest, Shaman, Mage, Warlock, Monk, Druid, Evoker
 	211154, -- Arsenal: Drakebreaker's Stave
 	211168, -- Arsenal: Scalewarden's Stave
-
 	-- Hunter, Shaman, Evoker
 	138430, -- Ensemble: Chain of the Scarlet Crusade
 	152741, -- Unsullied Mail Chestguard
@@ -3634,7 +3630,6 @@ local itemIDs = {
 	203694, -- Ensemble: Cyclonic Battlegear
 	211135, -- Ensemble: Drakebreaker's Mail Armor
 	211136, -- Ensemble: Scalewarden's Mail Armor
-
 	-- Mage
 	21214, -- Tome of Frostbolt
 	21279, -- Tome of Fireball
@@ -3666,7 +3661,6 @@ local itemIDs = {
 	162626, -- Tome of Polymorph: Bumblebee
 	171978, -- Ensemble: Magister's Regalia
 	227710, -- Tome of Polymorph: Mosswool
-
 	-- Miscellaneous > Companion Pets
 	8498, -- Emerald Whelpling
 	8499, -- Tiny Crimson Whelpling
@@ -4219,7 +4213,6 @@ local itemIDs = {
 	262768, -- Sleepy Mandrake
 	262769, -- Screechy Mandrake
 	265030, -- Kai
-
 	-- Miscellaneous > Holiday
 	21267, -- Toasting Goblet
 	21536, -- Elune Stone
@@ -4324,7 +4317,6 @@ local itemIDs = {
 	258129, -- Jade Monument
 	258135, -- Gilded Coil Spire
 	258136, -- Azure Thunder Coil Pillar
-
 	-- Miscellaneous > Mount
 	16343, -- Blood Guard's Mount
 	21218, -- Blue Qiraji Resonating Crystal
@@ -4346,7 +4338,6 @@ local itemIDs = {
 	206976, -- Royal Swarmer's Reins
 	210919, -- Crimson Glimmerfur
 	245936, -- Unarmored Deathtusk Felboar
-
 	-- Miscellaneous > Other
 	1973, -- Orb of Deception
 	2460, -- Elixir of Tongues
@@ -6934,7 +6925,6 @@ local itemIDs = {
 	263934, -- Chest of Gold
 	264182, -- Kelum'ko's Generous Aromatic Gift
 	264183, -- Kelum'ko's Generous Aromatic Gift
-
 	-- Monk
 	136800, -- Meditation Manual: Zen Flight
 	139861, -- Mogu Madstone
@@ -6945,10 +6935,8 @@ local itemIDs = {
 	150258, -- Ensemble: Fierce Combatant's Ironskin Armor
 	150259, -- Ensemble: Fierce Combatant's Ironskin Armor
 	225338, -- Glyph of Jab
-
 	-- Paladin, Priest, Shaman, Monk, Druid, Evoker
 	168944, -- Web of Unbridled Vitality
-
 	-- Priest
 	17413, -- Codex: Prayer of Fortitude
 	21284, -- Codex of Greater Heal
@@ -6967,7 +6955,6 @@ local itemIDs = {
 	150262, -- Ensemble: Fierce Combatant's Satin Armor
 	150263, -- Ensemble: Fierce Combatant's Satin Armor
 	171980, -- Ensemble: Vestments of the Devout
-
 	-- Priest, Mage, Warlock
 	152734, -- Unsullied Cloth Mantle
 	152738, -- Unsullied Cloth Cap
@@ -6996,17 +6983,14 @@ local itemIDs = {
 	211141, -- Ensemble: Scalewarden's Cloth Armor
 	211156, -- Arsenal: Drakebreaker's Wand
 	211166, -- Arsenal: Scalewarden's Wand
-
 	-- Priest, Mage, Warlock, Monk, Druid, Evoker
 	211155, -- Arsenal: Drakebreaker's Offhand
 	211167, -- Arsenal: Scalewarden's Offhand
-
 	-- Profession > Alchemy
 	193493, -- Expert Alchemist's Hat
 	193544, -- Master's Wildercloth Alchemist's Robe
 	219872, -- Nerubian Alchemist's Hat
 	222850, -- Artisan Alchemist's Robe
-
 	-- Profession > Blacksmithing
 	5956, -- Blacksmith Hammer
 	136350, -- Brumdysla, Hammer of Vrorsk
@@ -7019,12 +7003,10 @@ local itemIDs = {
 	193613, -- Flameproof Apron
 	219874, -- Earthen Forgemaster's Apron
 	222495, -- Artisan Blacksmith's Toolbox
-
 	-- Profession > Cooking
 	193545, -- Master's Wildercloth Chef's Hat
 	222851, -- Artisan Chef's Hat
 	223969, -- Secret Sauce
-
 	-- Profession > Enchanting
 	22463, -- Runed Eternium Rod
 	36898, -- Runed Azurite Rod
@@ -7032,20 +7014,17 @@ local itemIDs = {
 	193533, -- Master's Wildercloth Enchanter's Hat
 	215125, -- Enchanter's Crystal
 	222849, -- Artisan Enchanter's Hat
-
 	-- Profession > Engineering
 	193491, -- Shockproof Gloves
 	198246, -- Khaz'gorite Encased Samophlange
 	219870, -- Charged Scrapmaster's Gauntlets
 	221798, -- Aqirite Fueled Samophlange
-
 	-- Profession > Fishing
 	19970, -- Arcanite Fishing Pole
 	168804, -- Powered Piscine Procurement Pole
 	173044, -- Wreathed Fishing Pole
 	180136, -- \"The Brokers Angle'r\"
 	224171, -- Master's Wildercloth Fishing Cap
-
 	-- Profession > Herbalism
 	191224, -- Khaz'gorite Sickle
 	193488, -- Lavish Floral Pack
@@ -7054,20 +7033,17 @@ local itemIDs = {
 	221697, -- Artisan Gardening Hat
 	222488, -- Artisan Sickle
 	222847, -- Artisan Gardening Hat
-
 	-- Profession > Inscription
 	193039, -- Fine-Print Trifocals
 	193040, -- Magnificent Margin Magnifier
 	194875, -- Scribe's Resplendent Quill
 	215122, -- Novelist's Specs
 	215123, -- Forger's Font Inspector
-
 	-- Profession > Jewelcrafting
 	193041, -- Alexstraszite Loupes
 	193616, -- Resplendent Cover
 	215124, -- Extravagant Loupes
 	219876, -- Earthen Jeweler's Cover
-
 	-- Profession > Leatherworking
 	191227, -- Khaz'gorite Leatherworker's Knife
 	191229, -- Khaz'gorite Leatherworker's Toolset
@@ -7075,26 +7051,22 @@ local itemIDs = {
 	219871, -- Arathi Leatherworker's Smock
 	222492, -- Artisan Leatherworker's Knife
 	222493, -- Artisan Leatherworker's Toolset
-
 	-- Profession > Mining
 	1819, -- Gouging Pick
 	198244, -- Khaz'gorite Delver's Helmet
 	198263, -- Bottomless Mireslush Ore Satchel
 	221796, -- Aqirite Miner's Headgear
 	221800, -- Miner's Aqirite Hoard
-
 	-- Profession > Skinning
 	191225, -- Khaz'gorite Skinning Knife
 	193489, -- Reinforced Pack
 	193490, -- Expert Skinner's Cap
 	219868, -- Deep Tracker's Pack
 	219869, -- Deep Tracker's Cap
-
 	-- Profession > Tailoring
 	191226, -- Khaz'gorite Needle Set
 	222491, -- Artisan Needle Set
 	222852, -- Artisan Tailor's Coat
-
 	-- Recipe > Alchemy
 	2556, -- Recipe: Elixir of Tongues
 	3394, -- Recipe: Potion of Curing
@@ -7265,7 +7237,6 @@ local itemIDs = {
 	257417, -- Recipe: Vicious Thalassian Flask of Honor
 	258141, -- Recipe: Haranir Phial of Perception
 	258305, -- Recipe: Amani Extract
-
 	-- Recipe > Blacksmithing
 	3871, -- Plans: Golden Scale Shoulders
 	3875, -- Plans: Golden Scale Boots
@@ -7600,7 +7571,6 @@ local itemIDs = {
 	258519, -- Plans: Magister's Valediction
 	258521, -- Plans: Blood Knight's Impetus
 	258522, -- Plans: Bloomforged Greataxe
-
 	-- Recipe > Book
 	8046, -- Kearnen's Journal
 	44956, -- Goblin's Guide to Elementium
@@ -7623,7 +7593,6 @@ local itemIDs = {
 	183124, -- Simple Tome of Bone-Binding
 	186684, -- Memories of Brighter Times
 	211314, -- Cinder of Companionship
-
 	-- Recipe > Cooking
 	4609, -- Recipe: Barbecued Buzzard Wing
 	6039, -- Recipe: Giant Clam Scorcho
@@ -7854,7 +7823,6 @@ local itemIDs = {
 	248013, -- Recipe: Dornic Mine and Cheese Platter
 	251630, -- Recipe: Amani Cornucopia
 	263473, -- Recipe: Flora Frenzy
-
 	-- Recipe > Enchanting
 	6349, -- Formula: Enchant 2H Weapon - Lesser Intellect
 	11151, -- Ancient Enchanting Vellum
@@ -8093,7 +8061,6 @@ local itemIDs = {
 	259373, -- Formula: Ren'dorei Postal Repository
 	259374, -- Formula: Spellbound Tome of Thalassian Magics
 	259375, -- Formula: Self-Pouring Thalassian Sunwine
-
 	-- Recipe > Engineering
 	4415, -- Schematic: Craftsman's Monocle
 	7560, -- Schematic: Gnomish Universal Remote
@@ -8332,18 +8299,15 @@ local itemIDs = {
 	257414, -- Schematic: Thalassian Competitor's Leather Optics
 	257415, -- Schematic: Thalassian Competitor's Mail Links
 	257416, -- Schematic: Thalassian Competitor's Mail Visor
-
 	-- Recipe > First Aid
 	16113, -- Manual: Mageweave Bandage
 	21992, -- Manual: Netherweave Bandage
 	21993, -- Manual: Heavy Netherweave Bandage
-
 	-- Recipe > Fishing
 	16082, -- Artisan Fishing - The Way of the Lure
 	16083, -- Expert Fishing - The Bass and You
 	46054, -- Journeyman Fishing - Fishing for Dummies
 	46055, -- Grand Master Fishing - Deep Sea Adventures
-
 	-- Recipe > Inscription
 	104209, -- Charred Recipe
 	104215, -- Charred Recipe
@@ -8702,7 +8666,6 @@ local itemIDs = {
 	263443, -- Technique: Contract: The Hara'ti
 	263444, -- Technique: Contract: The Silvermoon Court
 	263445, -- Technique: Contract: The Singularity
-
 	-- Recipe > Jewelcrafting
 	20854, -- Design: Amulet of the Moon
 	20855, -- Design: Wicked Moonstone Ring
@@ -9056,7 +9019,6 @@ local itemIDs = {
 	259366, -- Design: Replica Haranir Mural
 	259369, -- Design: Resplendent Highborne Statue
 	259372, -- Design: Shining Sin'dorei Hourglass
-
 	-- Recipe > Leatherworking
 	4298, -- Pattern: Guardian Belt
 	5973, -- Pattern: Barbaric Leggings
@@ -9411,7 +9373,6 @@ local itemIDs = {
 	259368, -- Pattern: Sturdy Haranir Chair
 	259371, -- Pattern: Stitched Haranir Rug
 	259457, -- Pattern: Simple Haranir Table
-
 	-- Recipe > Tailoring
 	4354, -- Pattern: Rich Purple Silk Shirt
 	4355, -- Pattern: Icy Cloak
@@ -9722,7 +9683,6 @@ local itemIDs = {
 	258132, -- Pattern: Plush Silvermoon Bed
 	258133, -- Pattern: Chic Silvermoon Pillow
 	258134, -- Pattern: Voidstrider Saddlebag
-
 	-- Rogue
 	2892, -- Empty Poison Vial
 	2893, -- Empty Poison Vial
@@ -9760,14 +9720,11 @@ local itemIDs = {
 	234246, -- Glyph of the Admiral's Pistol Shot
 	234247, -- Glyph of the Gilded Pistol Shot
 	234248, -- Glyph of the Twilight Pistol Shot
-
 	-- Rogue, Monk, Druid
 	203696, -- Ensemble: Dust Devil Armor
-
 	-- Rogue, Priest, Shaman, Mage, Warlock, Druid, Evoker
 	211146, -- Arsenal: Drakebreaker's Knife
 	211174, -- Arsenal: Scalewarden's Dagger
-
 	-- Shaman
 	21292, -- Tablet of Strength of Earth Totem
 	23320, -- Tablet of Flame Shock
@@ -9794,10 +9751,8 @@ local itemIDs = {
 	172405, -- Tome of Hex: Living Honey
 	190378, -- Glyph of the Spectral Lupine
 	190380, -- Glyph of the Spectral Vulpine
-
 	-- Unknown > Unknown
 	43228, -- Stone Keeper's Shard
-
 	-- Warlock
 	4213, -- Grimoire of Doom
 	9214, -- Grimoire of Inferno
@@ -9816,7 +9771,6 @@ local itemIDs = {
 	150256, -- Ensemble: Fierce Combatant's Felweave Armor
 	150257, -- Ensemble: Fierce Combatant's Felweave Armor
 	171983, -- Ensemble: Dreadmist Raiment
-
 	-- Warrior
 	21298, -- Manual of Battle Shout
 	139853, -- Axe of the Valkyra
@@ -9827,7 +9781,6 @@ local itemIDs = {
 	147692, -- Ensemble: Cruel Combatant's Plate Armor
 	150266, -- Ensemble: Fierce Combatant's Plate Armor
 	150267, -- Ensemble: Fierce Combatant's Plate Armor
-
 	-- Warrior, Paladin, Death Knight
 	138431, -- Ensemble: Scale of the Scarlet Crusade
 	152743, -- Unsullied Plate Sabatons
@@ -9857,28 +9810,21 @@ local itemIDs = {
 	203695, -- Ensemble: Firestorm Armor
 	211100, -- Ensemble: Drakebreaker's Plate Armor
 	211134, -- Ensemble: Scalewarden's Plate Armor
-
 	-- Warrior, Paladin, Death Knight, Evoker
 	211153, -- Arsenal: Drakebreaker's Greatsword
 	211169, -- Arsenal: Scalewarden's Greatsword
-
 	-- Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
 	168538, -- Dazzling Azerite Formation
-
 	-- Warrior, Paladin, Death Knight, Monk, Druid, Evoker
 	211152, -- Arsenal: Drakebreaker's Polearm
 	211170, -- Arsenal: Scalewarden's Polearm
-
 	-- Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk
 	86580, -- Wilted Lilypad
-
 	-- Warrior, Paladin, Rogue, Death Knight, Mage, Warlock, Monk, Demon Hunter, Evoker
 	211177, -- Arsenal: Scalewarden's Shortsword
-
 	-- Warrior, Paladin, Rogue, Death Knight, Shaman, Monk, Demon Hunter, Evoker
 	211148, -- Arsenal: Drakebreaker's Axe
 	211172, -- Arsenal: Scalewarden's Axe
-
 	-- Warrior, Paladin, Rogue, Priest, Death Knight, Shaman, Monk, Druid, Evoker
 	211143, -- Arsenal: Drakebreaker's Spiked Hammer
 	211144, -- Arsenal: Drakebreaker's Club
@@ -9897,8 +9843,7 @@ local itemIDs = {
 	223999, -- Arsenal: Hellbloom Greatsword
 	224000, -- Arsenal: Hellbloom Axe
 	224001, -- Arsenal: Hellbloom Branch
-
 	-- Warrior, Paladin, Shaman
 	211150, -- Arsenal: Drakebreaker's Shield
 	211171, -- Arsenal: Scalewarden's Shield
-
+}
