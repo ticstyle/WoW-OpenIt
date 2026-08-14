@@ -3,15 +3,16 @@
 # ==============================================================================
 # FUTURE UPDATE & DATABASE REQUIREMENTS INSTRUCTIONS:
 # To update this item database in the future, you must export the following  
-# 6 database tables as SQL files from your local game files using 'wow.export':
+# 7 database tables as SQL files from your local game files using 'wow.export':
 #   1. ItemClass.sql       - Maps main class IDs to category names (Weapon, Armor, etc.)
 #   2. ItemSubClass.sql    - Maps subcategories (One-Handed Swords, Cloth, etc.)
 #   3. Item.sql            - Links each item ID to its corresponding ClassID and SubclassID
 #   4. ItemSparse.sql      - Contains raw item names, levels, sell prices, and allowable classes
 #   5. ItemEffect.sql      - Contains active use/open effects for items that can be opened or used
 #   6. PlayerCondition.sql - Contains conditional requirements (zones, maps, factions, etc.)
+#   7. Lock.sql            - Contains lock and key/unlock requirements for items/containers
 #
-# Place all six files in the exact same folder as this script (Utils/) before running.
+# Place all seven files in the exact same folder as this script (Utils/) before running.
 # ==============================================================================
 
 import datetime
@@ -33,6 +34,7 @@ FILE_ITEM_BASE = os.path.join(SCRIPT_DIR, "Item.sql")
 FILE_ITEM_SPARSE = os.path.join(SCRIPT_DIR, "ItemSparse.sql")
 FILE_ITEM_EFFECT = os.path.join(SCRIPT_DIR, "ItemEffect.sql")
 FILE_PLAYER_CONDITION = os.path.join(SCRIPT_DIR, "PlayerCondition.sql")
+FILE_LOCK = os.path.join(SCRIPT_DIR, "Lock.sql")
 
 OUTPUT_PY_PATH = os.path.join(SCRIPT_DIR, "item_database.py")
 OUTPUT_LUA_PATH = os.path.join(DATA_DIR, "Items.lua")
@@ -42,6 +44,12 @@ ENABLE_FILTERS = True
 
 # Toggle to restrict items strictly to containers, mounts, pets, or items with usable/openable effects
 FILTER_USABLE_OR_OPENABLE = False
+
+# Toggle to exclude items that have player conditions (zone/faction/expansion locks)
+EXCLUDE_ITEMS_WITH_PLAYER_CONDITIONS = True
+
+# Toggle to exclude items that require keys (via Lock.sql)
+EXCLUDE_ITEMS_REQUIRING_KEYS = True
 
 # ------------------------------------------------------------------------------
 # 1. HUMAN-READABLE CLASS & SUBCLASS TOGGLES (Player Class Combos Excluded)
@@ -171,12 +179,12 @@ ENABLED_CLASS_SUBCLASSES = {
     "Profession > Tailoring": True,
 
     # Projectiles
-    "Projectile": False,
+    "Projectile": True,
     "Projectile > Arrow": True,
     "Projectile > Bullet": True,
 
     # Reagents
-    "Reagent": False,
+    "Reagent": True,
     "Reagent > Context Token": True,
     "Reagent > Keystone": True,
     "Reagent > Reagent": True,
@@ -250,9 +258,10 @@ ENABLED_ATTRIBUTES = {
     "sell_price": False,
     "quality": True,
     "inventory_type": True,
-    "allowed_classes": True,    # Decodes AllowableClass bitmask into class names
-    "openable": True,           # 1 for true (containers/effects), 0 for false
-    "player_condition_id": True, # Includes PlayerCondition ID linkage if present
+    "allowed_classes": True,       # Decodes AllowableClass bitmask into class names
+    "openable": True,              # 1 for true (containers/effects), 0 for false
+    "player_condition_id": False,  # Optional numeric condition ID
+    "player_condition": True,      # 1 if condition present, 0 otherwise
 }
 
 # Standard World of Warcraft class bitmask flag definitions
@@ -399,6 +408,19 @@ for row in load_table(FILE_PLAYER_CONDITION):
     except ValueError:
       continue
 
+# Load Lock.sql to identify locks requiring keys (Type == 1)
+locks_requiring_keys = set()
+for row in load_table(FILE_LOCK):
+  if len(row) > 0 and row[0].isdigit():
+    try:
+      lock_id = int(row[0])
+      for i in range(1, len(row), 4):
+        if row[i].isdigit() and int(row[i]) == 1:
+          locks_requiring_keys.add(lock_id)
+          break
+    except ValueError:
+      continue
+
 # Load ItemEffect to identify item effects and map item_id -> player_condition_id
 item_effects_set = set()
 item_condition_map = {}
@@ -410,7 +432,6 @@ for row in load_table(FILE_ITEM_EFFECT):
         item_id_candidate = ints[0]
         item_effects_set.add(item_id_candidate)
         
-        # Look for condition ID mapping if row has multiple integer values (typically ItemID and ConditionID/SpellID)
         for val in ints[1:]:
           if val in player_conditions:
             item_condition_map[item_id_candidate] = val
@@ -461,7 +482,17 @@ for row in load_table(FILE_ITEM_SPARSE):
 
       subclass_key = f"{class_name} > {subclass_name}"
 
-      # Only evaluate filtering toggles if ENABLE_FILTERS is True
+      has_condition = item_id in item_condition_map
+      
+      # Check if this item references any lock that requires a key
+      requires_key = False
+      if locks_requiring_keys:
+        for val in row:
+          if val.isdigit() and int(val) in locks_requiring_keys:
+            requires_key = True
+            break
+
+      # Only evaluate filtering toggles if ENABLED (master toggle is True)
       if ENABLE_FILTERS:
         # Evaluate main class toggle
         if not ENABLED_CLASS_SUBCLASSES.get(class_name, True):
@@ -471,6 +502,14 @@ for row in load_table(FILE_ITEM_SPARSE):
             subclass_key in ENABLED_CLASS_SUBCLASSES
             and not ENABLED_CLASS_SUBCLASSES.get(subclass_key, True)
         ):
+          continue
+
+        # Exclude items with player conditions if toggle is active
+        if EXCLUDE_ITEMS_WITH_PLAYER_CONDITIONS and has_condition:
+          continue
+
+        # Exclude items requiring keys if toggle is active
+        if EXCLUDE_ITEMS_REQUIRING_KEYS and requires_key:
           continue
 
         # Refined usable/openable check if master filter is active
@@ -515,9 +554,11 @@ for row in load_table(FILE_ITEM_SPARSE):
             if is_openable_or_usable(item_id, class_name, subclass_name, row)
             else 0
         )
-      if ENABLED_ATTRIBUTES.get("player_condition_id", True):
-        if item_id in item_condition_map:
+      if ENABLED_ATTRIBUTES.get("player_condition_id", False):
+        if has_condition:
           item_payload["player_condition_id"] = item_condition_map[item_id]
+      if ENABLED_ATTRIBUTES.get("player_condition", True):
+        item_payload["player_condition"] = 1 if has_condition else 0
 
       master_items[item_id] = item_payload
     except ValueError:
