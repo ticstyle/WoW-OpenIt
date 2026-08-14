@@ -3,14 +3,15 @@
 # ==============================================================================
 # FUTURE UPDATE & DATABASE REQUIREMENTS INSTRUCTIONS:
 # To update this item database in the future, you must export the following  
-# 5 database tables as SQL files from your local game files using 'wow.export':
-#   1. ItemClass.sql    - Maps main class IDs to category names (Weapon, Armor, etc.)[cite: 1]
-#   2. ItemSubClass.sql - Maps subcategories (One-Handed Swords, Cloth, etc.)
-#   3. Item.sql         - Links each item ID to its corresponding ClassID and SubclassID
-#   4. ItemSparse.sql   - Contains raw item names, levels, sell prices, and allowable classes
-#   5. ItemEffect.sql   - Contains active use/open effects for items that can be opened or used
+# 6 database tables as SQL files from your local game files using 'wow.export':
+#   1. ItemClass.sql       - Maps main class IDs to category names (Weapon, Armor, etc.)
+#   2. ItemSubClass.sql    - Maps subcategories (One-Handed Swords, Cloth, etc.)
+#   3. Item.sql            - Links each item ID to its corresponding ClassID and SubclassID
+#   4. ItemSparse.sql      - Contains raw item names, levels, sell prices, and allowable classes
+#   5. ItemEffect.sql      - Contains active use/open effects for items that can be opened or used
+#   6. PlayerCondition.sql - Contains conditional requirements (zones, maps, factions, etc.)
 #
-# Place all five files in the exact same folder as this script (Utils/) before running.
+# Place all six files in the exact same folder as this script (Utils/) before running.
 # ==============================================================================
 
 import datetime
@@ -31,6 +32,7 @@ FILE_ITEM_SUBCLASS = os.path.join(SCRIPT_DIR, "ItemSubClass.sql")
 FILE_ITEM_BASE = os.path.join(SCRIPT_DIR, "Item.sql")
 FILE_ITEM_SPARSE = os.path.join(SCRIPT_DIR, "ItemSparse.sql")
 FILE_ITEM_EFFECT = os.path.join(SCRIPT_DIR, "ItemEffect.sql")
+FILE_PLAYER_CONDITION = os.path.join(SCRIPT_DIR, "PlayerCondition.sql")
 
 OUTPUT_PY_PATH = os.path.join(SCRIPT_DIR, "item_database.py")
 OUTPUT_LUA_PATH = os.path.join(DATA_DIR, "Items.lua")
@@ -78,7 +80,7 @@ ENABLED_CLASS_SUBCLASSES = {
     "Consumable > Vantus Runes": False,
     "Consumable > Combat Curio": False,
     "Consumable > Utility Curio": False,
-    "Consumable > Other": False,
+    "Consumable > Other": True,
 
     # Containers
     "Container": True,
@@ -118,7 +120,7 @@ ENABLED_CLASS_SUBCLASSES = {
     "Housing > Service Item": True,
 
     # Item Enhancements
-    "Item Enhancement": False,
+    "Item Enhancement": True,
     "Item Enhancement > Chest": True,
     "Item Enhancement > Cloak": True,
     "Item Enhancement > Feet": True,
@@ -248,8 +250,9 @@ ENABLED_ATTRIBUTES = {
     "sell_price": False,
     "quality": True,
     "inventory_type": True,
-    "allowed_classes": True,  # Decodes AllowableClass bitmask into class names
-    "openable": True,         # 1 for true (containers/effects), 0 for false
+    "allowed_classes": True,    # Decodes AllowableClass bitmask into class names
+    "openable": True,           # 1 for true (containers/effects), 0 for false
+    "player_condition_id": True, # Includes PlayerCondition ID linkage if present
 }
 
 # Standard World of Warcraft class bitmask flag definitions
@@ -347,7 +350,7 @@ def load_table(file_path):
   return rows
 
 
-# Build Class ID mapping table[cite: 1]
+# Build Class ID mapping table
 class_map = {}
 for row in load_table(FILE_ITEM_CLASS):
   if len(row) >= 3:
@@ -386,21 +389,38 @@ for row in load_table(FILE_ITEM_BASE):
     except ValueError:
       continue
 
-# Load ItemEffect to identify items with usable/openable effects
+# Load PlayerCondition.sql into a dictionary lookup map
+player_conditions = {}
+for row in load_table(FILE_PLAYER_CONDITION):
+  if len(row) > 0 and row[0].isdigit():
+    try:
+      cond_id = int(row[0])
+      player_conditions[cond_id] = row
+    except ValueError:
+      continue
+
+# Load ItemEffect to identify item effects and map item_id -> player_condition_id
 item_effects_set = set()
+item_condition_map = {}
 for row in load_table(FILE_ITEM_EFFECT):
   if len(row) >= 2:
     try:
-      for val in row[:3]:
-        if val.isdigit():
-          item_effects_set.add(int(val))
+      ints = [int(v) for v in row if v.isdigit()]
+      if len(ints) >= 1:
+        item_id_candidate = ints[0]
+        item_effects_set.add(item_id_candidate)
+        
+        # Look for condition ID mapping if row has multiple integer values (typically ItemID and ConditionID/SpellID)
+        for val in ints[1:]:
+          if val in player_conditions:
+            item_condition_map[item_id_candidate] = val
+            break
     except ValueError:
       continue
 
 
 def is_openable_or_usable(item_id, class_name, subclass_name, row):
   """Comprehensive check to determine if an item is openable, a container,
-
   a mount, a companion pet, or has an active spell use effect.
   """
   if class_name == "Container":
@@ -441,7 +461,7 @@ for row in load_table(FILE_ITEM_SPARSE):
 
       subclass_key = f"{class_name} > {subclass_name}"
 
-      # Only evaluate filtering toggles if ENABLED (master toggle is True)
+      # Only evaluate filtering toggles if ENABLE_FILTERS is True
       if ENABLE_FILTERS:
         # Evaluate main class toggle
         if not ENABLED_CLASS_SUBCLASSES.get(class_name, True):
@@ -495,6 +515,9 @@ for row in load_table(FILE_ITEM_SPARSE):
             if is_openable_or_usable(item_id, class_name, subclass_name, row)
             else 0
         )
+      if ENABLED_ATTRIBUTES.get("player_condition_id", True):
+        if item_id in item_condition_map:
+          item_payload["player_condition_id"] = item_condition_map[item_id]
 
       master_items[item_id] = item_payload
     except ValueError:
