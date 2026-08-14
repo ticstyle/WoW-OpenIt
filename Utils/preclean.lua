@@ -1,8 +1,8 @@
 -- Utils/preclean.lua
 -- https://github.com/ticstyle/WoW-OpenIt
 
--- World of Warcraft Retail Item database for the addon OpenIt, created 2026-08-14 11:57:29
--- Number of items 9719
+-- World of Warcraft Retail Item database for the addon OpenIt, created 2026-08-14 12:18:34
+-- Number of items 6467
 
 -- Included Groups:
 --   Consumable > Other
@@ -36,16 +36,11 @@
 --   Profession > Skinning
 --   Profession > Tailoring
 --   Recipe > Alchemy
---   Recipe > Blacksmithing
 --   Recipe > Book
 --   Recipe > Cooking
 --   Recipe > Enchanting
---   Recipe > Engineering
---   Recipe > First Aid
---   Recipe > Fishing
 --   Recipe > Inscription
 --   Recipe > Jewelcrafting
---   Recipe > Leatherworking
 --   Recipe > Tailoring
 --   Rogue
 --   Rogue, Monk, Druid
@@ -104,10 +99,8 @@ local itemIDs = {
 	5859, -- Party Grenade
 	5951, -- Moist Towelette
 	6452, -- Anti-Venom
-	6530, -- Nightcrawlers
 	6636, -- Fire Sapta
 	6637, -- Water Sapta
-	6811, -- Aquadynamic Fish Lens
 	7516, -- Tabetha's Instructions
 	7964, -- Solid Sharpening Stone
 	7965, -- Solid Weightstone
@@ -183,8 +176,6 @@ local itemIDs = {
 	23865, -- Wrath of the Titans
 	23985, -- Crystal of Vitality
 	23986, -- Crystal of Insight
-	24268, -- Netherweave Net
-	24269, -- Heavy Netherweave Net
 	24289, -- Chrono-Beacon
 	24330, -- Drain Schematics
 	24407, -- Uncatalogued Species
@@ -205,14 +196,6 @@ local itemIDs = {
 	27501, -- Scroll of Versatility V
 	27503, -- Scroll of Strength V
 	28420, -- Fel Weightstone
-	28886, -- Greater Inscription of Discipline
-	28887, -- Greater Inscription of Faith
-	28888, -- Greater Inscription of Vengeance
-	28889, -- Greater Inscription of Warding
-	28909, -- Greater Inscription of the Orb
-	28910, -- Greater Inscription of the Blade
-	28911, -- Greater Inscription of the Knight
-	28912, -- Greater Inscription of the Oracle
 	29443, -- Bloodmaul Brutebane Brew
 	29735, -- Holy Dust
 	29736, -- Arcane Rune
@@ -264,7 +247,6 @@ local itemIDs = {
 	34594, -- Scryer Supplies Package
 	34595, -- Aldor Supplies Package
 	34686, -- Brazier of Dancing Flames
-	34861, -- Sharpened Fish Hook
 	35232, -- Shattered Sun Supplies
 	35396, -- Enchant 2H Weapon - Major Agility
 	35397, -- Enchant 2H Weapon - Savagery
@@ -324,18 +306,12 @@ local itemIDs = {
 	36894, -- Fel Healthstone
 	36895, -- Demonic Soulstone
 	36899, -- Exceptional Mana Oil
-	37118, -- Scroll of Recall
 	37265, -- Tua'kea's Breathing Bladder
 	38587, -- Empty Brewfest Stein
-	39878, -- Mysterious Egg
 	39883, -- Cracked Egg
 	40390, -- Vic's Emergency Air Tank
-	40725, -- Steam-Powered Auctioneer
 	42342, -- Bag of Popcorn
 	42350, -- Bag of Peanuts
-	43302, -- Inscription of High Discipline
-	43303, -- Inscription of the Frostblade
-	43304, -- Inscription of Kings
 	43467, -- Scroll of Protection VII
 	43468, -- Scroll of Protection VIII
 	44481, -- Grindgear Toy Gorilla
@@ -344,7 +320,6 @@ local itemIDs = {
 	44621, -- Bottle of Dalaran White
 	44623, -- Bottle of Dalaran Red
 	44627, -- Bottle of Peaked Dalaran Red
-	44717, -- Disgusting Jar
 	44718, -- Ripe Disgusting Jar
 	46319, -- Tournament Brew
 	46399, -- Thunder's Plunder
@@ -353,7 +328,6 @@ local itemIDs = {
 	46402, -- Promise of the Pandaren
 	46403, -- Chuganpug's Delight
 	52974, -- Mack's Deep Sea Grog
-	54442, -- Embersilk Net
 	54455, -- Paint Bomb
 	54822, -- Sen'jin Overcloak
 	54962, -- Elemental Air Shard
@@ -467,7 +441,6 @@ local itemIDs = {
 	92439, -- Mercenary Contract: Mage
 	92442, -- Horde Banner
 	92443, -- Alliance Banner
-	92522, -- Grand Commendation of the Klaxxi
 	92526, -- Crate of Horde Banners
 	92527, -- Rodent Crate
 	92528, -- Obelisk of Deception
@@ -484,15 +457,6 @@ local itemIDs = {
 	93147, -- Pandaren Spirit Pet Supplies
 	93148, -- Pandaren Spirit Pet Supplies
 	93149, -- Pandaren Spirit Pet Supplies
-	93215, -- Grand Commendation of the Golden Lotus
-	93220, -- Grand Commendation of the Shado-Pan
-	93224, -- Grand Commendation of the August Celestials
-	93225, -- Grand Commendation of the Anglers
-	93226, -- Grand Commendation of the Tillers
-	93229, -- Grand Commendation of the Order of the Cloud Serpent
-	93230, -- Grand Commendation of the Lorewalkers
-	93231, -- Grand Commendation of Operation: Shieldwall
-	93232, -- Grand Commendation of the Dominance Offensive
 	93730, -- Darkmoon Top Hat
 	93823, -- Challenge Card: Bruce
 	93824, -- Challenge Card: Vian
@@ -527,7 +491,6 @@ local itemIDs = {
 	94188, -- Challenge Card: Millhouse Manastorm
 	94189, -- Challenge Card: Zen'shar
 	94207, -- Fabled Pandaren Pet Supplies
-	94295, -- Primal Egg
 	94296, -- Cracked Primal Egg
 	95434, -- Bag of Green Cabbage Seeds
 	95436, -- Bag of Juicycrunch Carrot Seeds
@@ -551,9 +514,6 @@ local itemIDs = {
 	95456, -- Bag of Windshear Cactus Seeds
 	95457, -- Bag of Raptorleaf Seeds
 	95458, -- Bag of Raptorleaf Seeds
-	95545, -- Grand Commendation of the Kirin Tor Offensive
-	95548, -- Grand Commendation of the Sunreaver Onslaught
-	95559, -- Grand Commendation of the Shado-Pan Assault
 	97278, -- Challenge Card: Ahoo'ru
 	97279, -- Challenge Card: Mingus Diggs
 	97280, -- Challenge Card: Dippy & Doopy
@@ -576,8 +536,6 @@ local itemIDs = {
 	97566, -- Challenge Card: Razorgrin
 	97972, -- Challenge Card: Anthracite
 	98095, -- Brawler's Pet Supplies
-	98558, -- Empty Supply Crate
-	98559, -- Empty Supply Crate
 	98563, -- Rainstick
 	101571, -- Moonfang Shroud
 	101675, -- Shimmering Moonstone
@@ -596,7 +554,6 @@ local itemIDs = {
 	110907, -- Iron Explorer Notes
 	111407, -- Waterlogged Journal
 	112087, -- Obsidian Frostwolf Petroglyph
-	112107, -- Mysterious Egg
 	112108, -- Cracked Egg
 	112737, -- Contract: Ka'la of the Frostwolves
 	112848, -- Contract: Daleera Moonfang
@@ -635,7 +592,6 @@ local itemIDs = {
 	117398, -- Everbloom Seed Pouch
 	117492, -- Relic of Rukhmar
 	118226, -- Pattern: Miniature Flying Carpet
-	118391, -- Worm Supreme
 	118414, -- Awesomefish
 	118415, -- Grieferfish
 	118473, -- Small Sack of Salvaged Goods
@@ -644,7 +600,6 @@ local itemIDs = {
 	118631, -- Stout Augment Rune
 	118632, -- Focus Augment Rune
 	118697, -- Big Bag of Pet Supplies
-	118705, -- Warm Goren Egg
 	118706, -- Cracked Goren Egg
 	118727, -- Frostfire Treasure Map
 	118728, -- Shadowmoon Valley Treasure Map
@@ -653,12 +608,7 @@ local itemIDs = {
 	118731, -- Spires of Arak Treasure Map
 	118732, -- Nagrand Treasure Map
 	119158, -- Robo-Rooster
-	119161, -- Contract: Karg Bloodfury
-	119162, -- Contract: Cleric Maluuf
 	119164, -- Contract: Arakkoa Outcasts Follower
-	119165, -- Contract: Professor Felblast
-	119166, -- Contract: Cacklebone
-	119167, -- Contract: Vindicator Heluun
 	119168, -- Contract: Vol'jin's Spear Follower
 	119169, -- Contract: Wrynn's Vanguard Follower
 	119209, -- Angry Brewfest Letter
@@ -690,7 +640,6 @@ local itemIDs = {
 	122535, -- Traveler's Pet Supplies
 	122589, -- Ogre Waystone Conversions
 	122610, -- Storm Drake Scale
-	122742, -- Bladebone Hook
 	123956, -- Leystone Hoofplates
 	124037, -- Storm Drake Scale
 	124045, -- Smelly Musk Gland
@@ -710,7 +659,6 @@ local itemIDs = {
 	127134, -- Ship: Battleship
 	127135, -- Ship: Transport
 	127395, -- Ripened Strange Fruit
-	127396, -- Strange Green Fruit
 	127408, -- Adventuring Journal
 	127690, -- Demon Hunt: Felwrought Destructor
 	127691, -- Shrine: Glory of the Lightbringer
@@ -733,7 +681,6 @@ local itemIDs = {
 	127992, -- New Recruit
 	128207, -- Reconnaissance: Legion Gateway
 	128231, -- Equipment Blueprint: Trained Shark Tank
-	128250, -- Equipment Blueprint: Unsinkable
 	128252, -- Equipment Blueprint: True Iron Rudder
 	128253, -- Equipment Blueprint: Sonic Amplification Field
 	128254, -- Equipment Blueprint: Q-43 Noisemaker Mines
@@ -745,15 +692,12 @@ local itemIDs = {
 	128260, -- Equipment Blueprint: Blast Furnace
 	128261, -- Equipment Blueprint: Automated Sky Scanner
 	128262, -- Equipment Blueprint: Ammo Reserves
-	128294, -- Trade Agreement: Arakkoa Outcasts
 	128301, -- Ship: Submarine
 	128302, -- Ship: Battleship
 	128303, -- Ship: Destroyer
 	128315, -- Medallion of the Legion
 	128320, -- Corrupted Primal Obelisk
 	128324, -- Ashilvara, Verse 1
-	128446, -- Saberstalker Teachings: Trailblazer
-	128489, -- Equipment Blueprint: Unsinkable
 	128634, -- Mysterious Brew
 	128707, -- Azsuna Scouting Report
 	128747, -- Val'Sharah Scouting Report
@@ -980,7 +924,6 @@ local itemIDs = {
 	138787, -- Tome of Illusions: Azeroth
 	138791, -- Tome of Illusions: Cataclysm
 	138802, -- Illusion: Power Torrent
-	138803, -- Illusion: Mending
 	138827, -- Illusion: Nightmare
 	138828, -- Illusion: Chronos
 	138838, -- Illusion: Deathfrost
@@ -1042,15 +985,6 @@ local itemIDs = {
 	139423, -- Croc Mojo
 	139424, -- Screecher Whistle
 	139427, -- Wild Mana Wand
-	139489, -- Forgotten Techniques of the Broken Isles
-	139490, -- Forgotten Techniques of the Broken Isles
-	139491, -- Forgotten Techniques of the Broken Isles
-	139493, -- Forgotten Plans of the Broken Isles
-	139494, -- Forgotten Formulas of the Broken Isles
-	139496, -- Forgotten Techniques of the Broken Isles
-	139497, -- Forgotten Designs of the Broken Isles
-	139498, -- Forgotten Patterns of the Broken Isles
-	139499, -- Forgotten Patterns of the Broken Isles
 	139500, -- Hippogryph Feather
 	139593, -- Sack of Salvaged Goods
 	139777, -- Strange Crate
@@ -1201,7 +1135,6 @@ local itemIDs = {
 	142073, -- Wrath of the Titans
 	142074, -- Player Experience
 	142156, -- Order Resources Cache
-	142273, -- Ensemble: Blackened Defias Armor
 	142288, -- Rumble Card: Grief Warden
 	142289, -- Rumble Card: Penguin Stampede
 	142290, -- Rumble Card: Battle of the Brew
@@ -1221,8 +1154,6 @@ local itemIDs = {
 	142528, -- Crate of Bobbers: Can of Worms
 	142529, -- Crate of Bobbers: Cat Head
 	142530, -- Crate of Bobbers: Tugboat
-	142531, -- Crate of Bobbers: Squeaky Duck
-	142532, -- Crate of Bobbers: Murloc Head
 	142543, -- Scroll of Town Portal
 	143618, -- Oversized Page
 	143619, -- Pile of Dust
@@ -1382,13 +1313,10 @@ local itemIDs = {
 	152934, -- Shadow-Soaked Stalker Heart
 	152935, -- Wakener's Bauble
 	152936, -- Azurelight Sapphire
-	152964, -- Krokul Flute
 	153001, -- Faintly Glowing Phoenix Down
 	153005, -- Relinquished Armor Set
-	153023, -- Lightforged Augment Rune
 	153113, -- Demon's Soulstone
 	153134, -- Cracked Matrix Core
-	153190, -- Fel-Spotted Egg
 	153191, -- Cracked Fel-Spotted Egg
 	153251, -- Fresh Talbuk Meat
 	154166, -- Coarse Leather Barding
@@ -1453,8 +1381,6 @@ local itemIDs = {
 	159741, -- Add Keystone Affix: Teeming
 	159742, -- Add Keystone Affix: Volcanic
 	159748, -- Rune-Etched Bone
-	159791, -- Tidespray Linen Net
-	159792, -- Hooked Deep Sea Net
 	159961, -- Set Keystone Map: Neltharion's Lair
 	159962, -- Set Keystone: Time Trial 3
 	159963, -- Set Keystone: Time Trial 2
@@ -1462,7 +1388,6 @@ local itemIDs = {
 	160053, -- Battle-Scarred Augment Rune
 	160114, -- Thornberry
 	160831, -- Cracking Cobra Egg
-	160832, -- Viable Cobra Egg
 	160982, -- Recruitment Orders
 	160983, -- Recruitment Orders
 	161121, -- The Wolf's Den
@@ -1506,21 +1431,12 @@ local itemIDs = {
 	163828, -- Toy Siege Tower
 	163829, -- Toy War Machine
 	163830, -- Gale Rider
-	163834, -- Forgotten Techniques of Kul Tiras
-	163835, -- Forgotten Techniques of Zandalar
-	163836, -- Forgotten Techniques of Kul Tiras
-	163837, -- Forgotten Techniques of Zandalar
-	163838, -- Forgotten Techniques of Kul Tiras
-	163839, -- Forgotten Techniques of Zandalar
 	164638, -- Challenge Card: Phillip Carter Tracey
 	164639, -- Challenge Card: Farmer Xiang-Su
 	164640, -- Challenge Card: Tidemistress Shellbreaker
 	164645, -- Challenge Card: Zaxx Dreadslice
 	164647, -- Challenge Card: Marcus
 	164721, -- Challenge Card: Robe-Robber Robert
-	164913, -- Ub3r Module: Short-Fused Boom Bots
-	164914, -- Ub3r Module: Ub3r-Improved Target Dummy
-	164915, -- Ub3r Module: Ub3r S3ntry Mk. X8.0
 	164931, -- Rumbler's Purse
 	164935, -- Challenge Card: Lord Sylysthrel
 	164936, -- Mysterious Challenge Card
@@ -1602,8 +1518,6 @@ local itemIDs = {
 	168442, -- Roiling Blood of the Vanquished
 	168443, -- Agitated Blood of the Dominated
 	168444, -- Churning Blood of the Conquered
-	168521, -- Ub3r Module: P.O.G.O
-	168523, -- Ub3r Module: Scrap Cannon
 	168536, -- Recrystallizing Azerite Formation
 	168537, -- Tempered Azerite Formation
 	168543, -- Add Keystone Affix: Reaping
@@ -1685,7 +1599,6 @@ local itemIDs = {
 	168941, -- Vitality Redistribution Lattice
 	168942, -- Mesh of Expanding Vitality
 	168943, -- Grid of Bursting Vitality
-	169109, -- Beeholder's Goggles
 	169152, -- Empty Beehive
 	169303, -- Hell-Bent Bracers
 	169445, -- Dredged Leather Bladder
@@ -1792,7 +1705,6 @@ local itemIDs = {
 	174663, -- Set Keystone Map: Operation: Mechagon - Junkyard
 	174664, -- Set Keystone Map: Operation: Mechagon - Workshop
 	174875, -- Obelisk of the Sun
-	174906, -- Lightning-Forged Augment Rune
 	174932, -- Illusion: Void Edge
 	174958, -- Cache of the Fallen Mogu
 	174959, -- Cache of the Mantid Swarm
@@ -1800,7 +1712,6 @@ local itemIDs = {
 	174961, -- Cache of the Amathet
 	175069, -- Theater Ticket
 	176922, -- Wild Nightbloom
-	177036, -- Aquatic Enticer
 	177699, -- Greater Untamed Spirit
 	177946, -- Desolate Leather Barding
 	177955, -- Spoiled Contaminant
@@ -1914,7 +1825,6 @@ local itemIDs = {
 	181868, -- Murder Vacation
 	182188, -- Lesser Phial of Serenity
 	182200, -- Engorged Blood Burrower
-	183189, -- Illusion: Undying Spirit
 	183517, -- Page 76 of the Necronom-i-nom
 	183520, -- Wild Nightbloom Seeds
 	183803, -- Add Keystone Affix: Prideful
@@ -1932,7 +1842,6 @@ local itemIDs = {
 	184121, -- Spare Eye
 	184122, -- Spare Foot
 	184124, -- Spare Stomach
-	184351, -- Illusion: Devoted Spirit
 	184395, -- Fallen Adventurer's Cache
 	184606, -- Tighter Stitching
 	185717, -- Slumbering Spirit
@@ -2023,7 +1932,6 @@ local itemIDs = {
 	198224, -- Green Fireflight
 	198247, -- Neural Silencer Mk3
 	198401, -- Aileron Seamoth Lure
-	198449, -- Pouch of Prodigious Wonders
 	198479, -- Gale Rider
 	198486, -- Windscale Rider
 	198549, -- Black Fireflight
@@ -2033,7 +1941,6 @@ local itemIDs = {
 	198777, -- Ensemble: Renowned Expeditioner's Mail Armor
 	198778, -- Ensemble: Renowned Expeditioner's Plate Armor
 	198790, -- I.O.U.
-	198791, -- Glimmer of Blacksmithing Wisdom
 	199215, -- Worldbreaker Membership
 	199752, -- Ensemble: Crimson Valdrakken Clothing
 	199753, -- Ensemble: Black Valdrakken Clothing
@@ -2105,7 +2012,6 @@ local itemIDs = {
 	201349, -- Set Keystone Map: Neltharus
 	201350, -- Set Keystone Map: Ruby Life Pools
 	201351, -- Set Keystone Map: Uldaman: Legacy of Tyr
-	201366, -- Master's Hammer
 	201791, -- How to Train a Dragonkin
 	201815, -- Cloak of Many Faces
 	201834, -- Add Keystone Affix: Thundering
@@ -2121,7 +2027,6 @@ local itemIDs = {
 	204180, -- Cracked Medal of Honor
 	204213, -- Short-Range Teleport
 	204236, -- Sack of Stolen Dragon Glyphs
-	204339, -- Satchel of Coalescing Chaos
 	204447, -- Ensemble: Black Dragonflight's Vestments
 	204888, -- Ensemble: Waveborne Diplomat's Regalia
 	204893, -- Three-Cheese Cake
@@ -2133,7 +2038,6 @@ local itemIDs = {
 	205933, -- Add Keystone Affix: Entangling
 	205934, -- Add Keystone Affix: Afflicted
 	205935, -- Add Keystone Affix: Incorporeal
-	205954, -- Three-Dimensional Compass
 	205958, -- Ensemble: Azure Renewal Finery
 	205993, -- Set Keystone Map: The Vortex Pinnacle
 	206009, -- Ouroboros Tablet
@@ -2164,9 +2068,6 @@ local itemIDs = {
 	208475, -- Ensemble: Forsaken Champion's Attire
 	208567, -- Cracked Medal of Conquest
 	208879, -- Ensemble: Kaldorei Protector's Adornment
-	208945, -- Paracausal Crate
-	208951, -- Paracausal Cluster
-	208952, -- Soridormi's Letter of Commendation
 	209062, -- Ensemble: Chromatically Calibrated Holo-Gogs
 	209063, -- Ensemble: Chromatically Calibrated Bio-Optic Killshades
 	209064, -- Ensemble: Chromatically Calibrated Retinal Armor
@@ -2213,7 +2114,6 @@ local itemIDs = {
 	211363, -- Rose of Dreams Fulfilled
 	211364, -- Rose of Tragedy
 	211446, -- Ensemble: Heritage of the Darkspear
-	211495, -- Dreambound Augment Rune
 	211770, -- Cracked Medal of Honor
 	211771, -- Cracked Medal of Honor
 	211772, -- Cracked Medal of Honor
@@ -2308,7 +2208,6 @@ local itemIDs = {
 	219145, -- Set Keystone Map: Cinderbrew Meadery
 	219146, -- Set Keystone Map: Stonevault
 	219148, -- Patrol Torch
-	219195, -- Imbued Mulch
 	219390, -- Set Keystone Map: Grim Batol
 	220378, -- Forged Equipment Chest
 	220520, -- Radiant Echo
@@ -2431,7 +2330,6 @@ local itemIDs = {
 	224571, -- Commendation of the Thorium Brotherhood
 	224572, -- Crystallized Augment Rune
 	224580, -- Massive Sapphire Chunk
-	224729, -- Slum Shark Tooth
 	224814, -- Adventurer's Warbound Boots
 	224839, -- Adventurer's Warbound Wrists
 	224840, -- Adventurer's Warbound Waist
@@ -2611,16 +2509,10 @@ local itemIDs = {
 	237764, -- Exquisite Painting
 	237765, -- Heartstop Blade
 	237766, -- Felwyrm Egg
-	238388, -- Imbued Mulch
 	238418, -- Ensemble: Coldflame Battlegear
 	238428, -- Ensemble: Lavaborn Emerald Attire
 	238438, -- Ensemble: Lavaborn Battleplate
 	238447, -- Ensemble: Lavaborn Citrine Attire
-	238652, -- Majestic Eversong Lure
-	238653, -- Majestic Zul'Aman Lure
-	238654, -- Majestic Harandar Lure
-	238655, -- Majestic Voidstorm Lure
-	238656, -- Grand Beast Lure
 	238803, -- Commendation of the Order of Embers
 	238804, -- Commendation of Proudmoore Admiralty
 	238805, -- Commendation of Storm's Wake
@@ -2661,7 +2553,6 @@ local itemIDs = {
 	242514, -- Memento of Epoch Fun
 	242515, -- Memento of Epoch Strategies
 	242711, -- Pungent Truffle
-	243191, -- Ethereal Augment Rune
 	243773, -- Gleeful Glamour - Blood Elf
 	243774, -- Gleeful Glamour - Dark Iron Dwarf
 	243775, -- Gleeful Glamour - Draenei
@@ -2734,7 +2625,6 @@ local itemIDs = {
 	245799, -- Contract: The Silvermoon Court
 	245800, -- Contract: The Silvermoon Court
 	245885, -- Lil Wheel of Cheese
-	246492, -- Soulgorged Augment Rune
 	246889, -- Orb of Synchronized Power
 	246907, -- Broker Supply Crate
 	246965, -- Ensemble: Felrider's Azure Attire
@@ -2997,7 +2887,6 @@ local itemIDs = {
 	236676, -- Stormwind Interior Narrow Wall
 	236677, -- Stormwind Interior Wall
 	236678, -- Stormwind Interior Doorway
-	238859, -- Cenarion Privacy Screen
 	238975, -- Reliquary Telescope
 	239075, -- Wrought Iron Chandelier
 	239170, -- Dornic Mine and Cheese Platter
@@ -3012,7 +2901,6 @@ local itemIDs = {
 	243088, -- Standing Ornate Weapon Rack
 	243242, -- Circular Elven Floor Rug
 	243243, -- Rectangular Elven Floor Rug
-	243290, -- Tauren Waterwheel
 	243334, -- Reinforced Wooden Chest
 	243337, -- Bound-Left Silvermoon Drapes
 	243338, -- Bound-Right Silvermoon Drapes
@@ -3097,8 +2985,6 @@ local itemIDs = {
 	245411, -- Dark Ship's Lantern
 	245429, -- Tirisgarde Book Tempest
 	245444, -- Orcish Communal Stove
-	245448, -- \"Night on the Jeweled Estate\" Painting
-	245450, -- Highmountain Totem
 	245474, -- Forsaken War Planning Table
 	245476, -- Large Forsaken War Tent
 	245477, -- Small Forsaken War Tent
@@ -3172,14 +3058,11 @@ local itemIDs = {
 	246263, -- Orgrimmar Angled Platform
 	246414, -- Light-Infused Rotunda
 	246431, -- Elegant Tied Curtain
-	246480, -- Automated Gnomeregan Guardian
 	246481, -- Retired Industrial Gnomegrabber
 	246485, -- Mechagnome Sustenance Distributor
-	246501, -- Gnomish Safety Flamethrower
 	246502, -- Charming Couch
 	246587, -- Short Orgrimmar Bookcase
 	246588, -- Sturdy Wooden Trellis
-	246605, -- Mecha-Storage Mecha-Chest
 	246606, -- Mechagon Armory Rack
 	246607, -- Durable Hex Table
 	246608, -- Long Leather-Clad Table
@@ -3196,7 +3079,6 @@ local itemIDs = {
 	246711, -- Elegant Pillow Roll
 	246742, -- Tall Sturdy Wooden Chair
 	246803, -- Arched Wooden Bench
-	246850, -- \"Fruit of the Arcan'dor\" Painting
 	246851, -- \"Raising Your Eyes\" Painting
 	246867, -- Tome of Earthen Directives
 	246868, -- Wide Hide-Covered Bench
@@ -3230,7 +3112,6 @@ local itemIDs = {
 	248400, -- Founder's Point Signpost
 	248401, -- Ornamental Kaldorei Glaive
 	248402, -- Grummle Kafa Refinery
-	248619, -- Stormwind Gazebo
 	248625, -- Razorwind Succulent Palm
 	248626, -- Razorwind Fighting Cactus
 	248627, -- Razorwind Tumbleweed
@@ -3258,7 +3139,6 @@ local itemIDs = {
 	248649, -- Young Chestnut Tree
 	248650, -- Razorwind Flamebrush
 	248658, -- Elven Wood Crate
-	248665, -- Stormwind Peddler's Cart
 	248760, -- Lovely Elven Shelf
 	248800, -- Architect's Drafting Table
 	248802, -- Elwynn Grass Patch
@@ -3327,10 +3207,8 @@ local itemIDs = {
 	251012, -- Painted Wood Scrap Pile
 	251013, -- Cenarion Arch
 	251014, -- Earthen Ring Scouting Map
-	251479, -- Shadowmoon Greenhouse
 	251545, -- Razorwind Cooking Grill
 	251549, -- Emblem of the Naaru's Blessing
-	251551, -- Grand Draenethyst Lamp
 	251636, -- Netherlight Command Map
 	251637, -- Tusked Weapon Stand
 	251638, -- Jagged Orgrimmar Trellis
@@ -3603,7 +3481,6 @@ local itemIDs = {
 	211154, -- Arsenal: Drakebreaker's Stave
 	211168, -- Arsenal: Scalewarden's Stave
 	-- Hunter, Shaman, Evoker
-	138430, -- Ensemble: Chain of the Scarlet Crusade
 	152741, -- Unsullied Mail Chestguard
 	152744, -- Unsullied Mail Girdle
 	153137, -- Unsullied Mail Spaulders
@@ -3657,8 +3534,6 @@ local itemIDs = {
 	147696, -- Ensemble: Cruel Combatant's Silk Armor
 	150270, -- Ensemble: Fierce Combatant's Silk Armor
 	150271, -- Ensemble: Fierce Combatant's Silk Armor
-	162625, -- Tome of Polymorph: Direhorn
-	162626, -- Tome of Polymorph: Bumblebee
 	171978, -- Ensemble: Magister's Regalia
 	227710, -- Tome of Polymorph: Mosswool
 	-- Miscellaneous > Companion Pets
@@ -3668,7 +3543,6 @@ local itemIDs = {
 	19462, -- Unhatched Jubling Egg
 	20769, -- Disgusting Oozeling
 	21168, -- Baby Shark
-	23712, -- Ash'ana
 	23713, -- Hippogryph Hatchling
 	25535, -- Netherwhelp's Collar
 	32498, -- Fortune Coin
@@ -3680,7 +3554,6 @@ local itemIDs = {
 	35350, -- Chuck's Bucket
 	35504, -- Phoenix Hatchling
 	37297, -- Gold Medallion
-	39148, -- Baby Coralshell Turtle
 	39286, -- Frosty's Collar
 	48116, -- Gundrak Hatchling
 	48126, -- Razzashi Hatchling
@@ -3719,7 +3592,6 @@ local itemIDs = {
 	98550, -- Blossoming Ancient
 	101426, -- Micronax Controller
 	103637, -- Vengeful Porcupette
-	104295, -- Harmonious Porcupette
 	106240, -- Alterac Brandy
 	109014, -- Dread Hatchling
 	111660, -- Iron Starlette
@@ -3746,13 +3618,6 @@ local itemIDs = {
 	118921, -- Everbloom Peachick
 	118923, -- Sentinel's Companion
 	119112, -- Son of Sethe
-	119141, -- Frostwolf Pup
-	119142, -- Draenei Micro Defender
-	119143, -- Son of Sethe
-	119146, -- Bone Wasp
-	119147, -- Nether Ray Fry
-	119148, -- Indentured Albino River Calf
-	119149, -- Captured Forest Sproutling
 	119170, -- Eye of Observation
 	119467, -- Puddle Terror
 	119468, -- Sunfire Kaliri
@@ -3793,8 +3658,6 @@ local itemIDs = {
 	128424, -- Brightpaw
 	128426, -- Nibbles
 	128427, -- Murkidan
-	128477, -- Savage Cub
-	128478, -- Blazing Firehawk
 	128690, -- Ashmaw Cub
 	129108, -- Son of Goredome
 	129175, -- Crispin
@@ -3814,8 +3677,6 @@ local itemIDs = {
 	130168, -- Fetid Waveling
 	134047, -- Baby Winston
 	136897, -- Northern Hawk Owl
-	136898, -- Fledgling Warden Owl
-	136899, -- Extinguished Eye
 	136900, -- Hateful Eye
 	136901, -- Eye of Inquisition
 	136902, -- Toxic Whelpling
@@ -3827,7 +3688,6 @@ local itemIDs = {
 	136911, -- Knockoff Blingtron
 	136913, -- Red Broodling
 	136914, -- Leyline Broodling
-	136919, -- Baby Elderhorn
 	136921, -- Trigger
 	136922, -- Wyrmy Tunkins
 	136923, -- Celestial Calf
@@ -3840,7 +3700,6 @@ local itemIDs = {
 	140261, -- Hungering Claw
 	140274, -- River Calf
 	140320, -- Corgnelius
-	140672, -- Court Scribe
 	140741, -- Nightmare Lasher
 	140761, -- Nightmare Treant
 	140934, -- Benax
@@ -3929,8 +3788,6 @@ local itemIDs = {
 	163690, -- Plagued Egg
 	163711, -- Shard of Fozruk
 	163712, -- Mana-Warped Egg
-	163778, -- Lil' Siege Tower
-	163779, -- Lil' War Machine
 	163797, -- Scuttle
 	163798, -- Captain Nibs
 	163799, -- Barnaby
@@ -4007,10 +3864,8 @@ local itemIDs = {
 	174474, -- Corrupted Tentacle
 	174475, -- Stinky Sack
 	174476, -- Black Chitinous Plate
-	174477, -- Pygmy Camel
 	174478, -- Wicked Lurker
 	174479, -- Jade Defender
-	174480, -- Windfeather Quill
 	174481, -- Cursed Dune Watcher
 	174646, -- Void-Link Frostwolf Collar
 	174827, -- Wailing Lasher
@@ -4029,7 +3884,6 @@ local itemIDs = {
 	183601, -- Jiggles
 	183621, -- Putrid Geist
 	183623, -- Spinemaw Gormling
-	184221, -- Archivist's Quill
 	184350, -- Ruffle
 	184400, -- Courage
 	184509, -- Spriggan Trickster
@@ -4075,104 +3929,22 @@ local itemIDs = {
 	217043, -- Pokee
 	218086, -- Remembered Riverpaw
 	218245, -- Remembered Construct
-	220771, -- Hallowed Glowfly
-	220782, -- Thunder
-	221022, -- Cowboy Bee[DNT]
-	221195, -- Illskitter
-	221492, -- Moss Skipper
-	221493, -- Admiral
-	221494, -- Skippy
-	221496, -- Wriggle
-	221546, -- Nightfarm Growthling
-	221548, -- Blightbud
-	221759, -- Sceaduthax
-	221760, -- Pillarnest Bonedrinker
-	221761, -- Venomwing
-	221762, -- Frenzied Bloodtick
-	221764, -- Burntram
-	221811, -- Starkstripe Hopper
-	221819, -- Shadowbog Hopper
-	221820, -- Chester
-	221821, -- Waxwick
-	221848, -- Tiberius
-	221849, -- Vanilla
-	221850, -- Freshly Webbed Kebab
-	221851, -- Argos's Bell
-	222964, -- Fathom Incher
-	222965, -- Loamy
-	222966, -- Spinner
-	222967, -- Webbers
-	222968, -- Itchbite
-	222969, -- Anub'Rekyute
-	222970, -- Fuzzy
-	222971, -- Bouncer
-	222972, -- Jump Jump
-	222973, -- Fringe
-	222974, -- Sir Shady Mrrgglton Junior
-	222975, -- Umbral Amalgam [DNT]
-	222978, -- Sandstone Ramolith
-	222979, -- Clay Stonecharger
-	222980, -- Slim
-	223155, -- Bop
-	223623, -- Guacamole
-	223624, -- Sneef
-	223625, -- Cinderwold Sizzlestinger
-	223626, -- Embersting
-	223802, -- Ruby-Eyed Stagshell
-	223803, -- Blue Stagshell
-	224101, -- Brown Leafbug
 	224259, -- Flash
 	224260, -- Thundo
 	224261, -- Gale
 	224406, -- Misty
 	224410, -- Craggles
-	224766, -- Faithful Dog
-	225337, -- Violet Sporbit
-	225934, -- Lil' Bonechewer
-	225935, -- Rak-Ush Battleshell
-	228096, -- Vibrant Firefly
-	228097, -- Pinkskin Burrower
-	228098, -- Troglofrog
 	228740, -- Gizmo the Pure
 	231294, -- Reven
 	231356, -- Specter
-	232806, -- Tiny Torq
-	232807, -- Iron Chick
-	232838, -- Viridian Mechasaur
-	232839, -- Wavebreaker Mechasaur
-	232840, -- Mechagopher
-	232841, -- Professor Punch
-	232842, -- Crimson Mechasaur
-	232843, -- Mega-Mecha Gorilla
-	232844, -- Fuz-Size Flarendo
-	232845, -- Bilgewater Junkhauler
-	232846, -- Steamwheedle Flunkie
-	232847, -- Personal-Use Sapper
-	232848, -- Mr. DELVER
-	232849, -- Venture Companyman
-	232850, -- Blackwater Kegmover
-	232851, -- Rocketfist
-	232852, -- Mutt
-	232853, -- Eepy
-	232854, -- Grinner
-	232855, -- Foreman
-	232856, -- Scruff
-	232857, -- Goggles's Favorite Chew-Wrench
-	232858, -- Cruncher
-	232859, -- Lab Rat
-	232895, -- Spotty
 	235794, -- Eye of Chaos
 	235980, -- Scourge of the Aspects
 	235988, -- Parley
 	235989, -- Parley
-	236768, -- Craboom
-	238986, -- Mister Mans
 	239019, -- Mean-Ball Ball Bag
 	239699, -- Tidbit
 	239705, -- Morsel
 	240840, -- Niblet
-	241188, -- Swiftpaw
-	241193, -- Threadis's Workshop Bot 2.0
 	243158, -- Ixthal the Observling
 	244467, -- Veridian Thorntail
 	244468, -- Scrappy Thorntail
@@ -4196,8 +3968,6 @@ local itemIDs = {
 	245272, -- Heka'Tarnos, Bringer of Discord
 	245273, -- Copper Lapbug
 	245274, -- Cerulean Lapbug
-	246314, -- Burbling Blob of Paint
-	246628, -- Emerald Sporbit
 	246694, -- Zo'ya
 	250863, -- Naloki
 	252301, -- Warden's Companion
@@ -4318,26 +4088,8 @@ local itemIDs = {
 	258135, -- Gilded Coil Spire
 	258136, -- Azure Thunder Coil Pillar
 	-- Miscellaneous > Mount
-	16343, -- Blood Guard's Mount
-	21218, -- Blue Qiraji Resonating Crystal
-	21324, -- Yellow Qiraji Resonating Crystal
-	33976, -- Brewfest Ram
-	34060, -- Flying Machine
-	37827, -- Brewfest Kodo
 	44221, -- Loaned Gryphon Reins
 	44229, -- Loaned Wind Rider Reins
-	89363, -- Disc of the Red Flying Cloud
-	151625, -- Ruby Qiraji Resonating Crystal
-	151626, -- Sapphire Qiraji Resonating Crystal
-	166775, -- Vulpine Familiar
-	201702, -- Crimson Vorquin
-	201704, -- Sapphire Vorquin
-	201719, -- Obsidian Vorquin
-	201720, -- Bronze Vorquin
-	206027, -- Reins of the Felcrystal Scorpion
-	206976, -- Royal Swarmer's Reins
-	210919, -- Crimson Glimmerfur
-	245936, -- Unarmored Deathtusk Felboar
 	-- Miscellaneous > Other
 	1973, -- Orb of Deception
 	2460, -- Elixir of Tongues
@@ -4495,7 +4247,6 @@ local itemIDs = {
 	79916, -- Mogu Coin
 	79917, -- Worn Monument Ledger
 	80513, -- Vintage Bug Sprayer
-	80914, -- Mourning Glory
 	86591, -- Magic Banana
 	87528, -- Honorary Brewmaster Keg
 	88566, -- Krastinov's Bag of Horrors
@@ -4565,7 +4316,6 @@ local itemIDs = {
 	109576, -- Lunarfall Excavation, Level 2
 	109577, -- Herb Garden, Level 2
 	109578, -- Fishing Shack
-	110424, -- Savage Safari Hat
 	111810, -- Barracks, Level 1
 	111813, -- The Forge, Level 1
 	111814, -- Gem Boutique, Level 1
@@ -4636,11 +4386,6 @@ local itemIDs = {
 	113138, -- Lunarfall Excavation
 	113188, -- Mining Carts
 	113265, -- Rock Crusher
-	113295, -- Cracked Potion Vial
-	113327, -- Weathered Bedroll
-	113328, -- Torn Voodoo Doll
-	113376, -- Faintly Magical Vellum
-	113381, -- Crumbling Statue
 	113478, -- Abandoned Medic Kit
 	113991, -- Iron Trap
 	114141, -- Fang-Scarred Frostwolf Axe
@@ -4707,8 +4452,6 @@ local itemIDs = {
 	116432, -- Frostwall Tavern, Level 3
 	116433, -- Frostwall Tavern, Level 1
 	116441, -- Highly Enriched Blixtherium Shells
-	118109, -- Disposable Pocket Flying Machine
-	118110, -- Disposable Pocket Flying Machine
 	118193, -- Mysterious Shining Lockbox
 	118197, -- Auction Memory Socket
 	118215, -- Book of Garrison Blueprints
@@ -4750,7 +4493,6 @@ local itemIDs = {
 	119100, -- Partial Receipt: Pickled Red Herring
 	119101, -- Partial Receipt: Invisible Dust
 	119102, -- Partial Receipt: True Iron Door Handles
-	119179, -- Iron Star Roller
 	119185, -- Expired Receipt
 	119215, -- Robo-Gnomebulator
 	119439, -- Personal Voodoo Doll
@@ -4784,7 +4526,6 @@ local itemIDs = {
 	128025, -- Rattling Iron Cage
 	128319, -- Void-Shrouded Satchel
 	128322, -- Captain's Skiff
-	128353, -- Admiral's Compass
 	128379, -- Piece of Meat
 	128513, -- Anniversary Gift
 	128636, -- Endothermic Blaster
@@ -4809,15 +4550,12 @@ local itemIDs = {
 	129113, -- Faintly Glowing Flagon of Mead
 	129165, -- Barnacle-Encrusted Gem
 	129190, -- Rope of Friendship
-	129276, -- Beginner's Guide to Dimensional Rifting
 	129295, -- Spike-Toed Booterang
 	130151, -- The \"Devilsaur\" Lunchbox
-	130157, -- Syxsehnz Rod
 	130169, -- Tournament Favor
 	130171, -- Cursed Orb
 	130209, -- Never Ending Toy Chest
 	130214, -- Worn Doll
-	130232, -- Moonfeather Statue
 	130249, -- Waywatcher's Boon
 	130867, -- Tag Toy
 	130906, -- Violetglass Vessel
@@ -4838,7 +4576,6 @@ local itemIDs = {
 	131717, -- Starlight Beacon
 	131724, -- Crystalline Eye of Undravius
 	131811, -- Rocfeather Skyhorn Kite
-	131812, -- Darkshard Fragment
 	131900, -- Majestic Elderhorn Hoof
 	131933, -- Critter Hand Cannon
 	132118, -- Aggramar's Blessing
@@ -4866,8 +4603,6 @@ local itemIDs = {
 	138111, -- Stormforged Grapple Launcher
 	138114, -- Gloaming Frenzy
 	138393, -- Essence Swapper
-	138448, -- Emblem of Margoss
-	138777, -- Drowned Mana
 	138873, -- Mystical Frosh Hat
 	138878, -- Copy of Daglop's Contract
 	139284, -- Anniversary Gift
@@ -4878,7 +4613,6 @@ local itemIDs = {
 	139773, -- Emerald Winds
 	139781, -- Marin Noggenfogger's Lucky Coin
 	140216, -- Eagle Feather
-	140325, -- Home Made Party Mask
 	140755, -- Life-Like Magistrix Doll
 	140756, -- Baby's Doll
 	140780, -- Fal'dorei Egg
@@ -4999,18 +4733,12 @@ local itemIDs = {
 	146751, -- Nightfallen Hoard
 	146752, -- Warden's Field Kit
 	146753, -- Kirin Tor Chest
-	146848, -- Fragmented Enchantment
 	146897, -- Farondis Chest
 	146898, -- Dreamweaver Cache
 	146899, -- Highmountain Supplies
 	146900, -- Nightfallen Cache
 	146901, -- Valarjar Strongbox
 	146902, -- Warden's Supply Kit
-	146959, -- Corrupted Globule
-	146960, -- Ancient Totem Fragment
-	146961, -- Shiny Bauble
-	146962, -- Golden Minnow
-	146963, -- Desecrated Seaweed
 	147361, -- Legionfall Chest
 	147384, -- Legionfall Recompense
 	147446, -- Brawler's Footlocker
@@ -5170,11 +4898,6 @@ local itemIDs = {
 	162126, -- River Clam Meat
 	162513, -- Zenbaro's Empty Canteen
 	162514, -- Zenbaro's Canteen
-	162531, -- Scouting Report: Stonefist Watch
-	162532, -- Scouting Report: Windfall Cavern
-	162533, -- Scouting Report: Hillcrest Pasture
-	162534, -- Scouting Report: Stonetusk Watch
-	162535, -- Scouting Report: Mudfisher Cove
 	162571, -- Soggy Treasure Map
 	162580, -- Fading Treasure Map
 	162581, -- Yellowed Treasure Map
@@ -5183,18 +4906,12 @@ local itemIDs = {
 	163017, -- Pitch-Soaked Torch
 	163035, -- Orders From Sylvanas
 	163036, -- Polished Pet Charm
-	163041, -- Scouting Report: Vulture's Nest
-	163044, -- Scouting Report: Mistvine Ledge
-	163046, -- Scouting Report: Verdant Hollow
-	163047, -- Scouting Report: Mugamba Overlook
 	163139, -- Carefully Wrapped Hat Box
 	163141, -- Spooky Hat Box
 	163142, -- Ironbound Hat Box
 	163144, -- Striped Hat Box
 	163146, -- Fancy Hat Box
 	163148, -- Luxurious Hat Box
-	163200, -- Cursed Spyglass
-	163463, -- Dead Ringer
 	163633, -- Captain Gulnaku's Treasure
 	163714, -- Forbidden Sea Shanty of the Lively Men
 	163715, -- Forbidden Sea Shanty of Fruit Counting
@@ -5210,31 +4927,14 @@ local itemIDs = {
 	164774, -- Decrypted Message Module
 	164942, -- Shadowscrawled Tome
 	164983, -- Rhan'ka's Escape Plan
-	165358, -- Stonefist Watch
-	165359, -- Windfall Cavern
-	165360, -- Stonetusk Watch
-	165361, -- Hillcrest Pasture
-	165363, -- Mudfisher Cove
-	165364, -- Vulture's Nest
-	165366, -- Verdant Hollow
-	165368, -- Mugamba Overlook
-	165369, -- Mistvine Ledge
 	165671, -- Blue Dragon Head Costume
 	165672, -- Blue Dragon Body Costume
 	165673, -- Blue Dragon Tail Costume
 	165674, -- Green Dragon Head Costume
 	165675, -- Green Dragon Body Costume
 	165676, -- Green Dragon Tail Costume
-	165728, -- Outpost Upgrade: The Great Seal
-	165750, -- Outpost Upgrade: Zul'jan Ruins
 	165791, -- Worn Cloak
-	165804, -- Outpost Upgrade: Vulpera Hideaway
 	165835, -- Pristine Gizmo
-	165836, -- Outpost Upgrade: Brennadam
-	165873, -- Outpost Upgrade: Castaway Point
-	165880, -- Outpost Upgrade: Arom's Stand
-	165944, -- A Shady Message
-	166242, -- A Shady Message
 	166308, -- For da Blood God!
 	166544, -- Dark Ranger's Spare Cowl
 	166702, -- Proudmoore Music Box
@@ -5436,7 +5136,6 @@ local itemIDs = {
 	182729, -- Hearty Dragon Plume
 	182732, -- The Necronom-i-nom
 	182768, -- The Enchanted Dragon
-	182890, -- Rapid Recitation Quill
 	183200, -- Pitch Black Scourgestone
 	183596, -- Broken Artifact
 	183696, -- Sp-eye-glass
@@ -5454,12 +5153,9 @@ local itemIDs = {
 	184043, -- Lost Scroll
 	184075, -- Stonewrought Sentry
 	184169, -- Vault Chain Pull
-	184218, -- Vulgarity Arbiter
-	184219, -- Treatise on Sinstone Fragment Acquisition
 	184318, -- Battlecry of Krexus
 	184354, -- Soul Harvester Key
 	184396, -- Malfunctioning Goliath Gauntlet
-	184410, -- Aspirant's Stretcher
 	184412, -- Title Reward: Spirestalker
 	184413, -- Mnemonic Attunement Pane
 	184415, -- Soothing Vesper
@@ -5503,7 +5199,6 @@ local itemIDs = {
 	185906, -- Anniversary Gift
 	185940, -- Pristine Survival Kit
 	185972, -- Tormentor's Cache
-	186501, -- Doomwalker Trophy Stand
 	186714, -- Research Report: All-Seeing Crystal
 	186715, -- Research Report: Improved Alloys
 	186716, -- Research Report: Ancient Shrines
@@ -5553,7 +5248,6 @@ local itemIDs = {
 	187789, -- Eidolic Particles
 	187790, -- Trace Enigmet
 	187833, -- Dapper Pocopoc
-	187860, -- Mortis Mover
 	187923, -- Aurelid Lure
 	188152, -- Gateway Control Shard
 	188217, -- De Purpose
@@ -5595,7 +5289,6 @@ local itemIDs = {
 	190178, -- Pouch of Protogenic Provisions
 	190182, -- Lovely Regal Pocopoc
 	190196, -- Enlightened Hearthstone
-	190237, -- Broker Translocation Matrix
 	190340, -- Plainshunter's Supplies
 	191031, -- Packaged Soul Cinders
 	191032, -- Oily Fat
@@ -5619,8 +5312,6 @@ local itemIDs = {
 	192128, -- Reinforced Scale Sample
 	192129, -- Azure Basilisk Belly
 	192130, -- Sundered Flame Weapon Mold
-	192131, -- Valdrakken Weapon Chain
-	192132, -- Draconium Blade Sharpener
 	192476, -- Expedition Bullwhip
 	192485, -- Stored Wisdom Device
 	192495, -- Malfunctioning Stealthman 54
@@ -5628,65 +5319,24 @@ local itemIDs = {
 	193033, -- Convergent Prism
 	193201, -- Key Framing
 	193476, -- Gnoll Tent
-	193891, -- Experimental Substance
-	193897, -- Reawakened Catalyst
-	193898, -- Umbral Bone Needle
-	193899, -- Primalweave Spindle
-	193900, -- Prismatic Focusing Shard
-	193901, -- Primal Dust
-	193902, -- Eroded Titan Gizmo
-	193903, -- Watcher Power Core
-	193904, -- Phoenix Feather Quill
-	193905, -- Iskaaran Trading Ledger
-	193907, -- Chipped Tyrstone
-	193909, -- Ancient Gem Fragments
-	193910, -- Molted Dragon Scales
-	193913, -- Preserved Animal Parts
-	194039, -- Heated Ore Sample
-	194040, -- Slateskin Hide
-	194041, -- Driftbloom Sprout
 	194052, -- Forlorn Funeral Pall
-	194054, -- Dredged Seedling
-	194055, -- Primordial Soil
 	194056, -- Duck-Stuffed Duck Lovie
 	194057, -- Cushion of Time Travel
 	194058, -- Cold Cushion
 	194059, -- Market Tent
 	194060, -- Dragonscale Expedition's Expedition Tent
-	194061, -- Suffocating Spores
-	194062, -- Unyielding Stone Chunk
-	194063, -- Glowing Fragment
-	194064, -- Intricate Geode
-	194066, -- Frigid Frostfur Pelt
-	194067, -- Festering Carcass
-	194068, -- Progenitor Scales
 	194072, -- Sack of Gold
-	194076, -- Exotic Resilient Leather
-	194077, -- Pristine Adamant Scales
-	194078, -- Perfect Draconium Scale
-	194079, -- Pure Serevite Nugget
-	194080, -- Peculiar Bud
-	194081, -- Mutated Root
 	194097, -- Hunter's Fabulous Treasure
 	194426, -- Enriched Soil
 	194442, -- Activity Map: Apex Canopy
 	194679, -- BOOM-O-MATIC 9000
 	194696, -- Recycled Crawler Mine
-	194697, -- Draconic Treatise on Alchemy
-	194698, -- Draconic Treatise on Tailoring
-	194699, -- Draconic Treatise on Inscription
-	194700, -- Draconic Treatise on Leatherworking
-	194702, -- Draconic Treatise on Enchanting
-	194703, -- Draconic Treatise on Jewelcrafting
-	194704, -- Draconic Treatise on Herbalism
-	194708, -- Draconic Treatise on Mining
 	194712, -- Empty Duck Trap
 	194739, -- Trapped Duck
 	194740, -- Duck Trap Kit
 	197719, -- Artisan's Sign
 	198039, -- Rock of Appreciation
 	198139, -- Jeb's Underwear
-	198156, -- Wyrmhole Generator: Dragon Isles
 	198166, -- Suspiciously Ticking Crate
 	198167, -- Suspiciously Ticking Crate
 	198168, -- Suspiciously Ticking Crate
@@ -5705,29 +5355,8 @@ local itemIDs = {
 	198437, -- Caravan Horseshoe
 	198438, -- Draconic Recipe in a Bottle
 	198452, -- Prototype F
-	198454, -- Draconic Treatise on Blacksmithing
-	198510, -- Draconic Treatise on Engineering
-	198518, -- Professor Instructaur's Top Secret Guide to Blacksmithing
-	198519, -- Professor Instructaur's Top Secret Guide to Alchemy
-	198520, -- Professor Instructaur's Top Secret Guide to Enchanting
-	198521, -- Professor Instructaur's Top Secret Guide to Engineering
-	198522, -- Professor Instructaur's Top Secret Guide to Herbalism
-	198523, -- Professor Instructaur's Top Secret Guide to Inscription
-	198524, -- Professor Instructaur's Top Secret Guide to Jewelcrafting
-	198525, -- Professor Instructaur's Top Secret Guide to Leatherworking
-	198526, -- Professor Instructaur's Top Secret Guide to Mining
-	198527, -- Professor Instructaur's Top Secret Guide to Skinning
-	198528, -- Professor Instructaur's Top Secret Guide to Tailoring
 	198537, -- Taivan's Trumpet
 	198603, -- Arcane Rune
-	198606, -- Blacksmith's Writ
-	198607, -- Scribe's Glyphs
-	198608, -- Alchemy Notes
-	198609, -- Tailoring Examples
-	198610, -- Enchanter's Script
-	198611, -- Engineering Details
-	198612, -- Jeweler's Cuts
-	198613, -- Leatherworking Designs
 	198646, -- Ornate Dragon Statue
 	198666, -- Milky Snapflower
 	198668, -- Blooming Shallowlily
@@ -5736,38 +5365,15 @@ local itemIDs = {
 	198815, -- Ash
 	198816, -- Aerospace Grade Draconium
 	198817, -- Durable Crystal
-	198836, -- Arclight Vital Correctors
-	198837, -- Curious Hide Scraps
 	198864, -- Large Maruuk Centaur Supply Satchel
 	198865, -- Large Dragon Expedition Supply Pack
 	198867, -- Large Iskaaran Supply Pack
 	198869, -- Large Valdrakken Accord Supply Pack
-	198963, -- Decaying Phlegm
-	198964, -- Elementious Splinter
-	198965, -- Primeval Earth Fragment
-	198966, -- Molten Globule
-	198967, -- Primordial Aether
-	198968, -- Primalist Charm
-	198969, -- Keeper's Mark
-	198970, -- Infinitely Attachable Pair o' Docks
-	198971, -- Curious Djaradin Rune
-	198972, -- Draconic Glamour
-	198973, -- Incandescent Curio
-	198974, -- Elegantly Engraved Embellishment
-	198975, -- Ossified Hide
-	198976, -- Exceedingly Soft Skin
-	198977, -- Ohn'arhan Weave
-	198978, -- Stupidly Effective Stitchery
 	199108, -- Bag of Discount Goods
-	199115, -- Herbalism Field Notes
-	199122, -- Mining Field Notes
-	199128, -- Skinning Field Notes
 	199192, -- Dragon Racer's Purse
 	199337, -- Bag of Furious Winds
 	199554, -- S.E.A.T.
 	199646, -- Imbu Tuskarr Bandages
-	199649, -- Dragon Tea Set
-	199650, -- Whale Bone Tea Set
 	199894, -- Fisherman's Folly
 	199900, -- Secondhand Survey Tools
 	199902, -- Wayfinder's Compass
@@ -5789,7 +5395,6 @@ local itemIDs = {
 	200638, -- Bubblefilled Flounder
 	200647, -- Crystalline Shatter
 	200675, -- Elemental Overflow Cluster
-	200677, -- Dreambloom Petal
 	200876, -- Yennu's Toy Boat
 	200942, -- Vibrant Emulsion
 	200943, -- Whispering Band
@@ -5797,76 +5402,20 @@ local itemIDs = {
 	200949, -- Case of Fresh Gleamfish
 	200950, -- Consortium Packaging String
 	200951, -- Valdrakken Critter Snacks
-	200972, -- Dusty Blacksmith's Diagrams
-	200973, -- Dusty Scribe's Runic Drawings
-	200974, -- Dusty Alchemist's Research
-	200975, -- Dusty Tailor's Diagrams
-	200976, -- Dusty Enchanter's Research
-	200977, -- Dusty Engineer's Scribblings
-	200978, -- Dusty Jeweler's Illustrations
-	200979, -- Dusty Leatherworker's Diagrams
-	200980, -- Dusty Herbalist's Notes
-	200981, -- Dusty Miner's Notes
-	200982, -- Dusty Skinner's Notes
-	201023, -- Draconic Treatise on Skinning
 	201091, -- Sharp Tooth
-	201268, -- Rare Blacksmith's Diagrams
-	201269, -- Rare Scribe's Runic Drawings
-	201270, -- Rare Alchemist's Research
-	201271, -- Rare Tailor's Diagrams
-	201272, -- Rare Enchanter's Research
-	201273, -- Rare Engineer's Scribblings
-	201274, -- Rare Jeweler's Illustrations
-	201275, -- Rare Leatherworker's Diagrams
-	201276, -- Rare Herbalist's Notes
-	201277, -- Rare Miner's Notes
-	201278, -- Rare Skinner's Notes
-	201279, -- Ancient Blacksmith's Diagrams
-	201280, -- Ancient Scribe's Runic Drawings
-	201281, -- Ancient Alchemist's Research
-	201282, -- Ancient Tailor's Diagrams
-	201283, -- Ancient Enchanter's Research
-	201284, -- Ancient Engineer's Scribblings
-	201285, -- Ancient Jeweler's Illustrations
-	201286, -- Ancient Leatherworker's Diagrams
-	201287, -- Ancient Herbalist's Notes
-	201288, -- Ancient Miner's Notes
-	201289, -- Ancient Skinner's Notes
-	201300, -- Iridescent Ore Fragments
 	201343, -- Bag of Cloth Armor Reagents
 	201352, -- Bag of Leather Reagents
 	201353, -- Bag of Mail Armor Reagents
 	201354, -- Bag of Plate Armor Reagents
-	201356, -- Glimmer of Fire
-	201357, -- Glimmer of Frost
-	201358, -- Glimmer of Air
-	201359, -- Glimmer of Earth
-	201360, -- Glimmer of Order
 	201361, -- Primal Inspiration
 	201411, -- Ancient Vault Artifact
 	201412, -- Ancient Vault Artifact
 	201435, -- Shuffling Sands
-	201700, -- Notebook of Crafting Knowledge
-	201705, -- Notebook of Crafting Knowledge
-	201706, -- Notebook of Crafting Knowledge
-	201708, -- Notebook of Crafting Knowledge
-	201709, -- Notebook of Crafting Knowledge
-	201710, -- Notebook of Crafting Knowledge
-	201711, -- Notebook of Crafting Knowledge
-	201712, -- Notebook of Crafting Knowledge
-	201713, -- Notebook of Crafting Knowledge
-	201714, -- Notebook of Crafting Knowledge
-	201715, -- Notebook of Crafting Knowledge
-	201717, -- Notebook of Crafting Knowledge
-	201718, -- Notebook of Crafting Knowledge
 	201729, -- Spiked Horseshoe
 	201730, -- Nokhud Centaur Spear
 	201731, -- Nokhud Centaur Staff
 	201836, -- Aspects' Token of Merit
 	201930, -- H.E.L.P.
-	202011, -- Elementally Charged Stone
-	202014, -- Infused Pollen
-	202016, -- Saturated Bone
 	202021, -- Breaker's Flag of Victory
 	202046, -- Lucky Tortollan Charm
 	202062, -- Ash Feather
@@ -5914,17 +5463,6 @@ local itemIDs = {
 	204196, -- Wyrm's Shadowflame Crest
 	204199, -- Ley-Infused Crystal
 	204220, -- Hraxian's Unbreakable Will
-	204222, -- Conductive Ametrine Shard
-	204224, -- Speck of Arcane Awareness
-	204225, -- Perfect Windfeather
-	204226, -- Blazehoof Ashes
-	204227, -- Everflowing Antifreeze
-	204228, -- Undigested Hochenblume Petal
-	204229, -- Glimmering Rune of Arcantrix
-	204230, -- Dense Seaforged Javelin
-	204231, -- Kingly Sheepskin Pelt
-	204232, -- Slyvern Alpha Claw
-	204233, -- Impenetrable Elemental Core
 	204256, -- Holoviewer: The Scarlet Queen
 	204257, -- Holoviewer: The Lady of Dreams
 	204262, -- Holoviewer: The Timeless One
@@ -5939,11 +5477,9 @@ local itemIDs = {
 	204345, -- Note to Disposal Site
 	204359, -- Reach Racer's Purse
 	204383, -- Sack of Oddities
-	204389, -- Stone Breaker
 	204403, -- Sack of Sack of Oddities
 	204405, -- Stuffed Bear
 	204443, -- Blacksteel Hammer
-	204632, -- Tectonic Rock Fragment
 	204633, -- Cauldron of Extracted Putrescence
 	204686, -- Titan Containment Device
 	204691, -- Living Book
@@ -5973,46 +5509,11 @@ local itemIDs = {
 	205288, -- Buried Niffen Collection
 	205346, -- Hidden Niffen Treasure
 	205347, -- Gathered Niffen Resources
-	205348, -- Niffen Notebook of Jewelcrafting Knowledge
-	205349, -- Niffen Notebook of Engineering Knowledge
-	205350, -- Niffen Notebook of Leatherworking Knowledge
-	205351, -- Niffen Notebook of Enchanting Knowledge
-	205352, -- Niffen Notebook of Blacksmithing Knowledge
-	205353, -- Niffen Notebook of Alchemy Knowledge
-	205354, -- Niffen Notebook of Inscription Knowledge
-	205355, -- Niffen Notebook of Tailoring Knowledge
-	205356, -- Niffen Notebook of Mining Knowledge
-	205357, -- Niffen Notebook of Skinning Knowledge
-	205358, -- Niffen Notebook of Herbalism Knowledge
 	205368, -- Thankful Researcher's Gift
 	205370, -- Researcher's Gift
 	205373, -- Researcher's Scrounged Goods
 	205374, -- Thankful Researcher's Scrounged Goods
 	205419, -- Dinn's Drum
-	205424, -- Bartered Jewelcrafting Notes
-	205425, -- Bartered Engineering Notes
-	205426, -- Bartered Leatherworking Notes
-	205427, -- Bartered Enchanting Notes
-	205428, -- Bartered Blacksmithing Notes
-	205429, -- Bartered Alchemy Notes
-	205430, -- Bartered Inscription Notes
-	205431, -- Bartered Tailoring Notes
-	205432, -- Bartered Mining Notes
-	205433, -- Bartered Skinning Notes
-	205434, -- Bartered Herbalism Notes
-	205435, -- Bartered Jewelcrafting Journal
-	205436, -- Bartered Engineering Journal
-	205437, -- Bartered Leatherworking Journal
-	205438, -- Bartered Enchanting Journal
-	205439, -- Bartered Blacksmithing Journal
-	205440, -- Bartered Alchemy Journal
-	205441, -- Bartered Inscription Journal
-	205442, -- Bartered Tailoring Journal
-	205443, -- Bartered Mining Journal
-	205444, -- Bartered Skinning Journal
-	205445, -- Bartered Herbalism Journal
-	205451, -- Flawless Crystal Scale
-	205454, -- Researchers Wheel Barrow
 	205463, -- Molten Lava Ball
 	205686, -- Clacking Claw
 	205688, -- Glutinous Glitterscale Glob
@@ -6024,7 +5525,6 @@ local itemIDs = {
 	205962, -- Echoing Storm Flightstone
 	205963, -- Sniffin' Salts
 	206028, -- Chest of Gold
-	206038, -- Flamin' Ring of Flashiness
 	206039, -- Enmity Bundle
 	206043, -- Fyrakk's Frenzy
 	206163, -- Temporal Gossamer
@@ -6091,12 +5591,10 @@ local itemIDs = {
 	207584, -- Box of Volatile Reality
 	207730, -- Idol of Ohn'ahra
 	207802, -- Bobby Carlisle's Thinking Cap Notes
-	208058, -- Minute Glass
 	208067, -- Plump Dreamseed
 	208068, -- Rotten Delicious
 	208092, -- Torch of Pyrreth
 	208096, -- Familiar Journal
-	208186, -- Boffins
 	208211, -- Anniversary Gift
 	208421, -- Compendium of the New Moon
 	208433, -- Bronze Racer's Pennant
@@ -6107,7 +5605,6 @@ local itemIDs = {
 	208658, -- Mirror of Humility
 	208757, -- Ash's Recipes to Delight and Nourish Your Plant Pals
 	208781, -- Symbiotic Glowspore Grip
-	208798, -- Recorded Memories of Tyr's Guard
 	208821, -- Aspects' Token of Merit
 	208839, -- Rune of Adaptive Binding
 	208840, -- Concentrated Sophic Vellum
@@ -6206,7 +5703,6 @@ local itemIDs = {
 	211474, -- Shadowblind Grouper
 	211788, -- Tess's Peacebloom
 	211927, -- Tattered Dreamleaf
-	211931, -- Abyss Caller Horn
 	211947, -- Harvest Seed Supply
 	211951, -- Pouch of Whelpling's Awakened Crests
 	211952, -- Satchel of Drake's Awakened Crests
@@ -6263,17 +5759,8 @@ local itemIDs = {
 	221503, -- Explorer's Warbound Battlegear Drop
 	221962, -- Defective Escape Pod
 	221964, -- Filmless Camera
-	222547, -- Algari Treatise on Tailoring
-	222548, -- Algari Treatise on Inscription
-	222549, -- Algari Treatise on Leatherworking
-	222551, -- Algari Treatise on Jewelcrafting
-	222552, -- Algari Treatise on Herbalism
-	222553, -- Algari Treatise on Mining
-	222554, -- Algari Treatise on Blacksmithing
-	222649, -- Algari Treatise on Skinning
 	222929, -- Carved Coin Coffer
 	222977, -- Scorched Junk
-	223312, -- Trusty Hat
 	223619, -- Bronze Celebration Goodie Bag
 	223869, -- DO NOT USE Prismatic Codex
 	223878, -- Rough Deepruby Shard
@@ -6282,20 +5769,6 @@ local itemIDs = {
 	223881, -- Rough Deepemerald Shard
 	223882, -- Rough Deepdiamond Shard
 	223953, -- Timerunner's Parting Pack
-	224023, -- Herbal Embalming Techniques
-	224036, -- And That's A Web-Wrap!
-	224038, -- Smithing After Saronite
-	224053, -- Eight Views on Defense against Hostile Runes
-	224054, -- Emergent Crystals of the Surface-Dwellers
-	224055, -- A Rocky Start
-	224058, -- Professor Instructaur's Top Secret Guide to Khaz Algar Blacksmithing
-	224061, -- Professor Instructaur's Top Secret Guide to Khaz Algar Herbalism
-	224062, -- Professor Instructaur's Top Secret Guide to Khaz Algar Inscription
-	224063, -- Professor Instructaur's Top Secret Guide to Khaz Algar Jewelcrafting
-	224064, -- Professor Instructaur's Top Secret Guide to Khaz Algar Leatherworking
-	224065, -- Professor Instructaur's Top Secret Guide to Khaz Algar Mining
-	224066, -- Professor Instructaur's Top Secret Guide to Khaz Algar Skinning
-	224067, -- Professor Instructaur's Top Secret Guide to Khaz Algar Tailoring
 	224172, -- Restored Coffer Key
 	224192, -- Practice Ravager
 	224240, -- Nerubian Tombstone
@@ -6307,21 +5780,12 @@ local itemIDs = {
 	224274, -- Sturdy Locket
 	224547, -- Timewarped Pouch
 	224553, -- Beledar's Attunement
-	224583, -- Slab of Slate
 	224586, -- Box o' Booms
 	224587, -- Box o' Booms
 	224588, -- Box o' Booms
 	224642, -- Firelight Ruby
 	224646, -- Coppers the Kobold
-	224647, -- Jewel-Etched Blacksmithing Notes
-	224648, -- Jewel-Etched Tailoring Notes
 	224650, -- Wax-Sealed Pouch
-	224651, -- Machine-Learned Mining Notes
-	224654, -- Machine-Learned Inscription Notes
-	224655, -- Void-Lit Jewelcrafting Notes
-	224656, -- Void-Lit Herbalism Notes
-	224657, -- Void-Lit Skinning Notes
-	224658, -- Void-Lit Leatherworking Notes
 	224721, -- Wax-Sealed Box
 	224722, -- Waxy Bundle of Resonance Crystals
 	224723, -- Waxy Bundle of Leather
@@ -6363,13 +5827,10 @@ local itemIDs = {
 	225234, -- Alchemical Sediment
 	225235, -- Deepstone Crucible
 	225415, -- Caddy Caller
-	225547, -- Toxic Victory
 	225554, -- Sunless Lure
-	225556, -- Ancient Construct
 	225557, -- Sizzling Cinderpollen
 	225558, -- Murkfin Lure
 	225559, -- Hungering Shimmerfin
-	225910, -- Pileus Delight
 	225969, -- Forged Flag of Victory
 	226101, -- Chromie's Tour Goodie Bag
 	226102, -- Chromie's Tour Goodie Bag
@@ -6387,27 +5848,6 @@ local itemIDs = {
 	226681, -- Sizzling Cinderpollen
 	226814, -- Chest of Gold
 	227406, -- Interesting Notes
-	227407, -- Faded Blacksmith's Diagrams
-	227408, -- Faded Scribe's Runic Drawings
-	227410, -- Faded Tailor's Diagrams
-	227413, -- Faded Jeweler's Illustrations
-	227414, -- Faded Leatherworker's Diagrams
-	227415, -- Faded Herbalist's Notes
-	227416, -- Faded Miner's Notes
-	227418, -- Exceptional Blacksmith's Diagrams
-	227419, -- Exceptional Scribe's Runic Drawings
-	227421, -- Exceptional Tailor's Diagrams
-	227424, -- Exceptional Jeweler's Illustrations
-	227425, -- Exceptional Leatherworker's Diagrams
-	227426, -- Exceptional Herbalist's Notes
-	227427, -- Exceptional Miner's Notes
-	227428, -- Exceptional Skinner's Notes
-	227429, -- Pristine Blacksmith's Diagrams
-	227430, -- Pristine Scribe's Runic Drawings
-	227435, -- Pristine Jeweler's Illustrations
-	227437, -- Pristine Herbalist's Notes
-	227438, -- Pristine Miner's Notes
-	227439, -- Pristine Skinner's Notes
 	227450, -- Sky Racer's Purse
 	227659, -- Fleeting Arcane Manifestation
 	227662, -- Shimmering Dust
@@ -6418,7 +5858,6 @@ local itemIDs = {
 	228220, -- Waxy Bundle
 	228300, -- Sun-Baked Ransom Note
 	228321, -- Dirt-Caked Ransom Note
-	228413, -- Lampyridae Lure
 	228449, -- Tasty Iron Bar
 	228450, -- Edible Copper Nuggets
 	228451, -- Scrumptious Gold Bar
@@ -6451,22 +5890,8 @@ local itemIDs = {
 	228632, -- Clutch of Wyrm's Awakened Crests
 	228633, -- Large Pouch of Whelpling's Awakened Crests
 	228694, -- Damp Ransom Note
-	228698, -- Candleflexer's Dumbbell
-	228705, -- Arachnoserum
-	228706, -- Rockslidomancer's Stone
-	228707, -- Trial of Burning Light
 	228711, -- Small Candle
 	228723, -- Earthen Pet Rock
-	228726, -- Flicker of Blacksmithing Knowledge
-	228727, -- Glimmer of Blacksmithing Knowledge
-	228732, -- Flicker of Inscription Knowledge
-	228733, -- Glimmer of Inscription Knowledge
-	228734, -- Flicker of Jewelcrafting Knowledge
-	228735, -- Glimmer of Jewelcrafting Knowledge
-	228736, -- Flicker of Leatherworking Knowledge
-	228737, -- Glimmer of Leatherworking Knowledge
-	228738, -- Flicker of Tailoring Knowledge
-	228739, -- Glimmer of Tailoring Knowledge
 	228766, -- Sandy Ransom Note
 	228767, -- Sandy Celebration Crate
 	228768, -- Water-Resistant Receipt
@@ -6533,13 +5958,7 @@ local itemIDs = {
 	230218, -- Delver's Gob-Trotter Schematic: Pipes
 	230219, -- Delver's Gob-Trotter Schematic: Balloon
 	230220, -- Delver's Gob-Trotter Schematic: Green
-	230727, -- Explosive Victory
 	230793, -- Algari Token of Merit
-	230850, -- Delve-O-Bot 7001
-	230924, -- Spotlight Materializer 1000
-	231064, -- Throwaway Gangster Disguise
-	231099, -- Back-Strapped Missile
-	231291, -- Radar
 	231888, -- Mildewed Ransom Note
 	232372, -- Crate of Bygone Riches
 	232492, -- Gleaming Shatter
@@ -6549,14 +5968,6 @@ local itemIDs = {
 	232496, -- Restored Coffer Key
 	232497, -- Restored Coffer Key
 	232498, -- Restored Coffer Key
-	232500, -- Undermine Treatise on Blacksmithing
-	232502, -- Undermine Treatise on Tailoring
-	232503, -- Undermine Treatise on Herbalism
-	232504, -- Undermine Treatise on Jewelcrafting
-	232505, -- Undermine Treatise on Leatherworking
-	232506, -- Undermine Treatise on Skinning
-	232508, -- Undermine Treatise on Inscription
-	232509, -- Undermine Treatise on Mining
 	232605, -- Thunderous Fragment
 	232928, -- [DNT] Medium Surge Chest
 	232930, -- Zaps Leadfoot
@@ -6589,7 +6000,6 @@ local itemIDs = {
 	235266, -- Fireworked Hat
 	235268, -- Misprinted Card
 	235280, -- Extra Crispy Laundry
-	235288, -- Sha-Warped Tea Set
 	235388, -- Paint: Redlining Red
 	235389, -- Paint: Goblin Green
 	235390, -- Paint: Body Roll Blue
@@ -6618,14 +6028,6 @@ local itemIDs = {
 	235710, -- Noggenfogger Select FRESH
 	235799, -- Throwin' Sawblade
 	235807, -- Storefront-in-a-Box
-	235855, -- Ethereal Tome of Tailoring Knowledge
-	235856, -- Ethereal Tome of Skinning Knowledge
-	235857, -- Ethereal Tome of Mining Knowledge
-	235858, -- Ethereal Tome of Leatherworking Knowledge
-	235859, -- Ethereal Tome of Jewelcrafting Knowledge
-	235860, -- Ethereal Tome of Inscription Knowledge
-	235861, -- Ethereal Tome of Herbalism Knowledge
-	235864, -- Ethereal Tome of Blacksmithing Knowledge
 	236096, -- Coffer Key Shard
 	236669, -- The Whole Brass Band
 	236670, -- Maniacal Melodies
@@ -6635,7 +6037,6 @@ local itemIDs = {
 	236749, -- Take-Home Torq
 	236751, -- Take-Home Flarendo
 	236757, -- Generous Tip Chest
-	236769, -- Gallagio Pipeline Rerouter
 	236921, -- Triumphant Satchel of Carved Harbinger Crests
 	236922, -- Celebratory Pack of Runed Harbinger Crests
 	236923, -- Glorious Cluster of Gilded Harbinger Crests
@@ -6644,8 +6045,6 @@ local itemIDs = {
 	236926, -- Pack of Runed Harbinger Crests
 	237014, -- Severed Threads Commendation
 	237131, -- X-Plo-Dar 64k ENHANCE Results
-	237496, -- Igneous Rock Specimen
-	237507, -- Cloudy Quartz
 	237514, -- Viridian Ore
 	237515, -- Crimson Ore
 	237516, -- Cerulean Ore
@@ -6657,13 +6056,9 @@ local itemIDs = {
 	238180, -- Delver's Mana-Skimmer Schematic: Void Paint
 	238181, -- Delver's Mana-Skimmer Schematic: Energy Thrusters
 	238407, -- Black Blood Residue
-	238465, -- Thalassian Phoenix Plume
-	238467, -- Thalassian Phoenix Ember
 	238500, -- Maella's Report
 	238526, -- Restored Coffer Key
 	238527, -- Restored Coffer Key
-	238625, -- Fine Void-Tempered Hide
-	238627, -- Manafused Sample
 	238837, -- Delver's Dirigible Schematic: Pale Paint
 	238839, -- Delver's Dirigible Schematic: Arathi Decal
 	239157, -- Nemesis Shard
@@ -6699,7 +6094,6 @@ local itemIDs = {
 	243018, -- Petrified Twig of the Fennad
 	243021, -- Shadowguard Bonker
 	243022, -- Sufaadi Skiff Candle
-	243056, -- Delver's Mana-Bound Ethergate
 	243145, -- Well-Preserved Wrappings
 	243154, -- Korgorath's Broken Nail
 	243160, -- Tazavesh Shipping Manifest
@@ -6711,7 +6105,6 @@ local itemIDs = {
 	244039, -- Pitcher Plant Vase
 	244040, -- Sack of Seeds
 	244041, -- Budding Seed
-	244470, -- Etheric Victory
 	244843, -- Lorewalker's Notes: The Ethereals
 	244846, -- Lorewalker's Notes: Xal'atath, Blade of the Black Empire
 	244848, -- Severed Threads Commendation
@@ -6723,17 +6116,6 @@ local itemIDs = {
 	245672, -- Blade of the Void Swamp
 	245674, -- Rifle of Leaden Movement
 	245749, -- Large Charm of Intelligence
-	245755, -- Thalassian Treatise on Alchemy
-	245756, -- Thalassian Treatise on Tailoring
-	245757, -- Thalassian Treatise on Inscription
-	245758, -- Thalassian Treatise on Leatherworking
-	245759, -- Thalassian Treatise on Enchanting
-	245760, -- Thalassian Treatise on Jewelcrafting
-	245761, -- Thalassian Treatise on Herbalism
-	245762, -- Thalassian Treatise on Mining
-	245763, -- Thalassian Treatise on Blacksmithing
-	245809, -- Thalassian Treatise on Engineering
-	245828, -- Thalassian Treatise on Skinning
 	245887, -- Stalwart's Grand Charm
 	245888, -- Serpent's Grand Charm
 	245889, -- Large Charm of Dexterity
@@ -6753,22 +6135,6 @@ local itemIDs = {
 	246296, -- Off-Balance Mace of the Tazavesh Lookout
 	246298, -- Cracked Staff of the Desperate Defender
 	246301, -- Pitted Blade of Lost Hope
-	246320, -- Flicker of Midnight Alchemy Knowledge
-	246321, -- Glimmer of Midnight Alchemy Knowledge
-	246322, -- Flicker of Midnight Blacksmithing Knowledge
-	246323, -- Glimmer of Midnight Blacksmithing Knowledge
-	246324, -- Flicker of Midnight Enchanting Knowledge
-	246325, -- Glimmer of Midnight Enchanting Knowledge
-	246326, -- Flicker of Midnight Engineering Knowledge
-	246327, -- Glimmer of Midnight Engineering Knowledge
-	246328, -- Flicker of Midnight Inscription Knowledge
-	246329, -- Glimmer of Midnight Inscription Knowledge
-	246330, -- Flicker of Midnight Jewelcrafting Knowledge
-	246331, -- Glimmer of Midnight Jewelcrafting Knowledge
-	246332, -- Flicker of Midnight Leatherworking Knowledge
-	246333, -- Glimmer of Midnight Leatherworking Knowledge
-	246334, -- Flicker of Midnight Tailoring Knowledge
-	246335, -- Glimmer of Midnight Tailoring Knowledge
 	246585, -- Artisan's Consortium Payout
 	246745, -- Triumphant Satchel of Carved Ethereal Crests
 	246746, -- Celebratory Pack of Runed Ethereal Crests
@@ -6785,27 +6151,17 @@ local itemIDs = {
 	248200, -- The Brothers' Not-So-Final Present
 	248242, -- Algari Token of Merit
 	248393, -- Blank Doomsayer's Pamphlet
-	248485, -- Wormhole Generator: Quel'Thalas
 	248944, -- Ethereal Energy
 	249468, -- Twilight's Blade Top Secret Strategy Training Guide
 	250317, -- Pile of Ash
 	250325, -- Night's Embrace
-	250360, -- Echo of Abundance: Skinning
 	250411, -- Timerunner's Hearthstone
-	250443, -- Echo of Abundance: Herbalism
-	250444, -- Echo of Abundance: Mining
-	250445, -- Echo of Abundance: Enchanting
-	250922, -- Whisper of the Loa: Leatherworking
-	250923, -- Whisper of the Loa: Skinning
-	250924, -- Whisper of the Loa: Mining
 	250974, -- Akil'zon's Updraft
 	251023, -- Bronze Simulacrum
 	251286, -- Bundle of Petrified Roots
 	251287, -- Generous Bundle of Petrified Roots
 	251633, -- Bursting Bounty Bundle
 	251635, -- Illegal Cosmic Emitter
-	251903, -- Potatoad Egg
-	252265, -- Hexed Potatoad Mucus
 	252364, -- Gem of Gul'dan
 	252609, -- Coffer Key Shard
 	253222, -- Corrupted Thorn of the Dream
@@ -6828,61 +6184,23 @@ local itemIDs = {
 	254749, -- Phial of Burrow Balm
 	255680, -- Forgotten Talon
 	255688, -- Anchor of the Abyss
-	255828, -- Sr. Professor Instructaur's Top Secret Guide to Midnight Alchemy
-	255829, -- Sr. Professor Instructaur's Top Secret Guide to Midnight Blacksmithing
-	255830, -- Sr. Professor Instructaur's Top Secret Guide to Midnight Enchanting
-	255831, -- Sr. Professor Instructaur's Top Secret Guide to Midnight Engineering
-	255832, -- Sr. Professor Instructaur's Top Secret Guide to Midnight Herbalism
-	255833, -- Sr. Professor Instructaur's Top Secret Guide to Midnight Inscription
-	255834, -- Sr. Professor Instructaur's Top Secret Guide to Midnight Jewelcrafting
-	255835, -- Sr. Professor Instructaur's Top Secret Guide to Midnight Leatherworking
-	255836, -- Sr. Professor Instructaur's Top Secret Guide to Midnight Mining
-	255837, -- Sr. Professor Instructaur's Top Secret Guide to Midnight Skinning
-	255838, -- Sr. Professor Instructaur's Top Secret Guide to Midnight Tailoring
 	255881, -- Severed Threads Commendation
 	256164, -- Broken Oar
 	256552, -- Verdant Rutaani Seed
-	256881, -- Steward's Bauble
 	257149, -- Old Tome
-	257599, -- Skill Issue: Jewelcrafting
-	257600, -- Skill Issue: Enchanting
-	257601, -- Skill Issue: Tailoring
-	258410, -- Traditions of the Haranir: Herbalism
-	258411, -- Traditions of the Haranir: Inscription
 	258556, -- Thalassian Token of Merit
 	258768, -- Battered Safebox Key
 	258769, -- Worn Safebox Key
 	258770, -- Tarnished Safebox Key
 	258839, -- Concealed Catalogue
-	258963, -- Shroom Jumper's Parachute
 	259084, -- Gift of the Cycle
-	259188, -- Lightbloomed Spore Sample
-	259189, -- Aged Cruor
-	259190, -- Thalassian Whetstone
-	259191, -- Infused Quenching Oil
-	259192, -- Voidstorm Ashes
-	259193, -- Lost Thalassian Vellum
-	259194, -- Dance Gear
-	259195, -- Dawn Capacitor
-	259196, -- Brilliant Phoenix Ink
-	259197, -- Loa-Blessed Rune
-	259198, -- Void-Touched Eversong Diamond Fragments
-	259199, -- Harandar Stone Sample
-	259200, -- Amani Tanning Oil
-	259201, -- Thalassian Mana Oil
-	259202, -- Embroidered Memento
-	259203, -- Finely Woven Lynx Collar
 	259335, -- Photo Finisher
 	259899, -- Ashen Horn of the Fallen Keeper
 	260170, -- Oathstone Fragment
 	260522, -- Duck Egg
 	260532, -- Tuskarr Dinner Bell
 	260533, -- Oddsight Focus
-	262431, -- Bouncy Mushroom
 	262559, -- Spare Key
-	262644, -- Beyond the Event Horizon: Blacksmithing
-	262645, -- Beyond the Event Horizon: Alchemy
-	262646, -- Beyond the Event Horizon: Engineering
 	262741, -- \"Dispelling Leap\" Kit
 	262742, -- \"Swift\" Kit
 	262743, -- \"Nullification Field\" Kit
@@ -6910,17 +6228,6 @@ local itemIDs = {
 	263380, -- Recruitment Pamphlets
 	263381, -- Xal'atath Wall Scrolls
 	263382, -- Twilight Material
-	263454, -- Thalassian Alchemist's Notebook
-	263455, -- Thalassian Blacksmith's Journal
-	263456, -- Thalassian Engineer's Notepad
-	263457, -- Thalassian Scribe's Journal
-	263458, -- Thalassian Jewelcrafter's Notebook
-	263459, -- Thalassian Leatherworker's Journal
-	263460, -- Thalassian Tailor's Notebook
-	263461, -- Thalassian Skinner's Notes
-	263462, -- Thalassian Herbalist's Notes
-	263463, -- Thalassian Miner's Notes
-	263464, -- Thalassian Enchanter's Folio
 	263933, -- Preyseeker's Hearthstone
 	263934, -- Chest of Gold
 	264182, -- Kelum'ko's Generous Aromatic Gift
@@ -7002,10 +6309,7 @@ local itemIDs = {
 	191230, -- Khaz'gorite Blacksmith's Toolbox
 	193613, -- Flameproof Apron
 	219874, -- Earthen Forgemaster's Apron
-	222495, -- Artisan Blacksmith's Toolbox
 	-- Profession > Cooking
-	193545, -- Master's Wildercloth Chef's Hat
-	222851, -- Artisan Chef's Hat
 	223969, -- Secret Sauce
 	-- Profession > Enchanting
 	22463, -- Runed Eternium Rod
@@ -7020,10 +6324,6 @@ local itemIDs = {
 	219870, -- Charged Scrapmaster's Gauntlets
 	221798, -- Aqirite Fueled Samophlange
 	-- Profession > Fishing
-	19970, -- Arcanite Fishing Pole
-	168804, -- Powered Piscine Procurement Pole
-	173044, -- Wreathed Fishing Pole
-	180136, -- \"The Brokers Angle'r\"
 	224171, -- Master's Wildercloth Fishing Cap
 	-- Profession > Herbalism
 	191224, -- Khaz'gorite Sickle
@@ -7068,156 +6368,9 @@ local itemIDs = {
 	222491, -- Artisan Needle Set
 	222852, -- Artisan Tailor's Coat
 	-- Recipe > Alchemy
-	2556, -- Recipe: Elixir of Tongues
-	3394, -- Recipe: Potion of Curing
-	3830, -- Recipe: Elixir of Fortitude
-	4624, -- Recipe: Lesser Stoneshield Potion
-	5642, -- Recipe: Free Action Potion
-	5643, -- Recipe: Great Rage Potion
-	6054, -- Recipe: Shadow Protection Potion
-	6056, -- Recipe: Frost Protection Potion
-	6057, -- Recipe: Nature Protection Potion
-	6068, -- Recipe: Shadow Oil
-	6211, -- Recipe: Elixir of Ogre's Strength
-	9300, -- Recipe: Elixir of Demonslaying
-	9302, -- Recipe: Ghost Dye
-	9303, -- Recipe: Philosopher's Stone
-	9304, -- Recipe: Transmute Iron to Gold
-	9305, -- Recipe: Transmute Mithril to Truesilver
-	10644, -- Recipe: Goblin Rocket Fuel
-	12958, -- Recipe: Transmute Arcanite
-	13477, -- Recipe: Superior Mana Potion
-	13480, -- Recipe: Major Healing Potion
-	13517, -- Recipe: Alchemist Stone
-	17709, -- Recipe: Elixir of Frost Power
-	18257, -- Recipe: Major Rejuvenation Potion
-	20011, -- Recipe: Mageblood Elixir
-	20012, -- Recipe: Greater Dreamless Sleep Potion
-	20014, -- Recipe: Mighty Troll's Blood Elixir
-	22901, -- Recipe: Sneaking Potion
-	22902, -- Recipe: Elixir of Major Frost Power
-	22907, -- Recipe: Super Mana Potion
-	22909, -- Recipe: Elixir of Major Defense
-	22911, -- Recipe: Major Dreamless Sleep Potion
-	31680, -- Recipe: Fel Strength Elixir
-	31681, -- Recipe: Fel Regeneration Potion
-	32071, -- Recipe: Elixir of Ironskin
-	35752, -- Recipe: Guardian's Alchemist Stone
-	35753, -- Recipe: Sorcerer's Alchemist Stone
-	35754, -- Recipe: Redeemer's Alchemist Stone
-	35755, -- Recipe: Assassin's Alchemist Stone
-	109558, -- A Treatise on the Alchemy of Draenor
-	112049, -- Recipe: Alchemical Catalyst - Fireweed
-	112050, -- Recipe: Alchemical Catalyst - Flytrap
-	112051, -- Recipe: Alchemical Catalyst - Starflower
-	112053, -- Recipe: Alchemical Catalyst - Orchid
-	112054, -- Recipe: Alchemical Catalyst - Lotus
-	115356, -- Draenor Blacksmithing
-	115357, -- Draenor Tailoring
-	115358, -- Draenor Leatherworking
-	115359, -- Draenor Jewelcrafting
-	122599, -- Tome of Sorcerous Elements
-	122605, -- Tome of the Stones
-	160661, -- Recipe: Fire Ammonite Oil
-	160662, -- Recipe: Blackwater Anti-Venom
-	160663, -- Recipe: Healing Tonic
-	162128, -- Recipe: Steelskin Potion
-	162129, -- Recipe: Potion of Replenishment
-	162130, -- Recipe: Potion of Bursting Blood
-	162131, -- Recipe: Potion of Rising Death
-	162132, -- Recipe: Flask of the Currents
-	162133, -- Recipe: Flask of Endless Fathoms
-	162134, -- Recipe: Flask of the Vast Horizon
-	162135, -- Recipe: Flask of the Undertow
-	162136, -- Recipe: Endless Tincture of Renewed Combat
-	162137, -- Recipe: Siren's Alchemist Stone
-	162138, -- Recipe: Endless Tincture of Fractional Power
-	162139, -- Recipe: Surging Alchemist Stone
-	162254, -- Recipe: Coastal Mana Potion
-	162255, -- Recipe: Coastal Healing Potion
-	162256, -- Recipe: Coastal Rejuvenation Potion
-	162257, -- Recipe: Demitri's Draught of Deception
-	162258, -- Recipe: Lightfoot Potion
-	162259, -- Recipe: Sea Mist Potion
-	162260, -- Recipe: Potion of Concealment
-	162520, -- Recipe: Mystical Cauldron
-	162521, -- Recipe: Mystical Cauldron
-	162691, -- Recipe: Steelskin Potion
-	162692, -- Recipe: Potion of Replenishment
-	162693, -- Recipe: Potion of Bursting Blood
-	162694, -- Recipe: Potion of Rising Death
-	162695, -- Recipe: Flask of the Currents
-	162696, -- Recipe: Flask of Endless Fathoms
-	162697, -- Recipe: Flask of the Vast Horizon
-	162698, -- Recipe: Flask of the Undertow
-	162701, -- Recipe: Endless Tincture of Fractional Power
-	162702, -- Recipe: Surging Alchemist Stone
-	162703, -- Recipe: Coastal Mana Potion
-	162704, -- Recipe: Coastal Healing Potion
-	162705, -- Recipe: Coastal Rejuvenation Potion
-	163313, -- Recipe: Battle Potion of Agility
-	163314, -- Recipe: Battle Potion of Agility
-	163315, -- Recipe: Battle Potion of Intellect
-	163316, -- Recipe: Battle Potion of Intellect
-	163317, -- Recipe: Battle Potion of Stamina
-	163318, -- Recipe: Battle Potion of Stamina
-	163319, -- Recipe: Battle Potion of Strength
-	163320, -- Recipe: Battle Potion of Strength
-	166271, -- Recipe: Potion of the Unveiling Eye
-	166422, -- Recipe: Silas' Sphere of Transmutation
-	171318, -- Recipe: Unbound Alchemist Stone
-	191429, -- Recipe: Phial of the Eye in the Storm
-	191430, -- Recipe: Phial of Still Air
-	191431, -- Recipe: Phial of Icy Preservation
-	191432, -- Recipe: Iced Phial of Corrupting Rage
-	191433, -- Recipe: Phial of Charged Isolation
-	191434, -- Recipe: Phial of Glacial Fury
-	191435, -- Recipe: Phial of Static Empowerment
-	191436, -- Recipe: Phial of Tepid Versatility
-	191437, -- Recipe: Aerated Phial of Deftness
-	191438, -- Recipe: Steaming Phial of Finesse
-	191439, -- Recipe: Charged Phial of Alacrity
-	191440, -- Recipe: Potion of Frozen Fatality
-	191441, -- Recipe: Crystalline Phial of Perception
-	191442, -- Recipe: Phial of Elemental Chaos
-	191443, -- Recipe: Bottled Putrescence
-	191444, -- Recipe: Potion of Frozen Focus
-	191445, -- Recipe: Potion of Chilled Clarity
-	191446, -- Recipe: Potion of Withering Vitality
-	191447, -- Recipe: Residual Neural Channeling Agent
-	191448, -- Recipe: Delicate Suspension of Spores
-	191449, -- Recipe: Refreshing Healing Potion
-	191450, -- Recipe: Elemental Potion of Ultimate Power
-	191452, -- Recipe: Elemental Potion of Power
-	191454, -- Recipe: Potion of the Hushed Zephyr
-	191455, -- Recipe: Potion of Gusts
-	191456, -- Recipe: Potion of Shocking Disclosure
-	191542, -- Recipe: Potion Cauldron of Power
-	191543, -- Recipe: Potion Cauldron of Ultimate Power
-	191544, -- Recipe: Cauldron of the Pooka
-	191578, -- Recipe: Transmute: Awakened Fire
-	191579, -- Recipe: Transmute: Awakened Frost
-	191580, -- Recipe: Transmute: Awakened Earth
-	191581, -- Recipe: Transmute: Awakened Air
-	191582, -- Recipe: Transmute: Decay to Elements
-	191583, -- Recipe: Transmute: Order to Elements
-	191584, -- Recipe: Primal Convergent
-	191585, -- Recipe: Omnium Draconis
-	191587, -- Recipe: Somniferous Incense
-	191588, -- Recipe: Exultant Incense
-	191589, -- Recipe: Fervid Incense
-	191597, -- Recipe: Potion Absorption Inhibitor
-	191599, -- Recipe: Basic Potion Experimentation
-	191600, -- Recipe: Advanced Potion Experimentation
-	191601, -- Recipe: Basic Phial Experimentation
 	193366, -- Advanced Phial Alchemical Experimentation
 	193367, -- Advanced Potion Alchemical Experimentation
 	194973, -- Reclaim Concoctions
-	204631, -- Recipe: Transmute: Dracothyst
-	204695, -- Recipe: Cauldron of Extracted Putrescence
-	204696, -- Recipe: Draconic Phial Cauldron
-	204984, -- Recipe: Stinky Bright Potion
-	210241, -- Recipe: Dreamwalker's Healing Potion
 	210813, -- Wild Experimentation
 	210829, -- Neutralize Concoctions
 	211796, -- Thaumaturgy
@@ -7228,1086 +6381,22 @@ local itemIDs = {
 	223886, -- Mercurial Herbs
 	223887, -- Ominous Herbs
 	242637, -- Recycle Potions
-	246671, -- Recipe: Sunsmoke Censer
-	247423, -- Recipe: Silvermoon Spire Fountain
-	247425, -- Recipe: Riftstone
-	247498, -- Recipe: Entropic Illuminant
-	247499, -- Recipe: Haranir Preserving Agents
-	247500, -- Recipe: Rootbound Vat
-	257417, -- Recipe: Vicious Thalassian Flask of Honor
-	258141, -- Recipe: Haranir Phial of Perception
-	258305, -- Recipe: Amani Extract
-	-- Recipe > Blacksmithing
-	3871, -- Plans: Golden Scale Shoulders
-	3875, -- Plans: Golden Scale Boots
-	6047, -- Plans: Golden Scale Coif
-	7976, -- Plans: Mithril Shield Spike
-	7991, -- Plans: Mithril Scale Shoulders
-	7995, -- Plans: Mithril Scale Bracers
-	10713, -- Plans: Inlaid Mithril Cylinder
-	10858, -- Plans: Solid Iron Maul
-	11610, -- Plans: Dark Iron Pulverizer
-	11611, -- Plans: Dark Iron Sunderer
-	11612, -- Plans: Dark Iron Plate
-	12162, -- Plans: Hardened Iron Shortsword
-	12699, -- Plans: Fiery Plate Gauntlets
-	12703, -- Plans: Storm Gauntlets
-	12706, -- Plans: Runic Plate Shoulders
-	12707, -- Plans: Runic Plate Boots
-	12714, -- Plans: Runic Plate Helm
-	12716, -- Plans: Helm of the Great Chief
-	12719, -- Plans: Runic Plate Leggings
-	12725, -- Plans: Enchanted Thorium Helm
-	12726, -- Plans: Enchanted Thorium Leggings
-	12727, -- Plans: Enchanted Thorium Breastplate
-	12817, -- Plans: Bleakwood Hew
-	12821, -- Plans: Dawn's Edge
-	12823, -- Plans: Huge Thorium Battleaxe
-	12834, -- Plans: Arcanite Champion
-	12835, -- Plans: Annihilator
-	12837, -- Plans: Masterwork Stormhammer
-	12839, -- Plans: Heartseeker
-	17049, -- Plans: Fiery Chain Girdle
-	17051, -- Plans: Dark Iron Bracers
-	17052, -- Plans: Dark Iron Leggings
-	17053, -- Plans: Fiery Chain Shoulders
-	17060, -- Plans: Dark Iron Destroyer
-	18264, -- Plans: Elemental Sharpening Stone
-	19205, -- Plans: Gloves of the Dawn
-	19206, -- Plans: Dark Iron Helm
-	19207, -- Plans: Dark Iron Gauntlets
-	19208, -- Plans: Black Amnesty
-	19209, -- Plans: Blackfury
-	19210, -- Plans: Ebon Hand
-	19211, -- Plans: Blackguard
-	19212, -- Plans: Nightfall
-	19777, -- Plans: Bloodsoul Shoulders
-	19778, -- Plans: Bloodsoul Gauntlets
-	19779, -- Plans: Darksoul Breastplate
-	19780, -- Plans: Darksoul Leggings
-	20553, -- Plans: Darkrune Gauntlets
-	20555, -- Plans: Darkrune Helm
-	22219, -- Plans: Jagged Obsidian Shield
-	22220, -- Plans: Black Grasp of the Destroyer
-	22221, -- Plans: Obsidian Mail Tunic
-	22222, -- Plans: Thick Obsidian Breastplate
-	22703, -- Plans: Icebane Breastplate
-	22704, -- Plans: Icebane Gauntlets
-	22705, -- Plans: Icebane Bracers
-	22766, -- Plans: Ironvine Breastplate
-	23590, -- Plans: Adamantite Maul
-	23591, -- Plans: Adamantite Cleaver
-	23592, -- Plans: Adamantite Dagger
-	23593, -- Plans: Adamantite Rapier
-	23594, -- Plans: Adamantite Plate Bracers
-	23596, -- Plans: Adamantite Breastplate
-	23600, -- Plans: Enchanted Adamantite Leggings
-	23602, -- Plans: Flamebane Helm
-	23604, -- Plans: Flamebane Breastplate
-	23607, -- Plans: Felsteel Helm
-	23610, -- Plans: Khorium Boots
-	23611, -- Plans: Ragesteel Gloves
-	23612, -- Plans: Ragesteel Helm
-	23613, -- Plans: Ragesteel Breastplate
-	23615, -- Plans: Swiftsteel Gloves
-	23638, -- Plans: Lesser Ward of Shielding
-	23639, -- Plans: Greater Ward of Shielding
-	33174, -- Plans: Ragesteel Shoulders
-	123899, -- Plans: Leystone Armguards
-	123900, -- Plans: Leystone Waistguard
-	123901, -- Plans: Leystone Pauldrons
-	123902, -- Plans: Leystone Greaves
-	123903, -- Plans: Leystone Helm
-	123904, -- Plans: Leystone Gauntlets
-	123905, -- Plans: Leystone Boots
-	123906, -- Plans: Leystone Breastplate
-	123920, -- Plans: Demonsteel Armguards
-	123921, -- Plans: Demonsteel Waistguard
-	123922, -- Plans: Demonsteel Pauldrons
-	123923, -- Plans: Demonsteel Greaves
-	123924, -- Plans: Demonsteel Helm
-	123925, -- Plans: Demonsteel Gauntlets
-	123926, -- Plans: Demonsteel Boots
-	123927, -- Plans: Demonsteel Breastplate
-	123928, -- Plans: Leystone Armguards
-	123929, -- Plans: Leystone Waistguard
-	123930, -- Plans: Leystone Pauldrons
-	123931, -- Plans: Leystone Greaves
-	123932, -- Plans: Leystone Helm
-	123933, -- Plans: Leystone Gauntlets
-	123934, -- Plans: Leystone Boots
-	123935, -- Plans: Leystone Breastplate
-	123936, -- Plans: Leystone Armguards
-	123937, -- Plans: Leystone Waistguard
-	123938, -- Plans: Leystone Pauldrons
-	123939, -- Plans: Leystone Breastplate
-	123940, -- Plans: Demonsteel Armguards
-	123941, -- Plans: Demonsteel Waistguard
-	123942, -- Plans: Demonsteel Pauldrons
-	123943, -- Plans: Demonsteel Greaves
-	123944, -- Plans: Demonsteel Helm
-	123945, -- Plans: Demonsteel Gauntlets
-	123946, -- Plans: Demonsteel Boots
-	123947, -- Plans: Demonsteel Breastplate
-	123948, -- Plans: Demonsteel Armguards
-	123949, -- Plans: Demonsteel Waistguard
-	123950, -- Plans: Demonsteel Pauldrons
-	123952, -- Plans: Demonsteel Helm
-	123953, -- Plans: Demonsteel Gauntlets
-	123955, -- Plans: Demonsteel Breastplate
-	123957, -- Plans: Leystone Hoofplates
-	124462, -- Plans: Demonsteel Bar
-	124463, -- Mining Technique: Leystone Deposit
-	124464, -- Mining Technique: Leystone Deposit
-	124465, -- Mining Technique: Leystone Deposit
-	124467, -- Mining Technique: Leystone Seam
-	124468, -- Mining Technique: Leystone Seam
-	124469, -- Mining Technique: Leystone Seam
-	124471, -- Mining Technique: Living Leystone
-	124472, -- Mining Technique: Living Leystone
-	124473, -- Mining Technique: Living Leystone
-	124475, -- Mining Technique: Felslate Deposit
-	124476, -- Mining Technique: Felslate Deposit
-	124477, -- Mining Technique: Felslate Deposit
-	124479, -- Mining Technique: Felslate Seam
-	124480, -- Mining Technique: Felslate Seam
-	124481, -- Mining Technique: Felslate Seam
-	124483, -- Mining Technique: Living Felslate
-	124484, -- Mining Technique: Living Felslate
-	124485, -- Mining Technique: Living Felslate
-	124487, -- Mining Technique: Infernal Brimstone
-	124488, -- Mining Technique: Infernal Brimstone
-	136696, -- Plans: Terrorspike
-	136699, -- Plans: Flamespike
-	136709, -- Plans: Demonsteel Stirrups
-	137605, -- Plans: Leystone Boots
-	137606, -- Plans: Leystone Gauntlets
-	137607, -- Plans: Leystone Helm
-	137680, -- Plans: Leystone Greaves
-	137687, -- Plans: Fel Core Hound Harness
-	142279, -- Plans: Windforged Rapier
-	142282, -- Plans: Stormforged Axe
-	142283, -- Plans: Skyforged Great Axe
-	142284, -- Plans: Stoneforged Claymore
-	142286, -- Plans: Lavaforged Warhammer
-	142287, -- Plans: Great Earthforged Hammer
-	142337, -- Plans: Blight
-	142346, -- Plans: Bleakwood Hew
-	142357, -- Plans: Dawn's Edge
-	142358, -- Plans: Blazing Rapier
-	142370, -- Plans: Arcanite Champion
-	142383, -- Plans: Darkspear
-	142402, -- Plans: Light Earthforged Blade
-	151709, -- Plans: Felslate Anchor
-	151711, -- Plans: Empyrial Breastplate
-	151712, -- Plans: Empyrial Breastplate
-	151713, -- Plans: Empyrial Breastplate
-	162261, -- Plans: Stormsteel Shield
-	162262, -- Plans: Honorable Combatant's Plate Boots
-	162263, -- Plans: Honorable Combatant's Plate Boots
-	162265, -- Plans: Honorable Combatant's Plate Gauntlets
-	162266, -- Plans: Honorable Combatant's Plate Gauntlets
-	162267, -- Plans: Honorable Combatant's Plate Greaves
-	162268, -- Plans: Honorable Combatant's Plate Greaves
-	162269, -- Plans: Honorable Combatant's Plate Waistguard
-	162270, -- Plans: Honorable Combatant's Plate Waistguard
-	162271, -- Plans: Honorable Combatant's Plate Armguards
-	162272, -- Plans: Honorable Combatant's Plate Armguards
-	162273, -- Plans: Honorable Combatant's Plate Shield
-	162274, -- Plans: Honorable Combatant's Plate Shield
-	162275, -- Plans: Stormsteel Dagger
-	162276, -- Plans: Stormsteel Spear
-	162277, -- Plans: Honorable Combatant's Cutlass
-	162278, -- Plans: Honorable Combatant's Cutlass
-	162279, -- Plans: Honorable Combatant's Deckpounder
-	162280, -- Plans: Honorable Combatant's Deckpounder
-	162281, -- Plans: Honorable Combatant's Shanker
-	162282, -- Plans: Honorable Combatant's Shanker
-	162283, -- Plans: Honorable Combatant's Polearm
-	162284, -- Plans: Honorable Combatant's Polearm
-	162668, -- Plans: Honorable Combatant's Spellblade
-	162669, -- Plans: Honorable Combatant's Spellblade
-	162670, -- Plans: Stormsteel Saber
-	162706, -- Plans: Stormsteel Shield
-	162707, -- Plans: Stormsteel Dagger
-	162708, -- Plans: Stormsteel Spear
-	162774, -- Plans: Stormsteel Saber
-	165278, -- Plans: Sinister Combatant's Plate Boots
-	165279, -- Plans: Sinister Combatant's Plate Boots
-	165280, -- Plans: Sinister Combatant's Plate Gauntlets
-	165281, -- Plans: Sinister Combatant's Plate Gauntlets
-	165282, -- Plans: Sinister Combatant's Plate Greaves
-	165283, -- Plans: Sinister Combatant's Plate Greaves
-	165284, -- Plans: Sinister Combatant's Plate Shield
-	165285, -- Plans: Sinister Combatant's Plate Shield
-	165286, -- Plans: Sinister Combatant's Plate Waistguard
-	165287, -- Plans: Sinister Combatant's Plate Waistguard
-	165288, -- Plans: Sinister Combatant's Plate Armguards
-	165289, -- Plans: Sinister Combatant's Plate Armguards
-	165290, -- Plans: Sinister Combatant's Cutlass
-	165291, -- Plans: Sinister Combatant's Cutlass
-	165292, -- Plans: Sinister Combatant's Deckpounder
-	165293, -- Plans: Sinister Combatant's Deckpounder
-	165294, -- Plans: Sinister Combatant's Spellblade
-	165295, -- Plans: Sinister Combatant's Spellblade
-	165296, -- Plans: Sinister Combatant's Shanker
-	165297, -- Plans: Sinister Combatant's Shanker
-	165298, -- Plans: Sinister Combatant's Polearm
-	165299, -- Plans: Sinister Combatant's Polearm
-	166260, -- Plans: Monel-Hardened Hoofplates
-	168022, -- Plans: Khaz'gorian Smithing Hammer
-	170392, -- Plans: Uncanny Combatant's Plate Waistguard
-	170393, -- Plans: Uncanny Combatant's Plate Waistguard
-	170394, -- Plans: Uncanny Combatant's Plate Boots
-	170395, -- Plans: Uncanny Combatant's Plate Boots
-	170396, -- Plans: Uncanny Combatant's Plate Gauntlets
-	170397, -- Plans: Uncanny Combatant's Plate Gauntlets
-	170398, -- Plans: Uncanny Combatant's Plate Greaves
-	170399, -- Plans: Uncanny Combatant's Plate Greaves
-	170400, -- Plans: Uncanny Combatant's Shield
-	170401, -- Plans: Uncanny Combatant's Shield
-	170402, -- Plans: Uncanny Combatant's Plate Armguards
-	170403, -- Plans: Uncanny Combatant's Plate Armguards
-	170453, -- Pattern: Uncanny Combatant's Satin Pants
-	170455, -- Pattern: Uncanny Combatant's Satin Bracers
-	170946, -- Plans: Uncanny Combatant's Polearm
-	170947, -- Plans: Uncanny Combatant's Polearm
-	170948, -- Plans: Uncanny Combatant's Shanker
-	170949, -- Plans: Uncanny Combatant's Shanker
-	170950, -- Plans: Uncanny Combatant's Spellblade
-	170951, -- Plans: Uncanny Combatant's Spellblade
-	170952, -- Plans: Uncanny Combatant's Deckpounder
-	170953, -- Plans: Uncanny Combatant's Deckpounder
-	170954, -- Plans: Uncanny Combatant's Cutlass
-	170955, -- Plans: Uncanny Combatant's Cutlass
-	171316, -- Plans: Unsettling Osmenite Legguards
-	171317, -- Plans: Unsettling Osmenite Girdle
-	194495, -- Plans: Khaz'gorite Sickle
-	194496, -- Plans: Khaz'gorite Pickaxe
-	194497, -- Plans: Khaz'gorite Skinning Knife
-	194498, -- Plans: Khaz'gorite Needle Set
-	194499, -- Plans: Khaz'gorite Leatherworker's Knife
-	194500, -- Plans: Khaz'gorite Leatherworker's Toolset
-	194501, -- Plans: Khaz'gorite Blacksmith's Hammer
-	194502, -- Plans: Khaz'gorite Blacksmith's Toolbox
-	198713, -- Plans: Prototype Explorer's Barding Framework
-	198714, -- Plans: Prototype Regal Barding Framework
-	200102, -- Plans: Infurious Alloy
-	201256, -- Bloodstained Plans: Infurious Alloy
-	203824, -- Ancient Plans: Gurubashi Headplate
-	203825, -- Ancient Plans: Gurubashi Carver
-	203827, -- Ancient Plans: Gurubashi Poker
-	203828, -- Ancient Plans: Gurubashi Grinder
-	203830, -- Ancient Plans: Sceptre of Hexing
-	203832, -- Ancient Plans: Pitchfork of Mojo Madness
-	203835, -- Ancient Plans: Fiery Vengeance
-	203837, -- Ancient Plans: Gurubashi Slicer
-	205137, -- Plans: Shadowed Alloy
-	205143, -- Plans: Shadowed Belt Clasp
-	205144, -- Plans: Shadowed Razing Annihilator
-	205145, -- Plans: Shadowed Impact Buckler
-	205161, -- Plans: Heat-Resistant Rescue Ring
-	206351, -- Plans: Truesilver Champion
-	206352, -- Plans: The Shatterer
-	206419, -- Plans: Icebane Coif
-	206420, -- Plans: Icebane Mantle
-	206421, -- Plans: Icebane Breastplate
-	206422, -- Plans: Icebane Bracers
-	206423, -- Plans: Icebane Gauntlets
-	206424, -- Plans: Icebane Waistguard
-	206425, -- Plans: Icebane Leggings
-	206426, -- Plans: Icebane Trudgers
-	206522, -- Ancient Plans: Warsword of Caer Darrow
-	206525, -- Ancient Plans: Darrowdirk
-	206526, -- Ancient Plans: Darrowshire Protector
-	206527, -- Ancient Plans: Mirah's Lullaby
-	207567, -- Ancient Plans: Intrepid Shortblade
-	207568, -- Ancient Plans: Valiant Shortblade
-	207572, -- Ancient Plans: Sacred Guardian
-	210644, -- Plans: Flourishing Dream Helm
-	218101, -- Plans: <PVP Alloy>
-	218102, -- Bloodstained Plans: <PVP Alloy>
-	223049, -- Plans: Artisan Sickle
-	223050, -- Plans: Artisan Pickaxe
-	223051, -- Plans: Artisan Skinning Knife
-	223052, -- Plans: Artisan Needle Set
-	223053, -- Plans: Artisan Leatherworker's Knife
-	223054, -- Plans: Artisan Leatherworker's Toolset
-	225459, -- Plans: Algari Competitor's Plate Breastplate
-	225460, -- Plans: Algari Competitor's Plate Sabatons
-	225461, -- Plans: Algari Competitor's Plate Gauntlets
-	225462, -- Plans: Algari Competitor's Plate Helm
-	225463, -- Plans: Algari Competitor's Plate Greaves
-	225464, -- Plans: Algari Competitor's Plate Pauldrons
-	225465, -- Plans: Algari Competitor's Plate Waistguard
-	225466, -- Plans: Algari Competitor's Plate Armguards
-	225478, -- Plans: Algari Competitor's Pickaxe
-	225479, -- Plans: Algari Competitor's Dagger
-	225483, -- Plans: Algari Competitor's Scepter
-	225485, -- Plans: Algari Competitor's Shield
-	225486, -- Plans: Algari Competitor's Axe
-	225487, -- Plans: Algari Competitor's Skewer
-	225488, -- Plans: Algari Competitor's Greatsword
-	225489, -- Plans: Algari Competitor's Sword
-	238218, -- Plans: Thalassian Competitor's Plate Breastplate
-	238219, -- Plans: Thalassian Competitor's Plate Sabatons
-	238220, -- Plans: Thalassian Competitor's Plate Gauntlets
-	238221, -- Plans: Thalassian Competitor's Plate Helm
-	238222, -- Plans: Thalassian Competitor's Plate Greaves
-	238223, -- Plans: Thalassian Competitor's Plate Pauldrons
-	238224, -- Plans: Thalassian Competitor's Plate Waistguard
-	238225, -- Plans: Thalassian Competitor's Plate Armguards
-	238226, -- Plans: Thalassian Competitor's Pickaxe
-	238227, -- Plans: Thalassian Competitor's Knife
-	238228, -- Plans: Thalassian Competitor's Maxim
-	238229, -- Plans: Thalassian Competitor's Bulwark
-	238230, -- Plans: Thalassian Competitor's Splitter
-	238231, -- Plans: Thalassian Competitor's Skewer
-	238232, -- Plans: Thalassian Competitor's Greatsword
-	238233, -- Plans: Thalassian Competitor's Sword
-	258487, -- Plans: Murder Row Fleet Feet
-	258517, -- Plans: Knight-Commander's Palisade
-	258518, -- Plans: Murder Row Fishhook
-	258519, -- Plans: Magister's Valediction
-	258521, -- Plans: Blood Knight's Impetus
-	258522, -- Plans: Bloomforged Greataxe
 	-- Recipe > Book
 	8046, -- Kearnen's Journal
-	44956, -- Goblin's Guide to Elementium
-	49177, -- Tome of Cold Weather Flight
-	71949, -- Tome of Burning Jewels
-	109586, -- Brittle Cartography Journal
-	110672, -- Grimoire of the Four Winds
-	111349, -- A Treatise on Mining in Draenor
-	111350, -- A Compendium of the Herbs of Draenor
-	111351, -- A Guide to Skinning in Draenor
-	111356, -- Fishing Guide to Draenor
-	111387, -- The Joy of Draenor Cooking
-	129139, -- Tome of Rapid Pathfinding
-	136419, -- Excavator's Notebook
 	166502, -- Blood-Soaked Tome of Dark Whispers
-	169612, -- Recipe: Osmenite Deposit
-	169613, -- Recipe: Osmenite Seam
 	171312, -- Recipe: Void Focus
-	183123, -- How to School Your Serpent
 	183124, -- Simple Tome of Bone-Binding
 	186684, -- Memories of Brighter Times
 	211314, -- Cinder of Companionship
 	-- Recipe > Cooking
-	4609, -- Recipe: Barbecued Buzzard Wing
-	6039, -- Recipe: Giant Clam Scorcho
-	6325, -- Recipe: Brilliant Smallfish
-	6326, -- Recipe: Slitherskin Mackerel
-	6891, -- Recipe: Herb Baked Egg
-	12226, -- Recipe: Crispy Bat Wing
-	12232, -- Recipe: Carrion Surprise
-	12233, -- Recipe: Mystery Stew
-	13939, -- Recipe: Spotted Yellowtail
-	13940, -- Recipe: Cooked Glossy Mightfish
-	13943, -- Recipe: Hot Smoked Bass
-	13945, -- Recipe: Nightfin Soup
-	13947, -- Recipe: Lobster Stew
-	13948, -- Recipe: Mightfish Steak
-	13949, -- Recipe: Baked Salmon
-	16072, -- Expert Cookbook
-	16073, -- Artisan Cookbook
-	16110, -- Recipe: Monster Omelet
-	17200, -- Recipe: Gingerbread Cookie
-	18046, -- Recipe: Tender Wolf Steak
-	21219, -- Recipe: Sagefish Delight
-	27684, -- Recipe: Buzzard Bites
-	27685, -- Recipe: Lynx Steak
-	27686, -- Recipe: Roasted Moongraze Tenderloin
-	27688, -- Recipe: Ravager Dog
-	27690, -- Recipe: Blackened Basilisk
-	27691, -- Recipe: Roasted Clefthoof
-	27692, -- Recipe: Warp Burger
-	27693, -- Recipe: Talbuk Steak
-	27694, -- Recipe: Blackened Trout
-	27695, -- Recipe: Feltail Delight
-	27696, -- Recipe: Blackened Sporefish
-	27697, -- Recipe: Grilled Mudfish
-	27698, -- Recipe: Poached Bluefish
-	27699, -- Recipe: Golden Fish Sticks
-	27700, -- Recipe: Spicy Crawdad
-	30156, -- Recipe: Clam Bar
-	31674, -- Recipe: Crunchy Serpent
-	31675, -- Recipe: Mok'Nathal Shortribs
-	33871, -- Recipe: Stormchops
-	34126, -- Recipe: Shoveltusk Soup
-	34413, -- Recipe: Hot Apple Cider
-	35564, -- Recipe: Charred Bear Kabobs
-	86393, -- Tablet of Ren Yun
 	86512, -- Journeyman Cookbook
 	86550, -- Apprentice Cookbook
 	86551, -- Expert Cookbook
 	86552, -- Artisan Cookbook
 	86553, -- Master Cookbook
 	86554, -- Grand Master Cookbook
-	87266, -- Recipe: Banana-Infused Rum
-	118322, -- Recipe Idea: Talador Surf and Turf
-	118323, -- Recipe Idea: Blackrock Barbecue
-	118324, -- Recipe Idea: Frosty Stew
-	118325, -- Recipe Idea: Sleeper Surprise
-	118326, -- Recipe Idea: Calamari Crepes
-	118327, -- Recipe Idea: Gorgrond Chowder
-	118328, -- Recipe Idea: Feast of Blood
-	118329, -- Recipe Idea: Feast of the Waters
-	133810, -- Recipe: Salt and Pepper Shank
-	133812, -- Recipe: Deep-Fried Mossgill
-	133813, -- Recipe: Pickled Stormray
-	133814, -- Recipe: Faronaar Fizz
-	133815, -- Recipe: Spiced Rib Roast
-	133816, -- Recipe: Leybeque Ribs
-	133817, -- Recipe: Suramar Surf and Turf
-	133818, -- Recipe: Barracuda Mrglgagh
-	133819, -- Recipe: Koi-Scented Stormray
-	133820, -- Recipe: Drogbar-Style Salmon
-	133821, -- Recipe: The Hungry Magister
-	133822, -- Recipe: Azshari Salad
-	133823, -- Recipe: Nightborne Delicacy Platter
-	133824, -- Recipe: Seed-Battered Fish Plate
-	133825, -- Recipe: Fishbrul Special
-	133826, -- Recipe: Dried Mackerel Strips
-	133827, -- Recipe: Bear Tartare
-	133828, -- Recipe: Fighter Chow
-	133829, -- Recipe: Hearty Feast
-	133830, -- Recipe: Lavish Suramar Feast
-	133831, -- Recipe: Salt and Pepper Shank
-	133832, -- Recipe: Deep-Fried Mossgill
-	133833, -- Recipe: Pickled Stormray
-	133834, -- Recipe: Faronaar Fizz
-	133835, -- Recipe: Spiced Rib Roast
-	133836, -- Recipe: Leybeque Ribs
-	133837, -- Recipe: Suramar Surf and Turf
-	133838, -- Recipe: Barracuda Mrglgagh
-	133839, -- Recipe: Koi-Scented Stormray
-	133840, -- Recipe: Drogbar-Style Salmon
-	133841, -- Recipe: The Hungry Magister
-	133842, -- Recipe: Azshari Salad
-	133843, -- Recipe: Nightborne Delicacy Platter
-	133844, -- Recipe: Seed-Battered Fish Plate
-	133845, -- Recipe: Fishbrul Special
-	133846, -- Recipe: Dried Mackerel Strips
-	133847, -- Recipe: Bear Tartare
-	133848, -- Recipe: Fighter Chow
-	133849, -- Recipe: Hearty Feast
-	133850, -- Recipe: Lavish Suramar Feast
-	133851, -- Recipe: Salt and Pepper Shank
-	133852, -- Recipe: Deep-Fried Mossgill
-	133853, -- Recipe: Pickled Stormray
-	133854, -- Recipe: Faronaar Fizz
-	133855, -- Recipe: Spiced Rib Roast
-	133856, -- Recipe: Leybeque Ribs
-	133857, -- Recipe: Suramar Surf and Turf
-	133858, -- Recipe: Barracuda Mrglgagh
-	133859, -- Recipe: Koi-Scented Stormray
-	133860, -- Recipe: Drogbar-Style Salmon
-	133861, -- Recipe: The Hungry Magister
-	133862, -- Recipe: Azshari Salad
-	133863, -- Recipe: Nightborne Delicacy Platter
-	133864, -- Recipe: Seed-Battered Fish Plate
-	133865, -- Recipe: Fishbrul Special
-	133866, -- Recipe: Dried Mackerel Strips
-	133867, -- Recipe: Bear Tartare
-	133868, -- Recipe: Fighter Chow
-	133869, -- Recipe: Hearty Feast
-	133870, -- Recipe: Lavish Suramar Feast
-	133871, -- Recipe: Crispy Bacon
-	133872, -- Recipe: Crispy Bacon
-	133873, -- Recipe: Crispy Bacon
-	142331, -- Recipe: Spiced Falcosaur Omelet
-	152565, -- Recipe: Feast of the Fishes
-	162285, -- Recipe: Kul Tiramisu
-	162286, -- Recipe: Honey-Glazed Haunches
-	162287, -- Recipe: Galley Banquet
-	162289, -- Recipe: Bountiful Captain's Feast
-	162290, -- Recipe: Ravenberry Tarts
-	162291, -- Recipe: Swamp Fish 'n Chips
-	162292, -- Recipe: Grilled Catfish
-	162293, -- Recipe: Seasoned Loins
-	162294, -- Recipe: Loa Loaf
-	162295, -- Recipe: Sailor's Pie
-	162296, -- Recipe: Mon'Dazi
-	162297, -- Recipe: Spiced Snapper
-	163833, -- Recipe: Heartsbane Hexwurst
-	166263, -- Recipe: Sanguinated Feast
-	166264, -- Recipe: Sanguinated Feast
-	166367, -- Recipe: Wild Berry Bread
-	166368, -- Recipe: Seasoned Steak and Potatoes
-	166806, -- Recipe: Boralus Blood Sausage
-	166807, -- Recipe: Boralus Blood Sausage
-	168330, -- Recipe: Mech-Dowel's \"Big Mech\"
-	168331, -- Recipe: Baked Port Tato
-	168332, -- Recipe: Abyssal-Fried Rissole
-	168333, -- Recipe: Bil'Tong
-	168334, -- Recipe: Fragrant Kakavia
-	168368, -- Recipe: Famine Evaluator And Snack Table
-	168369, -- Recipe: Famine Evaluator And Snack Table
-	169457, -- Recipe: Mecha-Bytes
-	170075, -- Recipe: Unagi Skewer
-	187006, -- Recipe: Twilight Tea
-	187007, -- Recipe: Bonemeal Bread
-	187008, -- Recipe: Porous Rock Candy
-	194964, -- Recipe: Thrice-Spiced Mammoth Kabob
-	194965, -- Recipe: Yusa's Hearty Stew
-	195881, -- Recipe: Charred Hornswog Steaks
-	198092, -- Recipe: Twice-Baked Potato
-	198095, -- Recipe: Probably Protein
-	198096, -- Recipe: Sweet and Sour Clam Chowder
-	198097, -- Recipe: Hungry Whelpling Breakfast
-	198098, -- Recipe: Ooey-Gooey Chocolate
-	198099, -- Recipe: Pebbled Rock Salts
-	198100, -- Recipe: Assorted Exotic Spices
-	198101, -- Recipe: Salad on the Side
-	198102, -- Recipe: Impossibly Sharp Cutting Knife
-	198103, -- Recipe: Snow in a Cone
-	198104, -- Recipe: Blubbery Muffin
-	198105, -- Recipe: Celebratory Cake
-	198106, -- Recipe: Tasty Hatchling's Treat
-	198107, -- Recipe: Zesty Water
-	198108, -- Recipe: Delicious Dragon Spittle
-	198109, -- Recipe: Churnbelly Tea
-	198111, -- Recipe: Scrambled Basilisk Eggs
-	198112, -- Recipe: Hopefully Healthy
-	198113, -- Recipe: Timely Demise
-	198114, -- Recipe: Filet of Fangs
-	198115, -- Recipe: Seamoth Surprise
-	198116, -- Recipe: Salt-Baked Fishcake
-	198117, -- Recipe: Feisty Fish Sticks
-	198118, -- Recipe: Aromatic Seafood Platter
-	198119, -- Recipe: Sizzling Seafood Medley
-	198120, -- Recipe: Revenge, Served Cold
-	198121, -- Recipe: Thousandbone Tongueslicer
-	198122, -- Recipe: Great Cerulean Sea
-	198123, -- Recipe: Braised Bruffalon Brisket
-	198124, -- Recipe: Riverside Picnic
-	198125, -- Recipe: Roast Duck Delight
-	198126, -- Recipe: Salted Meat Mash
-	198127, -- Recipe: Fated Fortune Cookie
-	198129, -- Recipe: Gral's Reverence
-	198130, -- Recipe: Gral's Veneration
-	198131, -- Recipe: Gral's Devotion
-	198132, -- Recipe: Hoard of Draconic Delicacies
-	201784, -- Recipe: Timely Demise
-	201785, -- Recipe: Seamoth Surprise
-	201786, -- Recipe: Salt-Baked Fishcake
-	201787, -- Recipe: Filet of Fangs
-	202249, -- Recipe: Goldthorn Tea
-	202289, -- Recipe: Firewater Sorbet
-	204073, -- Ratcipe: Deviously Deviled Eggs
-	204847, -- Recipe: Rocks on the Rocks
-	204849, -- Ratcipe: Charitable Cheddar
-	210242, -- Recipe: Slumbering Peacebloom Tea
-	210496, -- Recipe: Slumbering Peacebloom Tea
-	223955, -- Recipe: Fine Egg Powder
-	223956, -- Recipe: Everything-on-a-Stick
-	223957, -- Recipe: Protein Slurp
-	223958, -- Recipe: Spongey Scramble
-	223960, -- Recipe: Little Buddy Biscuits
-	224152, -- Recipe: Empress' Farewell
-	224418, -- Recipe: Everything Stew
-	224419, -- Recipe: Jester's Board
-	225639, -- Recipe: Exquisitely Eviscerated Muscle
-	225892, -- Recipe: Rockslide Shake
-	225894, -- Recipe: Beledar's Bounty
-	226177, -- Recipe: Outsider's Provisions
-	226190, -- Recipe: Sticky Sweet Treat
-	227281, -- Recipe: Feast of the Midnight Masquerade
-	227283, -- Recipe: Feast of the Divine Day
-	228421, -- Recipe: Melted Candlebar
-	228422, -- Recipe: Ghoulfish Delight
-	228423, -- Recipe: Pep-In-Your-Step
-	228424, -- Recipe: Cinder Nectar
-	235800, -- Recipe: Authentic Undermine Clam Chowder
-	248013, -- Recipe: Dornic Mine and Cheese Platter
-	251630, -- Recipe: Amani Cornucopia
-	263473, -- Recipe: Flora Frenzy
 	-- Recipe > Enchanting
-	6349, -- Formula: Enchant 2H Weapon - Lesser Intellect
 	11151, -- Ancient Enchanting Vellum
-	11206, -- Formula: Enchant Cloak - Lesser Agility
-	16217, -- Formula: Enchant Shield - Greater Stamina
-	16221, -- Formula: Enchant Chest - Major Health
-	19444, -- Formula: Enchant Weapon - Strength
-	19447, -- Formula: Enchant Bracer - Healing Power
-	19448, -- Formula: Enchant Weapon - Mighty Versatility
-	19449, -- Formula: Enchant Weapon - Mighty Intellect
-	20726, -- Formula: Enchant Gloves - Threat
-	20727, -- Formula: Enchant Gloves - Shadow Power
-	20728, -- Formula: Enchant Gloves - Frost Power
-	20729, -- Formula: Enchant Gloves - Fire Power
-	20730, -- Formula: Enchant Gloves - Healing Power
-	20731, -- Formula: Enchant Gloves - Superior Agility
-	20734, -- Formula: Enchant Cloak - Stealth
-	20735, -- Formula: Enchant Cloak - Subtlety
-	20736, -- Formula: Enchant Cloak - Dodge
-	20752, -- Formula: Minor Mana Oil
-	20753, -- Formula: Lesser Wizard Oil
-	20754, -- Formula: Lesser Mana Oil
-	20755, -- Formula: Wizard Oil
-	20756, -- Formula: Brilliant Wizard Oil
-	20757, -- Formula: Brilliant Mana Oil
-	20758, -- Formula: Minor Wizard Oil
-	22539, -- Formula: Enchant Shield - Intellect
-	22547, -- Formula: Enchant Chest - Exceptional Stats
-	22559, -- Formula: Enchant Weapon - Mongoose
-	22560, -- Formula: Enchant Weapon - Sunfire
-	22561, -- Formula: Enchant Weapon - Soulfrost
-	22562, -- Formula: Superior Mana Oil
-	22563, -- Formula: Superior Wizard Oil
-	22564, -- Formula: Arcane Dust
-	22565, -- Formula: Large Prismatic Shard
-	24003, -- Formula: Enchant Chest - Exceptional Stats
-	33148, -- Formula: Enchant Cloak - Dodge
-	33149, -- Formula: Enchant Cloak - Stealth
-	33150, -- Formula: Enchant Cloak - Subtlety
-	33151, -- Formula: Enchant Cloak - Subtlety
-	33152, -- Formula: Enchant Gloves - Superior Agility
-	33153, -- Formula: Enchant Gloves - Threat
-	33165, -- Formula: Enchant Weapon - Greater Agility
-	33307, -- Formula: Enchant Weapon - Executioner
-	35498, -- Formula: Enchant Weapon - Deathfrost
-	78348, -- Formula: Enchant Weapon - Executioner
-	111922, -- Draenor Enchanting
-	128562, -- Formula: Enchant Ring - Word of Critical Strike
-	128563, -- Formula: Enchant Ring - Word of Haste
-	128564, -- Formula: Enchant Ring - Word of Mastery
-	128565, -- Formula: Enchant Ring - Word of Versatility
-	128566, -- Formula: Enchant Ring - Binding of Critical Strike
-	128567, -- Formula: Enchant Ring - Binding of Haste
-	128568, -- Formula: Enchant Ring - Binding of Mastery
-	128569, -- Formula: Enchant Ring - Binding of Versatility
-	128570, -- Formula: Enchant Cloak - Word of Strength
-	128571, -- Formula: Enchant Cloak - Word of Agility
-	128572, -- Formula: Enchant Cloak - Word of Intellect
-	128573, -- Formula: Enchant Cloak - Binding of Strength
-	128574, -- Formula: Enchant Cloak - Binding of Agility
-	128575, -- Formula: Enchant Cloak - Binding of Intellect
-	128576, -- Formula: Enchant Neck - Mark of the Claw
-	128577, -- Formula: Enchant Neck - Mark of the Distant Army
-	128578, -- Formula: Enchant Neck - Mark of the Hidden Satyr
-	128579, -- Formula: Enchant Ring - Word of Critical Strike
-	128580, -- Formula: Enchant Ring - Word of Haste
-	128581, -- Formula: Enchant Ring - Word of Mastery
-	128582, -- Formula: Enchant Ring - Word of Versatility
-	128583, -- Formula: Enchant Ring - Binding of Critical Strike
-	128584, -- Formula: Enchant Ring - Binding of Haste
-	128585, -- Formula: Enchant Ring - Binding of Mastery
-	128586, -- Formula: Enchant Ring - Binding of Versatility
-	128587, -- Formula: Enchant Cloak - Word of Strength
-	128588, -- Formula: Enchant Cloak - Word of Agility
-	128589, -- Formula: Enchant Cloak - Word of Intellect
-	128590, -- Formula: Enchant Cloak - Binding of Strength
-	128591, -- Formula: Enchant Cloak - Binding of Agility
-	128592, -- Formula: Enchant Cloak - Binding of Intellect
-	128593, -- Formula: Enchant Neck - Mark of the Claw
-	128594, -- Formula: Enchant Neck - Mark of the Distant Army
-	128595, -- Formula: Enchant Neck - Mark of the Hidden Satyr
-	128596, -- Formula: Enchant Ring - Word of Critical Strike
-	128597, -- Formula: Enchant Ring - Word of Haste
-	128598, -- Formula: Enchant Ring - Word of Mastery
-	128600, -- Formula: Enchant Ring - Binding of Critical Strike
-	128601, -- Formula: Enchant Ring - Binding of Haste
-	128602, -- Formula: Enchant Ring - Binding of Mastery
-	128603, -- Formula: Enchant Ring - Binding of Versatility
-	128604, -- Formula: Enchant Cloak - Word of Strength
-	128605, -- Formula: Enchant Cloak - Word of Agility
-	128606, -- Formula: Enchant Cloak - Word of Intellect
-	128607, -- Formula: Enchant Cloak - Binding of Strength
-	128608, -- Formula: Enchant Cloak - Binding of Agility
-	128609, -- Formula: Enchant Cloak - Binding of Intellect
-	128610, -- Formula: Enchant Neck - Mark of the Claw
-	128611, -- Formula: Enchant Neck - Mark of the Distant Army
-	128612, -- Formula: Enchant Neck - Mark of the Hidden Satyr
-	128617, -- Formula: Enchant Gloves - Legion Herbalism
-	128618, -- Formula: Enchant Gloves - Legion Mining
-	128619, -- Formula: Enchant Gloves - Legion Skinning
-	128620, -- Formula: Enchant Gloves - Legion Surveying
-	128621, -- Formula: Enchanted Cauldron
-	128622, -- Formula: Enchanted Torch
-	128623, -- Formula: Enchanted Pen
-	128625, -- Formula: Leylight Brazier
-	136702, -- Formula: Soul Fibril
-	136704, -- Formula: Immaculate Fibril
-	138877, -- Formula: Tome of Illusions: Secrets of the Shado-Pan
-	138882, -- Formula: Tome of Illusions: Draenor
-	140634, -- Formula: Ley Shatter
-	141911, -- Formula: Enchant Neck - Mark of the Heavy Hide
-	141912, -- Formula: Enchant Neck - Mark of the Trained Soldier
-	141913, -- Formula: Enchant Neck - Mark of the Ancient Priestess
-	141914, -- Formula: Enchant Neck - Mark of the Heavy Hide
-	141915, -- Formula: Enchant Neck - Mark of the Trained Soldier
-	141916, -- Formula: Enchant Neck - Mark of the Ancient Priestess
-	141917, -- Formula: Enchant Neck - Mark of the Heavy Hide
-	141918, -- Formula: Enchant Neck - Mark of the Trained Soldier
-	141919, -- Formula: Enchant Neck - Mark of the Ancient Priestess
-	144308, -- Formula: Enchant Neck - Mark of the Master
-	144309, -- Formula: Enchant Neck - Mark of the Master
-	144310, -- Formula: Enchant Neck - Mark of the Master
-	144311, -- Formula: Enchant Neck - Mark of the Versatile
-	144312, -- Formula: Enchant Neck - Mark of the Versatile
-	144313, -- Formula: Enchant Neck - Mark of the Versatile
-	144314, -- Formula: Enchant Neck - Mark of the Quick
-	144315, -- Formula: Enchant Neck - Mark of the Quick
-	144316, -- Formula: Enchant Neck - Mark of the Quick
-	144317, -- Formula: Enchant Neck - Mark of the Deadly
-	144318, -- Formula: Enchant Neck - Mark of the Deadly
-	144319, -- Formula: Enchant Neck - Mark of the Deadly
-	162298, -- Formula: Enchant Ring - Seal of Critical Strike
-	162299, -- Formula: Enchant Ring - Seal of Haste
-	162300, -- Formula: Enchant Ring - Seal of Mastery
-	162301, -- Formula: Enchant Ring - Seal of Versatility
-	162302, -- Formula: Enchant Ring - Pact of Critical Strike
-	162303, -- Formula: Enchant Ring - Pact of Haste
-	162304, -- Formula: Enchant Ring - Pact of Mastery
-	162305, -- Formula: Enchant Ring - Pact of Versatility
-	162306, -- Formula: Enchanter's Sorcerous Scepter
-	162308, -- Formula: Honorable Combatant's Sorcerous Scepter
-	162309, -- Formula: Honorable Combatant's Sorcerous Scepter
-	162312, -- Formula: Enchant Weapon - Stalwart Navigation
-	162313, -- Formula: Enchant Weapon - Deadly Navigation
-	162314, -- Formula: Enchant Weapon - Quick Navigation
-	162315, -- Formula: Enchant Weapon - Coastal Surge
-	162316, -- Formula: Enchant Weapon - Siphoning
-	162317, -- Formula: Enchant Weapon - Masterful Navigation
-	162318, -- Formula: Enchant Weapon - Gale-Force Striking
-	162319, -- Formula: Enchant Weapon - Torrent of Elements
-	162320, -- Formula: Enchant Weapon - Versatile Navigation
-	162716, -- Formula: Enchant Ring - Pact of Critical Strike
-	162717, -- Formula: Enchant Ring - Pact of Haste
-	162718, -- Formula: Enchant Ring - Pact of Mastery
-	162719, -- Formula: Enchant Ring - Pact of Versatility
-	162720, -- Formula: Enchanter's Sorcerous Scepter
-	162721, -- Formula: Enchant Weapon - Stalwart Navigation
-	162722, -- Formula: Enchant Weapon - Deadly Navigation
-	162723, -- Formula: Enchant Weapon - Siphoning
-	162724, -- Formula: Enchant Weapon - Masterful Navigation
-	162725, -- Formula: Enchant Weapon - Gale-Force Striking
-	162726, -- Formula: Enchant Weapon - Versatile Navigation
-	165300, -- Formula: Sinister Combatant's Sorcerous Scepter
-	165301, -- Formula: Sinister Combatant's Sorcerous Scepter
-	165696, -- Formula: Enchanted Tiki Mask
-	168024, -- Formula: Iwen's Enchanting Rod
-	168450, -- Formula: Enchant Ring - Accord of Critical Strike
-	168451, -- Formula: Enchant Ring - Accord of Haste
-	168452, -- Formula: Enchant Ring - Accord of Mastery
-	168453, -- Formula: Enchant Ring - Accord of Versatility
-	169530, -- Formula: Accord of Critical Strike
-	169531, -- Formula: Accord of Haste
-	169532, -- Formula: Accord of Mastery
-	169533, -- Formula: Accord of Versatility
-	169534, -- Formula: Machinist's Brilliance
-	169535, -- Formula: Force Multiplier
-	169536, -- Formula: Oceanic Restoration
-	169604, -- Formula: Accord of Critical Strike
-	169605, -- Formula: Accord of Haste
-	169606, -- Formula: Accord of Mastery
-	169607, -- Formula: Accord of Versatility
-	170213, -- Formula: Naga Hide
-	171152, -- Formula: Uncanny Combatant's Sorcerous Scepter
-	171153, -- Formula: Uncanny Combatant's Sorcerous Scepter
-	186992, -- Formula: Anima-ted Leash
-	187824, -- Formula: Magically Regulated Automa Core
-	187826, -- Formula: Cosmic Protoweave
-	199811, -- Formula: Enchant Cloak - Graceful Avoidance
-	199812, -- Formula: Enchant Boots - Rider's Reassurance
-	199813, -- Formula: Enchant Chest - Sustained Strength
-	199814, -- Formula: Enchant Boots - Plainsrunner's Breeze
-	199815, -- Formula: Enchant Cloak - Regenerative Leech
-	199816, -- Formula: Enchant Chest - Accelerated Agility
-	199817, -- Formula: Enchant Cloak - Homebound Speed
-	199818, -- Formula: Enchant Boots - Watcher's Loam
-	200911, -- Formula: Illusion: Primal Air
-	200912, -- Formula: Illusion: Primal Earth
-	200913, -- Formula: Illusion: Primal Fire
-	200914, -- Formula: Illusion: Primal Frost
-	204975, -- Formula: Enchant Weapon - Shadowflame Wreathe
-	204976, -- Formula: Spore Keeper's Baton
-	204977, -- Formula: Illusory Adornment: Spores
-	204978, -- Formula: Enchant Weapon - Spore Tender
-	205337, -- Formula: Titan Training Matrix V
-	207569, -- Ancient Formula: Magebane Nexus
-	207571, -- Ancient Formula: Stormwatcher
-	210174, -- Formula: Illusory Adornment: Dreams
-	210175, -- Formula: Enchant Weapon - Dreaming Devotion
-	256737, -- Formula: Enchant Chest - Mark of Nalorakk
-	256738, -- Formula: Enchant Helm - Empowered Hex of Leeching
-	256739, -- Formula: Enchant Ring - Eyes of the Eagle
-	256740, -- Formula: Enchant Shoulders - Akil'zon's Swiftness
-	256741, -- Formula: Enchant Weapon - Strength of Halazzi
-	256743, -- Formula: Gleeful Glamour - Haranir
-	256744, -- Formula: Enchant Tool - Amani Perception
-	256745, -- Formula: Enchant Chest - Mark of the Rootwarden
-	256746, -- Formula: Smuggler's Enchanted Edge
-	256747, -- Formula: Enchant Boots - Shaladrassil's Roots
-	256748, -- Formula: Enchant Shoulders - Amirdrassil's Grace
-	256749, -- Formula: Enchant Tool - Haranir Multicrafting
-	256750, -- Formula: Enchant Weapon - Worldsoul Cradle
-	256751, -- Formula: Enchant Weapon - Worldsoul Tenacity
-	256752, -- Formula: Enchant Ring - Nature's Fury
-	256753, -- Formula: Enchant Helm - Empowered Rune of Avoidance
-	256754, -- Formula: Enchant Shoulders - Nature's Embrace
-	256755, -- Formula: Enchant Chest - Mark of the Magister
-	256756, -- Formula: Enchant Boots - Farstrider's Hunt
-	256757, -- Formula: Enchant Weapon - Acuity of the Ren'dorei
-	256758, -- Formula: Enchant Tool - Ren'dorei Ingenuity
-	256759, -- Formula: Enchant Weapon - Flames of the Sin'dorei
-	256760, -- Formula: Enchant Ring - Silvermoon's Tenacity
-	256761, -- Formula: Enchant Shoulders - Voidtouched
-	259364, -- Formula: Animated Sin'dorei Hammer
-	259367, -- Formula: Animated Sin'dorei Pick
-	259370, -- Formula: Rootflame Campfire
-	259373, -- Formula: Ren'dorei Postal Repository
-	259374, -- Formula: Spellbound Tome of Thalassian Magics
-	259375, -- Formula: Self-Pouring Thalassian Sunwine
-	-- Recipe > Engineering
-	4415, -- Schematic: Craftsman's Monocle
-	7560, -- Schematic: Gnomish Universal Remote
-	7561, -- Schematic: Goblin Jumper Cables
-	10602, -- Schematic: Deadly Scope
-	10609, -- Schematic: Mithril Mechanical Dragonling
-	13308, -- Schematic: Ice Deflector
-	13309, -- Schematic: Lovingly Crafted Boomstick
-	13310, -- Schematic: Accurate Scope
-	13311, -- Schematic: Mechanical Dragonling
-	16041, -- Schematic: Thorium Grenade
-	16047, -- Schematic: Thorium Tube
-	18290, -- Schematic: Biznicks 247x128 Accurascope
-	18291, -- Schematic: Force Reactive Disk
-	18292, -- Schematic: Core Marksman Rifle
-	18647, -- Schematic: Red Firework
-	18648, -- Schematic: Green Firework
-	18649, -- Schematic: Blue Firework
-	18651, -- Schematic: Truesilver Transformer
-	19027, -- Schematic: Snake Burst Firework
-	20000, -- Schematic: Bloodvine Goggles
-	20001, -- Schematic: Bloodvine Lens
-	22729, -- Schematic: Steam Tonk Controller
-	23799, -- Schematic: Adamantite Rifle
-	23802, -- Schematic: Ornate Khorium Rifle
-	23803, -- Schematic: Cogspinner Goggles
-	23804, -- Schematic: Power Amplification Goggles
-	23805, -- Schematic: Ultra-Spectropic Detection Goggles
-	23807, -- Schematic: Adamantite Scope
-	23809, -- Schematic: Stabilized Eternium Scope
-	23811, -- Schematic: White Smoke Flare
-	23812, -- Schematic: Red Smoke Flare
-	23813, -- Schematic: Blue Smoke Flare
-	23816, -- Schematic: Fel Iron Toolbox
-	23874, -- Schematic: Elemental Seaforium Charge
-	23882, -- Schematic: Critter Enlarger
-	23883, -- Schematic: Healing Potion Injector
-	23884, -- Schematic: Mana Potion Injector
-	23887, -- Schematic: Rocket Boots Xtreme
-	32381, -- Schematic: Fused Wiring
-	35310, -- Schematic: Healing Potion Injector
-	35311, -- Schematic: Mana Potion Injector
-	35582, -- Schematic: Rocket Boots Xtreme Lite
-	89992, -- Schematic: Serpent's Heart Firework
-	89993, -- Schematic: Grand Celebration Firework
-	89994, -- Schematic: Celestial Firework
-	89996, -- Schematic: Autumn Flower Firework
-	89997, -- Schematic: Jade Blossom Firework
-	136700, -- Schematic: \"The Felic\"
-	136701, -- Schematic: Shockinator
-	137691, -- Schematic: Intra-Dalaran Wormhole Generator
-	137692, -- Schematic: Blingtron's Circuit Design Tutorial
-	137693, -- Schematic: Reaves Module: Failure Detection Mode
-	137695, -- Schematic: Reaves Module: Wormhole Generator Mode
-	137697, -- Schematic: Blink-Trigger Headgun
-	137698, -- Schematic: Tactical Headgun
-	137699, -- Schematic: Bolt-Action Headgun
-	137700, -- Schematic: Reinforced Headgun
-	137701, -- Schematic: Semi-Automagic Cranial Cannon
-	137702, -- Schematic: Sawed-Off Cranial Cannon
-	137703, -- Schematic: Double-Barreled Cranial Cannon
-	137704, -- Schematic: Ironsight Cranial Cannon
-	137705, -- Schematic: Deployable Bullet Dispenser
-	137706, -- Schematic: Gunpowder Charge
-	137707, -- Schematic: Pump-Action Bandage Gun
-	137708, -- Schematic: Gunpack
-	137709, -- Schematic: Auto-Hammer
-	137710, -- Schematic: Failure Detection Pylon
-	137711, -- Schematic: Blink-Trigger Headgun
-	137712, -- Schematic: Tactical Headgun
-	137715, -- Schematic: Semi-Automagic Cranial Cannon
-	137716, -- Schematic: Sawed-Off Cranial Cannon
-	137717, -- Schematic: Double-Barreled Cranial Cannon
-	137718, -- Schematic: Ironsight Cranial Cannon
-	137719, -- Schematic: Deployable Bullet Dispenser
-	137720, -- Schematic: Gunpowder Charge
-	137721, -- Schematic: Pump-Action Bandage Gun
-	137722, -- Schematic: Gunpack
-	137723, -- Schematic: Auto-Hammer
-	137724, -- Schematic: Failure Detection Pylon
-	137725, -- Schematic: Sonic Environment Enhancer
-	137726, -- Schematic: Leystone Buoy
-	137727, -- Schematic: Mecha-Bond Imprint Matrix
-	141849, -- Schematic: Reaves Module: Bling Mode
-	151714, -- Schematic: Gravitational Reduction Slippers
-	151717, -- Schematic: Wormhole Generator: Argus
-	162321, -- Schematic: Incendiary Ammunition
-	162322, -- Schematic: Frost-Laced Ammunition
-	162324, -- Schematic: AZ3-R1-T3 Synthetic Specs
-	162326, -- Schematic: AZ3-R1-T3 Gearspun Goggles
-	162328, -- Schematic: AZ3-R1-T3 Bionic Bifocals
-	162330, -- Schematic: AZ3-R1-T3 Orthogonal Optics
-	162331, -- Schematic: F.R.I.E.D.
-	162332, -- Schematic: Thermo-Accelerated Plague Spreader
-	162333, -- Schematic: Catchroot Seed Spreader
-	162334, -- Schematic: Charged Refrigeration Projectile
-	162335, -- Schematic: Fro-Grow Grenade
-	162336, -- Schematic: Neurological Immobilization Bomb
-	162337, -- Schematic: Organic Discombobulation Grenade
-	162338, -- Schematic: Electro-Induced Slumber Bomb
-	162339, -- Schematic: XA-1000 Surface Skimmer
-	162340, -- Schematic: Electroshock Mount Motivator
-	162341, -- Schematic: Interdimensional Companion Repository
-	162342, -- Schematic: Deployable Attire Rearranger
-	162343, -- Schematic: Crow's Nest Scope
-	162344, -- Schematic: Monelite Scope of Alacrity
-	162345, -- Schematic: Precision Attitude Adjuster
-	162346, -- Schematic: Finely-Tuned Stormsteel Destroyer
-	162727, -- Schematic: Frost-Laced Ammunition
-	162729, -- Schematic: AZ3-R1-T3 Synthetic Specs
-	162731, -- Schematic: AZ3-R1-T3 Gearspun Goggles
-	162733, -- Schematic: AZ3-R1-T3 Bionic Bifocals
-	162735, -- Schematic: AZ3-R1-T3 Orthogonal Optics
-	162736, -- Schematic: Thermo-Accelerated Plague Spreader
-	162737, -- Schematic: Catchroot Seed Spreader
-	162738, -- Schematic: Charged Refrigeration Projectile
-	162739, -- Schematic: Fro-Grow Grenade
-	162740, -- Schematic: Neurological Immobilization Bomb
-	162741, -- Schematic: Organic Discombobulation Grenade
-	162742, -- Schematic: Interdimensional Companion Repository
-	162743, -- Schematic: Deployable Attire Rearranger
-	162744, -- Schematic: Monelite Scope of Alacrity
-	162745, -- Schematic: Precision Attitude Adjuster
-	162746, -- Schematic: Finely-Tuned Stormsteel Destroyer
-	163020, -- Schematic: Honorable Combatant's Discombobulator
-	163021, -- Schematic: Honorable Combatant's Discombobulator
-	163022, -- Schematic: Honorable Combatant's Stormsteel Destroyer
-	163023, -- Schematic: Honorable Combatant's Stormsteel Destroyer
-	165302, -- Schematic: Sinister Combatant's Discombobulator
-	165303, -- Schematic: Sinister Combatant's Discombobulator
-	165304, -- Schematic: Sinister Combatant's Stormsteel Destroyer
-	165305, -- Schematic: Sinister Combatant's Stormsteel Destroyer
-	165911, -- Schematic: SP1-R1-73D Bionic Bifocals
-	165912, -- Schematic: Charged SP1-R1-73D Bionic Bifocals
-	165913, -- Schematic: SP1-R1-73D Gearspun Goggles
-	165914, -- Schematic: Charged SP1-R1-73D Gearspun Goggles
-	165915, -- Schematic: SP1-R1-73D Orthogonal Optics
-	165916, -- Schematic: Charged SP1-R1-73D Orthogonal Optics
-	165917, -- Schematic: SP1-R1-73D Synthetic Specs
-	165918, -- Schematic: Charged SP1-R1-73D Synthetic Specs
-	166987, -- Schematic: Emblazoned Synthetic Specs
-	166988, -- Schematic: Emblazoned Gearspun Goggles
-	166989, -- Schematic: Emblazoned Bionic Bifocals
-	166990, -- Schematic: Emblazoned Orthogonal Optics
-	168025, -- Book of Schematics: Ub3r-Spanner
-	168533, -- Schematic: Ub3r-Module: P.O.G.O.
-	168534, -- Schematic: Ub3r-Module: Ub3r-Coil
-	168535, -- Schematic: Ub3r-Module: Scrap Cannon
-	171313, -- Schematic: A-N0M-A-L0U5 Gearspun Goggles
-	171314, -- Schematic: A-N0M-A-L0U5 Synthetic Specs
-	174272, -- Schematic: Uncanny Combatant's Stormsteel Destroyer
-	174274, -- Schematic: Uncanny Combatant's Discombobulator
-	174362, -- Schematic: A-N0M-A-L0U5 Bionic Bifocals
-	174364, -- Schematic: A-N0M-A-L0U5 Orthogonal Optics
-	187832, -- Schematic: Pure-Air Sail Extensions
-	187837, -- Schematic: Erratic Genesis Matrix
-	198781, -- Schematic: Gravitational Displacer
-	198782, -- Schematic: Bottomless Mireslush Ore Satchel
-	198783, -- Schematic: Spring-Loaded Khaz'gorite Fabric Cutters
-	198784, -- Schematic: Primal Deconstruction Charge
-	198785, -- Schematic: Quack-E
-	199221, -- Schematic: Element-Infused Rocket Helmet
-	199222, -- Schematic: Overengineered Sleeve Extenders
-	199226, -- Schematic: P.E.W. x2
-	199227, -- Schematic: Ol' Smoky
-	199228, -- Schematic: Grease Grenade
-	199229, -- Schematic: Tinker: Breath of Neltharion
-	199230, -- Schematic: Projectile Propulsion Pinion
-	199231, -- Schematic: High Intensity Thermal Scanner
-	199232, -- Schematic: Bundle of Fireworks
-	199234, -- Schematic: Khaz'gorite Fisherfriend
-	199235, -- Schematic: Creature Combustion Canister
-	199236, -- Schematic: D.U.C.K.O.Y.
-	199238, -- Schematic: Sticky Warp Grenade
-	199239, -- Schematic: Tinker: Alarm-O-Turret
-	199240, -- Schematic: Green Fireflight
-	199241, -- Schematic: H.E.L.P.
-	199244, -- Schematic: Khaz'gorite Delver's Helmet
-	199245, -- Schematic: Lapidary's Khaz'gorite Clamps
-	199246, -- Schematic: Tinker: Grounded Circuitry
-	199249, -- Schematic: Critical Failure Prevention Unit
-	199250, -- Schematic: Calibrated Safety Switch
-	199251, -- Schematic: Magazine of Healing Darts
-	199252, -- Schematic: I.W.I.N. Button Mk10
-	199253, -- Schematic: Suspiciously Ticking Crate
-	199254, -- Schematic: EZ-Thro Creature Combustion Canister
-	199255, -- Schematic: EZ-Thro Gravitational Displacer
-	199256, -- Schematic: EZ-Thro Primal Deconstruction Charge
-	199257, -- Schematic: Suspiciously Silent Crate
-	199258, -- Schematic: Tinker: Supercollide-O-Tron
-	199259, -- Schematic: Razor-Sharp Gear
-	199260, -- Schematic: Rapidly Ticking Gear
-	199261, -- Schematic: Meticulously Tuned Gear
-	199262, -- Schematic: One-Size-Fits-All Gear
-	199263, -- Schematic: Completely Safe Rockets
-	199264, -- Schematic: Endless Stack of Needles
-	199265, -- Schematic: Wyrmhole Generator
-	199266, -- Schematic: Centralized Precipitation Emitter
-	199267, -- Schematic: Environmental Emulator
-	199268, -- Schematic: Giggle Goggles
-	199270, -- Schematic: Quality-Assured Optics
-	199271, -- Schematic: Milestone Magnifiers
-	199272, -- Schematic: Deadline Deadeyes
-	199273, -- Schematic: Sentry's Stabilized Specs
-	199278, -- Schematic: Draconium Delver's Helmet
-	199279, -- Schematic: Bottomless Stonecrust Ore Satchel
-	199280, -- Schematic: Draconium Fisherfriend
-	199281, -- Schematic: Lapidary's Draconium Clamps
-	199282, -- Schematic: Spring-Loaded Draconium Fabric Cutters
-	199283, -- Schematic: Draconium Encased Samophlange
-	199284, -- Schematic: Draconium Brainwave Amplifier
-	199287, -- Schematic: Tinker: Plane Displacer
-	199288, -- Schematic: Gyroscopic Kaleidoscope
-	199289, -- Schematic: Blue Fireflight
-	199290, -- Schematic: Red Fireflight
-	199293, -- Schematic: Neural Silencer Mk3
-	199294, -- Schematic: Atomic Recalibrator
-	199295, -- Schematic: Black Fireflight
-	199296, -- Schematic: Bronze Fireflight
-	199297, -- Schematic: Spring-Loaded Capacitor Casing
-	199299, -- Schematic: Tinker: Polarity Amplifier
-	199300, -- Schematic: EZ-Thro Grease Grenade
-	199415, -- Schematic: Zapthrottle Soul Inhaler
-	204844, -- Schematic: Polarity Bomb
-	205178, -- Schematic: Mallard Mortar
-	207461, -- Schematic: Portable Party Platter
-	257298, -- Schematic: Thalassian Competitor's Plate Dunkers
-	257369, -- Schematic: Thalassian Competitor's Mail Footlinks
-	257370, -- Schematic: Thalassian Competitor's Leather Sliders
-	257371, -- Schematic: Thalassian Competitor's Cloth Tip-Toes
-	257407, -- Schematic: Thalassian Competitor's Plate Bindings
-	257408, -- Schematic: Thalassian Competitor's Plate Guard
-	257410, -- Schematic: Thalassian Competitor's Cloth Cuffs
-	257411, -- Schematic: Thalassian Competitor's Cloth Goggles
-	257413, -- Schematic: Thalassian Competitor's Leather Bands
-	257414, -- Schematic: Thalassian Competitor's Leather Optics
-	257415, -- Schematic: Thalassian Competitor's Mail Links
-	257416, -- Schematic: Thalassian Competitor's Mail Visor
-	-- Recipe > First Aid
-	16113, -- Manual: Mageweave Bandage
-	21992, -- Manual: Netherweave Bandage
-	21993, -- Manual: Heavy Netherweave Bandage
-	-- Recipe > Fishing
-	16082, -- Artisan Fishing - The Way of the Lure
-	16083, -- Expert Fishing - The Bass and You
-	46054, -- Journeyman Fishing - Fishing for Dummies
-	46055, -- Grand Master Fishing - Deep Sea Adventures
 	-- Recipe > Inscription
 	104209, -- Charred Recipe
 	104215, -- Charred Recipe
@@ -8315,1374 +6404,27 @@ local itemIDs = {
 	104220, -- Charred Recipe
 	104226, -- Charred Recipe
 	104230, -- Charred Recipe
-	111923, -- Draenor Inscription
-	118608, -- Technique: Greater Weapon Crystal
-	120266, -- Technique: Greater Ensorcelled Tarot
-	122548, -- Technique: Powerful Ensorcelled Tarot
-	122553, -- Technique: Powerful Weapon Crystal
-	127723, -- Technique: Mighty Ensorcelled Tarot
-	127728, -- Technique: Mighty Weapon Crystal
-	127741, -- Technique: Savage Ensorcelled Tarot
-	127746, -- Technique: Savage Weapon Crystal
-	136705, -- Technique: Aqual Mark
-	136706, -- Technique: Straszan Mark
-	137728, -- Technique: Scroll of Forgotten Knowledge
-	137729, -- Technique: Codex of the Tranquil Mind
-	137730, -- Technique: Glyph of Ghostly Fade
-	137731, -- Technique: Grimoire of the Fel Imp
-	137732, -- Technique: Glyph of Sparkles
-	137733, -- Technique: Glyph of Blackout
-	137734, -- Technique: Glyph of the Sentinel
-	137735, -- Technique: Glyph of Crackling Crane Lightning
-	137736, -- Technique: Glyph of the Spectral Raptor
-	137737, -- Technique: Glyph of Stellar Flare
-	137738, -- Technique: Glyph of the Queen
-	137741, -- Technique: Glyph of Fel Touched Souls
-	137742, -- Technique: Glyph of Crackling Flames
-	137743, -- Technique: Glyph of Fallow Wings
-	137744, -- Technique: Glyph of Tattered Wings
-	137745, -- Technique: Prophecy Tarot
-	137746, -- Technique: Prophecy Tarot
-	137747, -- Vantus Rune Technique: Ursoc
-	137748, -- Vantus Rune Technique: Nythendra
-	137749, -- Vantus Rune Technique: Il'gynoth, The Heart of Corruption
-	137750, -- Vantus Rune Technique: Dragons of Nightmare
-	137751, -- Vantus Rune Technique: Xavius
-	137752, -- Vantus Rune Technique: Elerethe Renferal
-	137753, -- Vantus Rune Technique: Cenarius
-	137754, -- Vantus Rune Technique: Skorpyron
-	137755, -- Vantus Rune Technique: Chronomatic Anomaly
-	137756, -- Vantus Rune Technique: Trilliax
-	137757, -- Vantus Rune Technique: Spellblade Aluriel
-	137758, -- Vantus Rune Technique: Tichondrius
-	137759, -- Vantus Rune Technique: High Botanist Tel'arn
-	137760, -- Vantus Rune Technique: Krosus
-	137761, -- Vantus Rune Technique: Star Augur Etraeus
-	137762, -- Vantus Rune Technique: Grand Magistrix Elisande
-	137763, -- Vantus Rune Technique: Gul'dan
-	137767, -- Vantus Rune Technique: Ursoc
-	137768, -- Vantus Rune Technique: Nythendra
-	137769, -- Vantus Rune Technique: Il'gynoth, The Heart of Corruption
-	137770, -- Vantus Rune Technique: Dragons of Nightmare
-	137771, -- Vantus Rune Technique: Xavius
-	137772, -- Vantus Rune Technique: Elerethe Renferal
-	137773, -- Vantus Rune Technique: Cenarius
-	137774, -- Vantus Rune Technique: Skorpyron
-	137775, -- Vantus Rune Technique: Chronomatic Anomaly
-	137776, -- Vantus Rune Technique: Trilliax
-	137777, -- Vantus Rune Technique: Spellblade Aluriel
-	137778, -- Vantus Rune Technique: Tichondrius
-	137779, -- Vantus Rune Technique: High Botanist Tel'arn
-	137780, -- Vantus Rune Technique: Krosus
-	137781, -- Vantus Rune Technique: Star Augur Etraeus
-	137782, -- Vantus Rune Technique: Grand Magistrix Elisande
-	137783, -- Vantus Rune Technique: Gul'dan
-	137787, -- Technique: Songs of Battle
-	137788, -- Technique: Songs of Peace
-	137789, -- Technique: Songs of the Legion
-	139635, -- Vantus Rune Technique: Ursoc
-	139636, -- Vantus Rune Technique: Nythendra
-	139637, -- Vantus Rune Technique: Il'gynoth, The Heart of Corruption
-	139638, -- Vantus Rune Technique: Dragons of Nightmare
-	139639, -- Vantus Rune Technique: Xavius
-	139640, -- Vantus Rune Technique: Elerethe Renferal
-	139641, -- Vantus Rune Technique: Cenarius
-	139642, -- Vantus Rune Technique: Skorpyron
-	139643, -- Vantus Rune Technique: Chronomatic Anomaly
-	139644, -- Vantus Rune Technique: Trilliax
-	139645, -- Vantus Rune Technique: Spellblade Aluriel
-	139646, -- Vantus Rune Technique: Tichondrius
-	139647, -- Vantus Rune Technique: High Botanist Tel'arn
-	139648, -- Vantus Rune Technique: Krosus
-	139649, -- Vantus Rune Technique: Star Augur Etraeus
-	139650, -- Vantus Rune Technique: Grand Magistrix Elisande
-	139651, -- Vantus Rune Technique: Gul'dan
-	140037, -- Technique: Unwritten Legend
-	140565, -- Technique: Songs of the Horde
-	140566, -- Technique: Songs of the Alliance
-	141030, -- Technique: Glyph of Cracked Ice
-	141032, -- Technique: Glyph of the Chilled Shell
-	141033, -- Technique: Glyph of the Crimson Shell
-	141035, -- Technique: Glyph of Fel Wings
-	141036, -- Technique: Glyph of Fel-Enemies
-	141037, -- Technique: Glyph of Mana Touched Souls
-	141038, -- Technique: Glyph of Shadow-Enemies
-	141039, -- Technique: Glyph of the Doe
-	141040, -- Technique: Glyph of the Feral Chameleon
-	141041, -- Technique: Glyph of the Forest Path
-	141042, -- Technique: Glyph of Autumnal Bloom
-	141043, -- Technique: Glyph of Arachnophobia
-	141044, -- Technique: Glyph of Nesingwary's Nemeses
-	141046, -- Technique: Glyph of the Dire Stable
-	141047, -- Technique: Glyph of the Goblin Anti-Grav Flare
-	141048, -- Technique: Glyph of the Headhunter
-	141049, -- Technique: Glyph of the Hook
-	141051, -- Technique: Glyph of the Trident
-	141053, -- Technique: Glyph of Polymorphic Proportions
-	141054, -- Technique: Glyph of Smolder
-	141055, -- Technique: Glyph of Yu'lon's Grace
-	141056, -- Technique: Glyph of Burnout
-	141057, -- Technique: Glyph of Flash Bang
-	141058, -- Technique: Glyph of Critterhex
-	141059, -- Technique: Glyph of Flickering
-	141060, -- Technique: Glyph of Pebbles
-	141061, -- Technique: Grimoire of the Abyssal
-	141062, -- Technique: Glyph of the Inquisitor's Eye
-	141064, -- Technique: Grimoire of the Shivarra
-	141066, -- Technique: Grimoire of the Voidlord
-	141067, -- Technique: Grimoire of the Wrathguard
-	141068, -- Technique: Glyph of the Blazing Savior
-	141447, -- Technique: Tome of the Tranquil Mind
-	141591, -- Technique: Codex of the Tranquil Mind
-	141592, -- Technique: Codex of the Tranquil Mind
-	141900, -- Technique: Glyph of Falling Thunder
-	142104, -- Vantus Rune Technique: Odyn
-	142105, -- Vantus Rune Technique: Guarm
-	142106, -- Vantus Rune Technique: Helya
-	142107, -- Vantus Rune Technique: Odyn
-	142108, -- Vantus Rune Technique: Guarm
-	142109, -- Vantus Rune Technique: Helya
-	142110, -- Vantus Rune Technique: Odyn
-	142111, -- Vantus Rune Technique: Guarm
-	142112, -- Vantus Rune Technique: Helya
-	143615, -- Technique: Glyph of Crackling Ox Lightning
-	143616, -- Technique: Glyph of the Trusted Steed
-	143751, -- Technique: Glyph of Twilight Bloom
-	146335, -- Vantus Rune Technique: Black Rook Hold
-	146336, -- Vantus Rune Technique: Darkheart Thicket
-	146337, -- Vantus Rune Technique: Halls of Valor
-	146338, -- Vantus Rune Technique: Maw of Souls
-	146339, -- Vantus Rune Technique: Neltharion's Lair
-	146341, -- Vantus Rune Technique: The Arcway
-	146342, -- Vantus Rune Technique: Vault of the Wardens
-	146343, -- Vantus Rune Technique: Violet Hold
-	146344, -- Vantus Rune Technique: Cathedral of Eternal Night
-	146355, -- Vantus Rune Technique: Black Rook Hold
-	146356, -- Vantus Rune Technique: Darkheart Thicket
-	146357, -- Vantus Rune Technique: Halls of Valor
-	146358, -- Vantus Rune Technique: Maw of Souls
-	146359, -- Vantus Rune Technique: Neltharion's Lair
-	146361, -- Vantus Rune Technique: The Arcway
-	146362, -- Vantus Rune Technique: Vault of the Wardens
-	146363, -- Vantus Rune Technique: Violet Hold
-	146364, -- Vantus Rune Technique: Cathedral of Eternal Night
-	146375, -- Vantus Rune Technique: Black Rook Hold
-	146376, -- Vantus Rune Technique: Darkheart Thicket
-	146377, -- Vantus Rune Technique: Halls of Valor
-	146378, -- Vantus Rune Technique: Maw of Souls
-	146379, -- Vantus Rune Technique: Neltharion's Lair
-	146381, -- Vantus Rune Technique: The Arcway
-	146382, -- Vantus Rune Technique: Vault of the Wardens
-	146383, -- Vantus Rune Technique: Violet Hold
-	146384, -- Vantus Rune Technique: Cathedral of Eternal Night
-	146395, -- Vantus Rune Technique: Court of Stars
-	146396, -- Vantus Rune Technique: Eye of Azshara
-	146397, -- Vantus Rune Technique: Court of Stars
-	146398, -- Vantus Rune Technique: Eye of Azshara
-	146399, -- Vantus Rune Technique: Court of Stars
-	146400, -- Vantus Rune Technique: Eye of Azshara
-	146411, -- Vantus Rune Technique: Tomb of Sargeras
-	146412, -- Vantus Rune Technique: Tomb of Sargeras
-	146413, -- Vantus Rune Technique: Tomb of Sargeras
-	147120, -- Technique: Grimoire of the Shadow Succubus
-	151539, -- Technique: Glyph of Ember Shards
-	151541, -- Technique: Glyph of Floating Shards
-	151543, -- Technique: Glyph of Fel-Touched Shards
-	151654, -- Vantus Rune Technique: Antorus, the Burning Throne
-	151655, -- Vantus Rune Technique: Antorus, The Burning Throne
-	151656, -- Vantus Rune Technique: Antorus, the Burning Throne
-	153037, -- Technique: Glyph of Dark Absolution
-	162023, -- Technique: Glyph of the Dolphin
-	162028, -- Technique: Glyph of the Tideskipper
-	162030, -- Technique: Glyph of the Humble Flyer
-	162121, -- Vantus Rune Technique: Uldir
-	162124, -- Vantus Rune Technique: Uldir
-	162125, -- Vantus Rune Technique: Uldir
-	162352, -- Technique: Inscribed Vessel of Mysticism
-	162353, -- Technique: Honorable Combatant's Etched Vessel
-	162354, -- Technique: Honorable Combatant's Etched Vessel
-	162358, -- Technique: Codex of the Quiet Mind
-	162360, -- Technique: Contract: Proudmoore Admiralty
-	162362, -- Technique: Contract: Order of Embers
-	162364, -- Technique: Contract: Storm's Wake
-	162366, -- Technique: Contract: Zandalari Empire
-	162368, -- Technique: Contract: Talanji's Expedition
-	162370, -- Technique: Contract: Voldunai
-	162372, -- Technique: Contract: Tortollan Seekers
-	162374, -- Technique: Contract: Champions of Azeroth
-	162376, -- Technique: Tome of the Quiet Mind
-	162377, -- Technique: Darkmoon Card of War
-	165306, -- Technique: Sinister Combatant's Etched Vessel
-	165307, -- Technique: Sinister Combatant's Etched Vessel
-	165693, -- Vantus Rune Technique: Battle of Dazar'alor
-	165694, -- Vantus Rune Technique: Battle of Dazar'alor
-	165695, -- Vantus Rune Technique: Battle of Dazar'alor
-	165735, -- Vantus Rune Technique: Crucible of Storms
-	165736, -- Vantus Rune Technique: Crucible of Storms
-	165737, -- Vantus Rune Technique: Crucible of Storms
-	166311, -- Technique: Contract: The Honorbound
-	168026, -- Book of Techniques: Sanguine Feather Quill of Lana'thel
-	168625, -- Vantus Rune Technique: The Eternal Palace
-	168626, -- Vantus Rune Technique: The Eternal Palace
-	168627, -- Vantus Rune Technique: The Eternal Palace
-	169547, -- Technique: Contract: Rustbolt Resistance
-	169548, -- Technique: Contract: Ankoan
-	169549, -- Technique: Contract: Unshackled
-	171058, -- Technique: Uncanny Combatant's Etched Vessel
-	171059, -- Technique: Uncanny Combatant's Etched Vessel
-	171200, -- Vantus Rune Technique: Ny'alotha, the Waking City
-	171201, -- Vantus Rune Technique: Ny'alotha, the Waking City
-	171202, -- Vantus Rune Technique: Ny'alotha, the Waking City
-	172009, -- Technique: Contract: Rajani
-	172011, -- Technique: Contract: Uldum Accord
-	173068, -- Vantus Rune Technique: Castle Nathria
-	184095, -- Technique: Glyph of the Swift Chameleon
-	184098, -- Technique: Glyph of the Aquatic Chameleon
-	184099, -- Technique: Glyph of the Aerial Chameleon
-	186671, -- Vantus Rune Technique: Sanctum of Domination
-	187806, -- Vantus Rune Technique: Sepulcher of the First Ones
-	187886, -- Technique: Mark of the Gloomstalker Dredbat
-	187930, -- Technique: Mark of the Regal Dredbat
-	187935, -- Technique: Mark of the Midnight Runestag
-	190379, -- Technique: Glyph of the Spectral Lupine
-	190381, -- Technique: Glyph of the Spectral Vulpine
 	198390, -- Milling
-	198788, -- Technique: Contract: Dragonscale Expedition
-	198879, -- Technique: Draconic Treatise on Alchemy
-	198880, -- Technique: Draconic Treatise on Engineering
-	198881, -- Technique: Draconic Treatise on Blacksmithing
-	198883, -- Technique: Draconic Treatise on Enchanting
-	198884, -- Technique: Draconic Treatise on Herbalism
-	198885, -- Technique: Draconic Treatise on Inscription
-	198886, -- Technique: Draconic Treatise on Jewelcrafting
-	198887, -- Technique: Draconic Treatise on Leatherworking
-	198888, -- Technique: Draconic Treatise on Mining
-	198889, -- Technique: Draconic Treatise on Tailoring
-	198891, -- Technique: Cliffside Wylderdrake: Conical Head
-	198892, -- Technique: Cliffside Wylderdrake: Red Hair
-	198893, -- Technique: Cliffside Wylderdrake: Triple Head Horns
-	198894, -- Technique: Highland Drake: Black Hair
-	198895, -- Technique: Highland Drake: Spined Head
-	198896, -- Technique: Highland Drake: Spined Neck
-	198899, -- Technique: Renewed Proto-Drake: Predator Pattern
-	198901, -- Technique: Renewed Proto-Drake: Spined Crest
-	198902, -- Technique: Windborne Velocidrake: Black Fur
-	198903, -- Technique: Windborne Velocidrake: Spined Head
-	198904, -- Technique: Windborne Velocidrake: Windswept Pattern
-	198937, -- Technique: Contract: Maruuk Centaur
-	198938, -- Technique: Contract: Artisan's Consortium
-	198940, -- Technique: Contract: Iskaara Tuskarr
-	198941, -- Technique: Contract: Valdrakken Accord
 	199901, -- Extraction: Awakened Fire
 	199903, -- Extraction: Awakened Frost
 	199904, -- Extraction: Awakened Air
 	199905, -- Extraction: Awakened Earth
-	201026, -- Technique: Draconic Treatise on Skinning
-	201734, -- Technique: Cliffside Wylderdrake: Silver and Blue Armor
-	201735, -- Technique: Highland Drake: Silver and Blue Armor
-	201736, -- Technique: Cliffside Wylderdrake: Steel and Yellow Armor
-	201737, -- Technique: Highland Drake: Steel and Yellow Armor
-	201738, -- Technique: Renewed Proto-Drake: Steel and Yellow Armor
-	201739, -- Technique: Windborne Velocidrake: Steel and Orange Armor
-	201741, -- Technique: Renewed Proto-Drake: Bovine Horns
-	201742, -- Technique: Renewed Proto-Drake: Silver and Blue Armor
-	201743, -- Technique: Windborne Velocidrake: Silver and Blue Armor
-	203839, -- Ancient Technique: Gurubashi Hoodoo Stick
-	203841, -- Ancient Technique: Gurubashi Ceremonial Staff
-	205127, -- Technique: Winding Slitherdrake: Blue and Silver Armor
-	205128, -- Technique: Winding Slitherdrake: Yellow and Silver Armor
-	205130, -- Technique: Winding Slitherdrake: White Hair
-	205131, -- Technique: Winding Slitherdrake: Small Finned Throat
-	205132, -- Technique: Glyph of the Chosen Glaive
-	205134, -- Technique: Vantus Rune: Aberrus, the Shadowed Crucible
-	205135, -- Technique: Hissing Rune
-	205136, -- Technique: Contract: Loamm Niffen
-	206528, -- Ancient Technique: Shifting Sliver
-	207091, -- Technique: Glyph of the Shath'Yar
-	210243, -- Technique: Contract: Dream Wardens
-	210490, -- Technique: Vantus Rune: Amirdrassil, the Dream's Hope
-	210491, -- Technique: Winding Slitherdrake: Hairy Chin
-	210492, -- Technique: Grotto Netherwing Drake: Chin Tendrils
-	210493, -- Technique: Grotto Netherwing Drake: Spiked Jaw
-	211065, -- Technique: Mark of the Auric Dreamstag
-	211399, -- Technique: Glyph of the Lunar Chameleon
 	222545, -- Milling
-	223060, -- Technique: Patient Alchemist's Mixing Rod
-	223062, -- Technique: Contract: Council of Dornogal
-	223063, -- Technique: Contract: Assembly of the Deeps
-	223064, -- Technique: Contract: Hallowfall Arathi
-	223065, -- Technique: Algari Missive of Ingenuity
-	223066, -- Technique: Algari Missive of Resourcefulness
-	223067, -- Technique: Algari Missive of Multicraft
-	223068, -- Technique: Algari Missive of Crafting Speed
-	223069, -- Technique: Algari Missive of Finesse
-	223070, -- Technique: Algari Missive of Perception
-	223071, -- Technique: Algari Missive of Deftness
-	223072, -- Technique: Colors of the Wind [DEPRECATED]
-	225355, -- Technique: Contract: The Severed Threads
-	225475, -- Technique: Algari Competitor's Medallion
-	225476, -- Technique: Algari Competitor's Insignia of Alacrity
-	225477, -- Technique: Algari Competitor's Emblem
-	225480, -- Technique: Algari Competitor's Pillar
-	225481, -- Technique: Algari Competitor's Staff
-	225484, -- Technique: Algari Competitor's Lamp
-	232535, -- Technique: Contract: The Cartels of Undermine
-	233022, -- Technique: Vantus Rune: Liberation of Undermine
-	234229, -- Technique: Glyph of the Gilded Pistol Shot
-	234230, -- Technique: Glyph of the Twilight Pistol Shot
-	234231, -- Technique: Glyph of the Admiral's Pistol Shot
-	234232, -- Technique: Glyph of the Ashvane Pistol Shot
-	243052, -- Technique: Glyph of the Strix
-	244043, -- Technique: Contract: The K'aresh Trust
-	244334, -- Technique: Vantus Rune: Manaforge Omega
-	246811, -- Technique: Inspired Writer's Quill
-	249701, -- Technique: Deal: Cartel Zo
-	249703, -- Technique: Deal: Cartel Ba
-	249705, -- Technique: Deal: Cartel Om
-	251629, -- Technique: Contract: The Amani Tribe
-	257243, -- Technique: Thalassian Competitor's Lamp
-	257258, -- Technique: Thalassian Competitor's Bow
-	257259, -- Technique: Thalassian Competitor's Pillar
-	257260, -- Technique: Thalassian Competitor's Emblem
-	257261, -- Technique: Thalassian Competitor's Insignia of Alacrity
-	257262, -- Technique: Thalassian Competitor's Medallion
-	258489, -- Technique: Thalassian Missive of Deftness
-	258491, -- Technique: Thalassian Missive of Perception
-	258492, -- Technique: Thalassian Missive of Finesse
-	258493, -- Technique: Thalassian Missive of Crafting Speed
-	258494, -- Technique: Thalassian Missive of Multicraft
-	258495, -- Technique: Thalassian Missive of Resourcefulness
-	258496, -- Technique: Thalassian Missive of Ingenuity
-	258499, -- Technique: Restful Bronze Bench
-	258502, -- Technique: Lively Songwriter's Quill
-	258503, -- Technique: Opened Sin'dorei Scroll
-	258504, -- Technique: Gilded Eversong Book
-	258505, -- Technique: Sin'dorei Phoenix Quill
-	258509, -- Technique: Harandar Signpost
-	258510, -- Technique: Magnificent Towering Bookcase
-	262809, -- Technique: Orcish Fence
-	262810, -- Technique: Orcish Fencepost
 	262908, -- Milling
-	263443, -- Technique: Contract: The Hara'ti
-	263444, -- Technique: Contract: The Silvermoon Court
-	263445, -- Technique: Contract: The Singularity
 	-- Recipe > Jewelcrafting
-	20854, -- Design: Amulet of the Moon
-	20855, -- Design: Wicked Moonstone Ring
-	20856, -- Design: Heavy Golden Necklace of Battle
-	20970, -- Design: Pendant of the Agate Shield
-	20971, -- Design: Heavy Iron Knuckles
-	20973, -- Design: Blazing Citrine Ring
-	20975, -- Design: The Jade Eye
-	21941, -- Design: Black Pearl Panther
-	21942, -- Design: Ruby Crown of Restoration
-	21943, -- Design: Truesilver Crab
-	21948, -- Design: Opal Necklace of Impact
-	21952, -- Design: Emerald Crown of Destruction
-	21954, -- Design: Ring of Bitter Shadows
-	23130, -- Design: Brilliant Blood Garnet
-	23135, -- Design: Inscribed Flame Spessarite
-	23137, -- Design: Glinting Shadow Draenite
-	23140, -- Design: Radiant Deep Peridot
-	23144, -- Design: Timeless Shadow Draenite
-	23148, -- Design: Brilliant Blood Garnet
-	23152, -- Design: Solid Azure Moonstone
-	24159, -- Design: Khorium Band of Frost
-	24160, -- Design: Khorium Inferno Band
-	24162, -- Design: Arcane Khorium Band
-	24163, -- Design: Heavy Felsteel Ring
-	24164, -- Design: Delicate Eternium Ring
-	24165, -- Design: Blazing Eternium Band
-	24166, -- Design: Thick Felsteel Necklace
-	24167, -- Design: Living Ruby Pendant
-	24170, -- Design: Embrace of the Dawn
-	24171, -- Design: Chain of the Twilight Owl
-	24179, -- Design: Felsteel Boar
-	24180, -- Design: Dawnstone Crab
-	24181, -- Design: Living Ruby Serpent
-	24182, -- Design: Talasite Owl
-	24183, -- Design: Nightseye Panther
-	24192, -- Design: Delicate Living Ruby
-	24193, -- Design: Bold Living Ruby
-	24194, -- Design: Delicate Living Ruby
-	24195, -- Design: Brilliant Living Ruby
-	24196, -- Design: Brilliant Living Ruby
-	24197, -- Design: Subtle Dawnstone
-	24198, -- Design: Flashing Living Ruby
-	24199, -- Design: Solid Star of Elune
-	24200, -- Design: Sparkling Star of Elune
-	24201, -- Design: Sparkling Star of Elune
-	24202, -- Design: Stormy Star of Elune
-	24203, -- Design: Brilliant Living Ruby
-	24204, -- Design: Smooth Dawnstone
-	24205, -- Design: Rigid Star of Elune
-	24206, -- Design: Smooth Dawnstone
-	24207, -- Design: Subtle Dawnstone
-	24208, -- Design: Mystic Dawnstone
-	24209, -- Design: Sovereign Nightseye
-	24210, -- Design: Shifting Nightseye
-	24211, -- Design: Timeless Nightseye
-	24212, -- Design: Purified Nightseye
-	24213, -- Design: Inscribed Noble Topaz
-	24214, -- Design: Potent Noble Topaz
-	24215, -- Design: Reckless Noble Topaz
-	24216, -- Design: Glinting Nightseye
-	24217, -- Design: Regal Talasite
-	24218, -- Design: Radiant Talasite
-	24219, -- Design: Purified Nightseye
-	24220, -- Design: Jagged Talasite
-	25903, -- Design: Bracing Earthstorm Diamond
-	25905, -- Design: Tenacious Earthstorm Diamond
-	25907, -- Design: Destructive Skyfire Diamond
-	25909, -- Design: Mystical Skyfire Diamond
-	28596, -- Design: Delicate Blood Garnet
-	31358, -- Design: Dawnstone Crab
-	31875, -- Design: Rigid Star of Elune
-	31876, -- Design: Shifting Nightseye
-	31878, -- Design: Veiled Nightseye
-	32411, -- Design: Thundering Skyfire Diamond
-	32412, -- Design: Relentless Earthstorm Diamond
-	33622, -- Design: Relentless Earthstorm Diamond
-	33783, -- Design: Steady Talasite
-	34689, -- Design: Chaotic Skyfire Diamond
-	35241, -- Design: Purified Shadowsong Amethyst
-	35242, -- Design: Shifting Shadowsong Amethyst
-	35243, -- Design: Sovereign Shadowsong Amethyst
-	35252, -- Design: Regal Seaspray Emerald
-	35257, -- Design: Rigid Empyrean Sapphire
-	35258, -- Design: Mystic Lionseye
-	35259, -- Design: Rigid Empyrean Sapphire
-	35265, -- Design: Stormy Empyrean Sapphire
-	35267, -- Design: Inscribed Pyrestone
-	35270, -- Design: Veiled Shadowsong Amethyst
-	35304, -- Design: Solid Star of Elune
-	35305, -- Design: Brilliant Living Ruby
-	35306, -- Design: Delicate Living Ruby
-	35307, -- Design: Rigid Star of Elune
-	35502, -- Design: Eternal Earthstorm Diamond
-	35695, -- Design: Figurine - Empyrean Tortoise
-	35696, -- Design: Figurine - Khorium Boar
-	35697, -- Design: Figurine - Crimson Serpent
-	35698, -- Design: Figurine - Shadowsong Panther
-	35699, -- Design: Figurine - Seaspray Albatross
-	35708, -- Design: Regal Talasite
-	37504, -- Design: Purified Shadowsong Amethyst
 	127771, -- Gemcutter Module: Critical Strike
 	127772, -- Gemcutter Module: Haste
 	127773, -- Gemcutter Module: Mastery
 	127775, -- Gemcutter Module: Stamina
-	137792, -- Design: Deep Amber Loop
-	137793, -- Design: Skystone Loop
-	137794, -- Design: Azsunite Loop
-	137795, -- Design: Deep Amber Pendant
-	137796, -- Design: Skystone Pendant
-	137797, -- Design: Azsunite Pendant
-	137798, -- Design: Prophetic Band
-	137799, -- Design: Maelstrom Band
-	137800, -- Design: Dawnlight Band
-	137801, -- Design: Sorcerous Shadowruby Pendant
-	137802, -- Design: Blessed Dawnlight Medallion
-	137803, -- Design: Twisted Pandemonite Choker
-	137804, -- Design: Subtle Shadowruby Pendant
-	137805, -- Design: Tranquil Necklace of Prophecy
-	137806, -- Design: Vindictive Pandemonite Choker
-	137807, -- Design: Sylvan Maelstrom Amulet
-	137808, -- Design: Intrepid Necklace of Prophecy
-	137809, -- Design: Ancient Maelstrom Amulet
-	137810, -- Design: Righteous Dawnlight Medallion
-	137811, -- Design: Raging Furystone Gorget
-	137812, -- Design: Grim Furystone Gorget
-	137813, -- Design: Saber's Eye
-	137814, -- Design: Saber's Eye of Strength
-	137815, -- Design: Saber's Eye of Agility
-	137816, -- Design: Saber's Eye of Intellect
-	137817, -- Design: Deep Amber Loop
-	137818, -- Design: Skystone Loop
-	137819, -- Design: Azsunite Loop
-	137820, -- Design: Deep Amber Pendant
-	137821, -- Design: Skystone Pendant
-	137822, -- Design: Azsunite Pendant
-	137823, -- Design: Prophetic Band
-	137824, -- Design: Maelstrom Band
-	137825, -- Design: Dawnlight Band
-	137826, -- Design: Sorcerous Shadowruby Pendant
-	137827, -- Design: Blessed Dawnlight Medallion
-	137828, -- Design: Twisted Pandemonite Choker
-	137829, -- Design: Subtle Shadowruby Pendant
-	137830, -- Design: Tranquil Necklace of Prophecy
-	137831, -- Design: Vindictive Pandemonite Choker
-	137832, -- Design: Sylvan Maelstrom Amulet
-	137833, -- Design: Intrepid Necklace of Prophecy
-	137834, -- Design: Ancient Maelstrom Amulet
-	137835, -- Design: Righteous Dawnlight Medallion
-	137836, -- Design: Raging Furystone Gorget
-	137837, -- Design: Grim Furystone Gorget
-	137838, -- Design: Deep Amber Loop
-	137840, -- Design: Azsunite Loop
-	137841, -- Design: Deep Amber Pendant
-	137842, -- Design: Skystone Pendant
-	137843, -- Design: Azsunite Pendant
-	137844, -- Design: Prophetic Band
-	137845, -- Design: Maelstrom Band
-	137846, -- Design: Dawnlight Band
-	137847, -- Design: Sorcerous Shadowruby Pendant
-	137848, -- Design: Blessed Dawnlight Medallion
-	137849, -- Design: Twisted Pandemonite Choker
-	137850, -- Design: Subtle Shadowruby Pendant
-	137851, -- Design: Tranquil Necklace of Prophecy
-	137852, -- Design: Vindictive Pandemonite Choker
-	137853, -- Design: Sylvan Maelstrom Amulet
-	137854, -- Design: Intrepid Necklace of Prophecy
-	137855, -- Design: Ancient Maelstrom Amulet
-	137856, -- Design: Righteous Dawnlight Medallion
-	137857, -- Design: Raging Furystone Gorget
-	137858, -- Design: Grim Furystone Gorget
-	137859, -- Design: Queen's Opal Loop
-	137860, -- Design: Queen's Opal Pendant
-	137861, -- Design: Shadowruby Band
-	137862, -- Design: Queen's Opal Loop
-	137863, -- Design: Queen's Opal Pendant
-	137864, -- Design: Shadowruby Band
-	137865, -- Design: Queen's Opal Loop
-	137866, -- Design: Queen's Opal Pendant
-	137867, -- Design: Shadowruby Band
-	138451, -- Design: Deadly Deep Amber
-	138452, -- Design: Quick Azsunite
-	138453, -- Design: Masterful Queen's Opal
-	138454, -- Design: Deadly Eye of Prophecy
-	138455, -- Design: Quick Dawnlight
-	138456, -- Design: Masterful Shadowruby
-	141311, -- Design: Mass Prospect Leystone
-	141312, -- Design: Mass Prospect Felslate
-	151724, -- Design: Empyrial Cosmic Crown
-	151725, -- Design: Empyrial Cosmic Crown
-	151726, -- Design: Empyrial Cosmic Crown
-	151727, -- Design: Empyrial Deep Crown
-	151728, -- Design: Empyrial Deep Crown
-	151729, -- Design: Empyrial Deep Crown
-	151730, -- Design: Empyrial Elemental Crown
-	151731, -- Design: Empyrial Elemental Crown
-	151732, -- Design: Empyrial Elemental Crown
-	151733, -- Design: Empyrial Titan Crown
-	151734, -- Design: Empyrial Titan Crown
-	151735, -- Design: Empyrial Titan Crown
-	151736, -- Design: Deadly Deep Chemirine
-	151737, -- Design: Quick Lightsphene
-	151738, -- Design: Masterful Argulite
-	151739, -- Design: Versatile Labradorite
-	162378, -- Design: Amberblaze Loop
-	162379, -- Design: Owlseye Loop
-	162380, -- Design: Tidal Amethyst Loop
-	162381, -- Design: Royal Quartz Loop
-	162382, -- Design: Laribole Staff of Alacrity
-	162385, -- Design: Scarlet Diamond Staff of Intuition
-	162760, -- Design: Amberblaze Loop
-	162761, -- Design: Owlseye Loop
-	162762, -- Design: Tidal Amethyst Loop
-	162763, -- Design: Royal Quartz Loop
-	162764, -- Design: Laribole Staff of Alacrity
-	162765, -- Design: Scarlet Diamond Staff of Intuition
-	163024, -- Design: Honorable Combatant's Intuitive Staff
-	163025, -- Design: Honorable Combatant's Intuitive Staff
-	165308, -- Design: Sinister Combatant's Intuitive Staff
-	165309, -- Design: Sinister Combatant's Intuitive Staff
-	168027, -- Design: Jewelhammer's Focus
-	171158, -- Design: Uncanny Combatant's Intuitive Staff
-	171159, -- Design: Uncanny Combatant's Intuitive Staff
-	180783, -- Design: Crown of the Righteous
-	186993, -- Design: Porous Stone Statue
-	186994, -- Design: Shaded Stone Statue
-	187830, -- Design: Aealic Harmonizing Stone
-	187847, -- Design: Devourer Essence Stone
-	194596, -- Design: Crafty Queen's Ruby
-	194597, -- Design: Zen Mystic Sapphire
-	194598, -- Design: Energized Vibrant Emerald
-	194599, -- Design: Sensei's Sundered Onyx
-	194600, -- Design: Solid Eternity Amber
-	194601, -- Design: Crafty Alexstraszite
-	194602, -- Design: Sensei's Alexstraszite
-	194603, -- Design: Radiant Alexstraszite
-	194604, -- Design: Deadly Alexstraszite
-	194605, -- Design: Radiant Malygite
-	194606, -- Design: Energized Malygite
-	194607, -- Design: Zen Malygite
-	194608, -- Design: Stormy Malygite
-	194609, -- Design: Crafty Ysemerald
-	194610, -- Design: Keen Ysemerald
-	194611, -- Design: Energized Ysemerald
-	194612, -- Design: Quick Ysemerald
-	194613, -- Design: Sensei's Neltharite
-	194614, -- Design: Keen Neltharite
-	194615, -- Design: Zen Neltharite
-	194616, -- Design: Fractured Neltharite
-	194617, -- Design: Jagged Nozdorite
-	194618, -- Design: Forceful Nozdorite
-	194619, -- Design: Puissant Nozdorite
-	194620, -- Design: Steady Nozdorite
-	194621, -- Design: Inscribed Illimited Diamond
-	194622, -- Design: Fierce Illimited Diamond
-	194623, -- Design: Skillful Illimited Diamond
-	194624, -- Design: Resplendent Illimited Diamond
-	194625, -- Design: Tiered Medallion Setting
-	194627, -- Design: Draconic Vial
-	194628, -- Design: Frameless Lens
-	194630, -- Design: Blotting Sand
-	194631, -- Design: Pounce
-	194632, -- Design: Idol of the Life-Binder
-	194633, -- Design: Idol of the Spell-Weaver
-	194634, -- Design: Idol of the Dreamer
-	194635, -- Design: Idol of the Earth-Warder
-	194636, -- Design: Pendant of Impending Perils
-	194640, -- Design: Ring-Bound Hourglass
-	194641, -- Design: Elemental Lariat
-	194642, -- Design: Choker of Shielding
-	194643, -- Design: Narcissist's Sculpture
-	194644, -- Design: Revitalizing Red Carving
-	194645, -- Design: Statue of Tyr's Herald
-	194646, -- Design: Djaradin's \"Pinata\"
-	194647, -- Design: Jeweled Ruby Whelpling
-	194648, -- Design: Jeweled Emerald Whelpling
-	194649, -- Design: Jeweled Sapphire Whelpling
-	194650, -- Design: Jeweled Onyx Whelpling
-	194651, -- Design: Jeweled Amber Whelpling
-	194652, -- Design: Projection Prism
-	194653, -- Design: Jeweled Offering
-	194654, -- Design: Convergent Prism
-	194656, -- Design: Bold-Print Bifocals
-	194657, -- Design: Left-Handed Magnifying Glass
-	194658, -- Design: Sundered Onyx Loupes
-	194659, -- Design: Chromatic Focus
-	194660, -- Design: Fine-Print Trifocals
-	194661, -- Design: Magnificent Margin Magnifier
-	194663, -- Design: Resonant Focus
-	194664, -- Design: Queen's Gift
-	194665, -- Design: Dreamer's Vision
-	194666, -- Design: Keeper's Glory
-	194667, -- Design: Earthwarden's Prize
-	194668, -- Design: Timewatcher's Patience
-	194669, -- Design: Jeweled Dragon's Heart
-	194670, -- Design: Elemental Harmony
-	194671, -- Design: \"Rhinestone\" Sunglasses
-	194672, -- Design: Band of New Beginnings
-	194674, -- Design: Soul Drainer
 	194709, -- Prospecting
-	194726, -- Design: Kalu'ak Figurine
-	194749, -- Design: Split-Lens Specs
-	198839, -- Design: Signet of Titanic Insight
 	201926, -- Crushing
 	204216, -- Primordial Pulverizing
-	204218, -- Design: Primordial Pulverizing
-	204219, -- Design: Unstable Elementium
-	204406, -- Ancient Design: Square Holders
-	205174, -- Design: B.B.F. Fist
-	205175, -- Design: Statuette of Foreseen Power
-	205176, -- Design: Figurine of the Gathering Storm
-	210170, -- Design: Dreamtender's Charm
 	215360, -- Personalized Setting
-	223081, -- Design: Sifted Cave Sand
-	223082, -- Design: Ominous Energy Crystal
-	223083, -- Design: Elemental Focusing Lens
-	223084, -- Design: Prismatic Null Stone
-	223085, -- Design: Fractured Gemstone Locket
-	223086, -- Design: Insightful Blasphemite
-	223087, -- Design: Culminating Blasphemite
-	223090, -- Design: Enchanter's Crystal
-	223093, -- Design: Beautification Iris
-	224763, -- Design: Cubic Blasphemia
-	225432, -- Design: Algari Competitor's Signet
-	225433, -- Design: Algari Competitor's Amulet
-	225680, -- Design: Cognitive Bloodstone
-	228320, -- Design: Binding of Binding
-	228329, -- Design: Remembrance Stone
-	228379, -- Design: Captured Starlight
-	238922, -- Design: Void-Crystal Panther
-	256699, -- Design: Sin'dorei Enchanter's Crystal
-	256700, -- Design: Signet of Azerothian Blessings
-	256702, -- Design: Thalassian Competitor's Signet
-	256703, -- Design: Sin'dorei Scribe's Spectacles
-	256704, -- Design: Powerful Eversong Diamond
-	256706, -- Design: Determined Heliotrope
-	256708, -- Design: Telluric Eversong Diamond
-	256709, -- Design: Sin'dorei Jeweler's Loupes
-	256710, -- Design: Enduring Heliotrope
-	256712, -- Design: Cognitive Heliotrope
-	256713, -- Design: Improved Right-Handed Magnifying Glass
-	256714, -- Design: Indecipherable Eversong Diamond
-	256715, -- Design: Thalassian Phoenix Torque
-	256716, -- Design: Prismatic Focusing Iris
-	256717, -- Design: Loa Worshiper's Band
-	256718, -- Design: Stabilizing Gemstone Bandolier
-	256719, -- Design: Thalassian Competitor's Amulet
-	256720, -- Design: Stoic Eversong Diamond
-	256721, -- Design: Voidstone Shielding Array
-	259363, -- Design: Bejeweled Sin'dorei Lyre
-	259366, -- Design: Replica Haranir Mural
-	259369, -- Design: Resplendent Highborne Statue
-	259372, -- Design: Shining Sin'dorei Hourglass
-	-- Recipe > Leatherworking
-	4298, -- Pattern: Guardian Belt
-	5973, -- Pattern: Barbaric Leggings
-	6474, -- Pattern: Deviate Scale Cloak
-	6475, -- Pattern: Deviate Scale Gloves
-	7289, -- Pattern: Black Whelp Cloak
-	7290, -- Pattern: Red Whelp Gloves
-	7362, -- Pattern: Earthen Leather Shoulders
-	7613, -- Pattern: Green Leather Armor
-	15725, -- Pattern: Wicked Leather Gauntlets
-	15726, -- Pattern: Green Dragonscale Breastplate
-	15740, -- Pattern: Frostsaber Boots
-	15742, -- Pattern: Warbear Harness
-	15751, -- Pattern: Blue Dragonscale Breastplate
-	15752, -- Pattern: Living Leggings
-	15754, -- Pattern: Warbear Woolies
-	15762, -- Pattern: Heavy Scorpid Helm
-	15763, -- Pattern: Blue Dragonscale Shoulders
-	15764, -- Pattern: Stormshroud Shoulders
-	15769, -- Pattern: Onyxia Scale Cloak
-	15770, -- Pattern: Black Dragonscale Shoulders
-	15771, -- Pattern: Living Breastplate
-	15781, -- Pattern: Black Dragonscale Leggings
-	17022, -- Pattern: Corehound Boots
-	17023, -- Pattern: Molten Helm
-	17025, -- Pattern: Black Dragonscale Boots
-	18252, -- Pattern: Core Armor Kit
-	18514, -- Pattern: Girdle of Insight
-	18515, -- Pattern: Mongoose Boots
-	18516, -- Pattern: Swift Flight Bracers
-	18731, -- Pattern: Heavy Leather Ball
-	18949, -- Pattern: Barbaric Bracers
-	19329, -- Pattern: Golden Mantle of the Dawn
-	19331, -- Pattern: Chromatic Gauntlets
-	19332, -- Pattern: Corehound Belt
-	19333, -- Pattern: Molten Belt
-	19770, -- Pattern: Primal Batskin Gloves
-	19771, -- Pattern: Primal Batskin Bracers
-	19772, -- Pattern: Blood Tiger Breastplate
-	20511, -- Pattern: Sandstalker Breastplate
-	20576, -- Pattern: Black Whelp Tunic
-	21548, -- Pattern: Stormshroud Gloves
-	22692, -- Pattern: Polar Tunic
-	22696, -- Pattern: Icy Scale Breastplate
-	22771, -- Pattern: Bramblewood Helm
-	25720, -- Pattern: Heavy Knothide Leather
-	25721, -- Pattern: Vindicator's Armor Kit
-	25722, -- Pattern: Magister's Armor Kit
-	25725, -- Pattern: Riding Crop
-	25726, -- Pattern: Comfortable Insoles
-	25728, -- Pattern: Stylin' Purple Hat
-	25729, -- Pattern: Stylin' Adventure Hat
-	25730, -- Pattern: Stylin' Jungle Hat
-	25731, -- Pattern: Stylin' Crimson Hat
-	25734, -- Pattern: Fel Leather Leggings
-	25743, -- Pattern: Netherfury Boots
-	29218, -- Pattern: Netherfury Boots
-	29677, -- Pattern: Enchanted Felscale Leggings
-	29684, -- Pattern: Enchanted Felscale Boots
-	29689, -- Pattern: Flamescale Leggings
-	29691, -- Pattern: Flamescale Boots
-	29698, -- Pattern: Enchanted Clefthoof Leggings
-	29700, -- Pattern: Enchanted Clefthoof Gloves
-	29702, -- Pattern: Blastguard Pants
-	29703, -- Pattern: Blastguard Boots
-	29721, -- Pattern: Nethercleft Leg Armor
-	29722, -- Pattern: Nethercobra Leg Armor
-	31362, -- Pattern: Nethercobra Leg Armor
-	78346, -- Pattern: Green Dragonscale Breastplate
-	100864, -- Pattern: Hardened Magnificent Hide and Its Uses
-	137868, -- Pattern: Warhide Bindings
-	137869, -- Pattern: Warhide Belt
-	137870, -- Pattern: Warhide Shoulderguard
-	137871, -- Pattern: Warhide Pants
-	137872, -- Pattern: Warhide Mask
-	137873, -- Pattern: Warhide Gloves
-	137874, -- Pattern: Warhide Footpads
-	137875, -- Pattern: Warhide Jerkin
-	137876, -- Pattern: Warhide Bindings
-	137877, -- Pattern: Warhide Pants
-	137878, -- Pattern: Warhide Mask
-	137879, -- Pattern: Warhide Gloves
-	137880, -- Pattern: Warhide Footpads
-	137881, -- Pattern: Warhide Belt
-	137882, -- Pattern: Warhide Shoulderguard
-	137884, -- Pattern: Dreadleather Bindings
-	137885, -- Pattern: Dreadleather Belt
-	137886, -- Pattern: Dreadleather Shoulderguard
-	137887, -- Pattern: Dreadleather Pants
-	137888, -- Pattern: Dreadleather Mask
-	137889, -- Pattern: Dreadleather Gloves
-	137890, -- Pattern: Dreadleather Footpads
-	137891, -- Pattern: Dreadleather Jerkin
-	137892, -- Pattern: Dreadleather Bindings
-	137893, -- Pattern: Dreadleather Belt
-	137894, -- Pattern: Dreadleather Shoulderguard
-	137895, -- Pattern: Dreadleather Pants
-	137896, -- Pattern: Dreadleather Mask
-	137897, -- Pattern: Dreadleather Gloves
-	137898, -- Pattern: Dreadleather Footpads
-	137899, -- Pattern: Dreadleather Jerkin
-	137900, -- Pattern: Battlebound Armbands
-	137901, -- Pattern: Battlebound Girdle
-	137902, -- Pattern: Battlebound Spaulders
-	137903, -- Pattern: Battlebound Leggings
-	137904, -- Pattern: Battlebound Warhelm
-	137905, -- Pattern: Battlebound Grips
-	137906, -- Pattern: Battlebound Treads
-	137907, -- Pattern: Battlebound Hauberk
-	137908, -- Pattern: Battlebound Armbands
-	137909, -- Pattern: Battlebound Leggings
-	137911, -- Pattern: Battlebound Grips
-	137912, -- Pattern: Battlebound Treads
-	137913, -- Pattern: Battlebound Girdle
-	137914, -- Pattern: Battlebound Spaulders
-	137916, -- Pattern: Gravenscale Armbands
-	137917, -- Pattern: Gravenscale Girdle
-	137918, -- Pattern: Gravenscale Spaulders
-	137919, -- Pattern: Gravenscale Leggings
-	137920, -- Pattern: Gravenscale Warhelm
-	137921, -- Pattern: Gravenscale Grips
-	137922, -- Pattern: Gravenscale Treads
-	137923, -- Pattern: Gravenscale Hauberk
-	137924, -- Pattern: Gravenscale Armbands
-	137925, -- Pattern: Gravenscale Girdle
-	137926, -- Pattern: Gravenscale Spaulders
-	137929, -- Pattern: Gravenscale Grips
-	137930, -- Pattern: Gravenscale Treads
-	137931, -- Pattern: Gravenscale Hauberk
-	137932, -- Pattern: Flaming Hoop
-	137933, -- Pattern: Leather Pet Bed
-	137934, -- Pattern: Leather Pet Leash
-	137935, -- Pattern: Leather Love Seat
-	137952, -- Pattern: Stonehide Leather Barding
-	139893, -- Skinning Technique: Unbroken Tooth
-	139894, -- Skinning Technique: Unbroken Claw
-	139895, -- Skinning Technique: Legion Butchery
-	139896, -- Skinning Technique: Legion Gutting
-	140636, -- Pattern: Dreadleather Bindings
-	140637, -- Pattern: Dreadleather Belt
-	140638, -- Pattern: Dreadleather Shoulderguard
-	140639, -- Pattern: Dreadleather Pants
-	140640, -- Pattern: Dreadleather Mask
-	140641, -- Pattern: Dreadleather Gloves
-	140642, -- Pattern: Dreadleather Footpads
-	140643, -- Pattern: Dreadleather Jerkin
-	140644, -- Pattern: Gravenscale Armbands
-	140645, -- Pattern: Gravenscale Girdle
-	140646, -- Pattern: Gravenscale Spaulders
-	140647, -- Pattern: Gravenscale Leggings
-	140648, -- Pattern: Gravenscale Warhelm
-	140649, -- Pattern: Gravenscale Grips
-	140650, -- Pattern: Gravenscale Treads
-	140651, -- Pattern: Gravenscale Hauberk
-	141850, -- Pattern: Elderhorn Riding Harness
-	142407, -- Pattern: Drums of the Mountain
-	142408, -- Pattern: Drums of the Mountain
-	142409, -- Pattern: Drums of the Mountain
-	151740, -- Pattern: Fiendish Shoulderguards
-	151741, -- Pattern: Fiendish Shoulderguards
-	151742, -- Pattern: Fiendish Shoulderguards
-	151743, -- Pattern: Fiendish Spaulders
-	151744, -- Pattern: Fiendish Spaulders
-	151745, -- Pattern: Fiendish Spaulders
-	162388, -- Pattern: Hardened Tempest Boots
-	162389, -- Pattern: Hardened Tempest Leggings
-	162390, -- Pattern: Honorable Combatant's Leather Treads
-	162391, -- Pattern: Honorable Combatant's Leather Treads
-	162392, -- Pattern: Honorable Combatant's Leather Gauntlets
-	162393, -- Pattern: Honorable Combatant's Leather Gauntlets
-	162394, -- Pattern: Honorable Combatant's Leather Leggings
-	162395, -- Pattern: Honorable Combatant's Leather Leggings
-	162396, -- Pattern: Honorable Combatant's Leather Waistguard
-	162397, -- Pattern: Honorable Combatant's Leather Waistguard
-	162398, -- Pattern: Honorable Combatant's Leather Armguards
-	162399, -- Pattern: Honorable Combatant's Leather Armguards
-	162400, -- Pattern: Mistscale Boots
-	162401, -- Pattern: Mistscale Greaves
-	162402, -- Pattern: Honorable Combatant's Mail Treads
-	162403, -- Pattern: Honorable Combatant's Mail Treads
-	162404, -- Pattern: Honorable Combatant's Mail Gauntlets
-	162405, -- Pattern: Honorable Combatant's Mail Gauntlets
-	162406, -- Pattern: Honorable Combatant's Mail Leggings
-	162407, -- Pattern: Honorable Combatant's Mail Leggings
-	162408, -- Pattern: Honorable Combatant's Mail Waistguard
-	162409, -- Pattern: Honorable Combatant's Mail Waistguard
-	162410, -- Pattern: Honorable Combatant's Mail Armguards
-	162411, -- Pattern: Honorable Combatant's Mail Armguards
-	162412, -- Pattern: Recurve Bow of the Strands
-	162413, -- Pattern: Mistscale Knuckles
-	162414, -- Pattern: Hardened Tempest Knuckles
-	162417, -- Pattern: Honorable Combatant's Bow
-	162418, -- Pattern: Honorable Combatant's Bow
-	162766, -- Pattern: Recurve Bow of the Strands
-	162767, -- Pattern: Mistscale Knuckles
-	162768, -- Pattern: Hardened Tempest Knuckles
-	165310, -- Pattern: Sinister Combatant's Leather Treads
-	165311, -- Pattern: Sinister Combatant's Leather Treads
-	165312, -- Pattern: Sinister Combatant's Leather Gauntlets
-	165313, -- Pattern: Sinister Combatant's Leather Gauntlets
-	165314, -- Pattern: Sinister Combatant's Leather Leggings
-	165315, -- Pattern: Sinister Combatant's Leather Leggings
-	165316, -- Pattern: Sinister Combatant's Leather Waistguard
-	165317, -- Pattern: Sinister Combatant's Leather Waistguard
-	165318, -- Pattern: Sinister Combatant's Leather Armguards
-	165319, -- Pattern: Sinister Combatant's Leather Armguards
-	165320, -- Pattern: Sinister Combatant's Mail Treads
-	165321, -- Pattern: Sinister Combatant's Mail Treads
-	165322, -- Pattern: Sinister Combatant's Mail Gauntlets
-	165323, -- Pattern: Sinister Combatant's Mail Gauntlets
-	165324, -- Pattern: Sinister Combatant's Mail Leggings
-	165325, -- Pattern: Sinister Combatant's Mail Leggings
-	165326, -- Pattern: Sinister Combatant's Mail Waistguard
-	165327, -- Pattern: Sinister Combatant's Mail Waistguard
-	165328, -- Pattern: Sinister Combatant's Mail Armguards
-	165329, -- Pattern: Sinister Combatant's Mail Armguards
-	165330, -- Pattern: Sinister Combatant's Bow
-	165331, -- Pattern: Sinister Combatant's Bow
-	166312, -- Pattern: Coarse Leather Barding
-	166313, -- Pattern: Coarse Leather Barding
-	168028, -- Pattern: Mallet of Thunderous Skins
-	170412, -- Pattern: Uncanny Combatant's Leather Treads
-	170413, -- Pattern: Uncanny Combatant's Leather Treads
-	170414, -- Pattern: Uncanny Combatant's Leather Gauntlets
-	170415, -- Pattern: Uncanny Combatant's Leather Gauntlets
-	170416, -- Pattern: Uncanny Combatant's Leather Leggings
-	170417, -- Pattern: Uncanny Combatant's Leather Leggings
-	170418, -- Pattern: Uncanny Combatant's Leather Waistguard
-	170419, -- Pattern: Uncanny Combatant's Leather Waistguard
-	170420, -- Pattern: Uncanny Combatant's Leather Armguards
-	170421, -- Pattern: Uncanny Combatant's Leather Armguards
-	170422, -- Pattern: Uncanny Combatant's Mail Treads
-	170423, -- Pattern: Uncanny Combatant's Mail Treads
-	170424, -- Pattern: Uncanny Combatant's Mail Gauntlets
-	170425, -- Pattern: Uncanny Combatant's Mail Gauntlets
-	170426, -- Pattern: Uncanny Combatant's Mail Leggings
-	170427, -- Pattern: Uncanny Combatant's Mail Leggings
-	170428, -- Pattern: Uncanny Combatant's Mail Waistguard
-	170429, -- Pattern: Uncanny Combatant's Mail Waistguard
-	170430, -- Pattern: Uncanny Combatant's Mail Armguards
-	170431, -- Pattern: Uncanny Combatant's Mail Armguards
-	170586, -- Pattern: Uncanny Combatant's Bow
-	170587, -- Pattern: Uncanny Combatant's Bow
-	174366, -- Pattern: Unsettling Dredged Leather Boots
-	174368, -- Pattern: Unsettling Cragscale Boots
-	174369, -- Pattern: Unsettling Cragscale Greaves
-	183839, -- Pattern: Heavy Desolate Hide
-	186998, -- Pattern: Pallid Oracle Bones
-	186999, -- Pattern: Pallid Bone Flute
-	187000, -- Pattern: Elusive Pet Treat
-	194311, -- Pattern: Tuskarr Beanbag
-	194312, -- Pattern: Gnoll Tent
-	198457, -- Pattern: Masterwork Smock
-	198458, -- Pattern: Resplendent Cover
-	198459, -- Pattern: Lavish Floral Pack
-	198461, -- Pattern: Shockproof Gloves
-	198462, -- Pattern: Flameproof Apron
-	198463, -- Pattern: Expert Alchemist's Hat
-	198464, -- Pattern: Reinforced Pack
-	198465, -- Pattern: Expert Skinner's Cap
-	198618, -- Pattern: Artisan's Sign
-	200103, -- Pattern: Infurious Hide
-	200104, -- Pattern: Infurious Scales
-	201257, -- Bloodstained Pattern: Infurious Hide
-	201259, -- Bloodstained Pattern: Infurious Scales
-	201732, -- Pattern: Fierce Armor Kit
-	201733, -- Pattern: Frosted Armor Kit
-	203842, -- Ancient Pattern: Animist's Footwraps
-	203843, -- Ancient Pattern: Animist's Legguards
-	203844, -- Ancient Pattern: Gloves of the Tormentor
-	203845, -- Ancient Pattern: Junglefury Gauntlets
-	203846, -- Ancient Pattern: Junglefury Leggings
-	203968, -- Ancient Pattern: Cord of Shriveled Heads
-	204968, -- Pattern: Shadowflame-Tempered Armor Patch
-	206403, -- Pattern: Polar Helm
-	206404, -- Pattern: Polar Spaulders
-	206405, -- Pattern: Polar Tunic
-	206406, -- Pattern: Polar Bracers
-	206407, -- Pattern: Polar Gloves
-	206408, -- Pattern: Polar Belt
-	206409, -- Pattern: Polar Leggings
-	206410, -- Pattern: Polar Footwarmers
-	206411, -- Pattern: Icy Scale Crown
-	206412, -- Pattern: Icy Scale Shoulderpads
-	206413, -- Pattern: Icy Scale Breastplate
-	206414, -- Pattern: Icy Scale Bracers
-	206415, -- Pattern: Icy Scale Gauntlets
-	206416, -- Pattern: Icy Scale Waistwrap
-	206417, -- Pattern: Icy Scale Leggings
-	206418, -- Pattern: Icy Scale Stompers
-	206529, -- Ancient Pattern: Helm of Lingering Power
-	206530, -- Ancient Pattern: Skyfury Headdress
-	206561, -- Ancient Pattern: Lucien's Lost Soles
-	207577, -- Ancient Pattern: Sanctified Leather Hat
-	210169, -- Pattern: Verdant Conduit
-	223103, -- Pattern: Stormbound Armor Kit
-	223104, -- Pattern: Defender's Armor Kit
-	223105, -- Pattern: Nerubian Alchemist's Hat
-	223106, -- Pattern: Earthen Forgemaster's Apron
-	223107, -- Pattern: Charged Scrapmaster's Gauntlets
-	223108, -- Pattern: Stonebound Herbalist's Pack
-	223109, -- Pattern: Earthen Jeweler's Cover
-	223110, -- Pattern: Arathi Leatherworker's Smock
-	223111, -- Pattern: Deep Tracker's Cap
-	223112, -- Pattern: Deep Tracker's Pack
-	225443, -- Pattern: Algari Competitor's Leather Boots
-	225444, -- Pattern: Algari Competitor's Leather Chestpiece
-	225445, -- Pattern: Algari Competitor's Leather Mask
-	225446, -- Pattern: Algari Competitor's Leather Shoulderpads
-	225447, -- Pattern: Algari Competitor's Leather Belt
-	225448, -- Pattern: Algari Competitor's Leather Trousers
-	225449, -- Pattern: Algari Competitor's Leather Gloves
-	225450, -- Pattern: Algari Competitor's Leather Wristwraps
-	225451, -- Pattern: Algari Competitor's Chain Treads
-	225452, -- Pattern: Algari Competitor's Chain Chainmail
-	225453, -- Pattern: Algari Competitor's Chain Cowl
-	225454, -- Pattern: Algari Competitor's Chain Epaulets
-	225455, -- Pattern: Algari Competitor's Chain Girdle
-	225456, -- Pattern: Algari Competitor's Chain Leggings
-	225457, -- Pattern: Algari Competitor's Chain Gauntlets
-	225458, -- Pattern: Algari Competitor's Chain Cuffs
-	235338, -- Pattern: Charged Armor Kit
-	256626, -- Pattern: Thalassian Competitor's Leather Boots
-	256627, -- Pattern: Thalassian Competitor's Leather Chestpiece
-	256628, -- Pattern: Thalassian Competitor's Leather Gloves
-	256629, -- Pattern: Thalassian Competitor's Leather Trousers
-	256630, -- Pattern: Thalassian Competitor's Leather Shoulderpads
-	256631, -- Pattern: Thalassian Competitor's Leather Belt
-	256632, -- Pattern: Thalassian Competitor's Leather Mask
-	256633, -- Pattern: Thalassian Competitor's Chain Stompers
-	256634, -- Pattern: Thalassian Competitor's Chain Tunic
-	256635, -- Pattern: Thalassian Competitor's Leather Wristwraps
-	256641, -- Pattern: Thalassian Competitor's Chain Leggings
-	256642, -- Pattern: Primal Spore Binding
-	256643, -- Pattern: Thalassian Competitor's Chain Grips
-	256644, -- Pattern: Thalassian Competitor's Chain Epaulets
-	256645, -- Pattern: Blessed Pango Charm
-	256646, -- Pattern: Thalassian Competitor's Chain Cowl
-	256647, -- Pattern: Forest Hunter's Armor Kit
-	256649, -- Pattern: Thalassian Competitor's Chain Girdle
-	256654, -- Pattern: Thalassian Competitor's Chain Cuffs
-	256655, -- Pattern: Sin'dorei Alchemist's Hat
-	256659, -- Pattern: Sin'dorei Forgemaster's Cover
-	256660, -- Pattern: Sin'dorei Engineer's Gloves
-	256662, -- Pattern: Sin'dorei Herbalist's Backpack
-	256665, -- Pattern: Sin'dorei Leathershaper's Smock
-	256666, -- Pattern: Sin'dorei Hunter's Pack
-	256669, -- Pattern: Eversong Hunter's Headcover
-	256670, -- Pattern: Sin'dorei Jeweler's Cover
-	259362, -- Pattern: Haranir Canopy Bed
-	259365, -- Pattern: Plush Haranir Leather Pillow
-	259368, -- Pattern: Sturdy Haranir Chair
-	259371, -- Pattern: Stitched Haranir Rug
-	259457, -- Pattern: Simple Haranir Table
 	-- Recipe > Tailoring
-	4354, -- Pattern: Rich Purple Silk Shirt
-	4355, -- Pattern: Icy Cloak
-	5771, -- Pattern: Red Linen Bag
-	5772, -- Pattern: Red Woolen Bag
-	6272, -- Pattern: Blue Linen Robe
-	6273, -- Pattern: Green Woolen Robe
-	6274, -- Pattern: Blue Overalls
-	6275, -- Pattern: Greater Adept's Robe
-	7087, -- Pattern: Crimson Silk Cloak
-	7114, -- Pattern: Azure Silk Gloves
-	10311, -- Pattern: Orange Martial Shirt
-	10314, -- Pattern: Lavender Mageweave Shirt
-	10321, -- Pattern: Tuxedo Shirt
-	10323, -- Pattern: Tuxedo Pants
-	10326, -- Pattern: Tuxedo Jacket
-	10728, -- Pattern: Black Swashbuckler's Shirt
-	14486, -- Pattern: Cloak of Fire
-	14488, -- Pattern: Runecloth Boots
-	14491, -- Pattern: Runecloth Pants
-	14493, -- Pattern: Robe of Winter Night
-	14497, -- Pattern: Mooncloth Leggings
-	14498, -- Pattern: Runecloth Headband
-	14507, -- Pattern: Mooncloth Shoulders
-	14510, -- Pattern: Bottomless Bag
-	14526, -- Pattern: Mooncloth
-	14627, -- Pattern: Bright Yellow Shirt
-	17018, -- Pattern: Flarecore Gloves
-	18265, -- Pattern: Flarecore Wraps
-	18415, -- Pattern: Felcloth Gloves
-	18417, -- Pattern: Mooncloth Gloves
-	18418, -- Pattern: Cloak of Warding
-	18487, -- Pattern: Mooncloth Robe
-	19217, -- Pattern: Argent Shoulders
-	19218, -- Pattern: Mantle of the Timbermaw
-	19219, -- Pattern: Flarecore Robe
-	19220, -- Pattern: Flarecore Leggings
-	19765, -- Pattern: Bloodvine Leggings
-	19766, -- Pattern: Bloodvine Boots
-	20548, -- Pattern: Runed Stygian Belt
-	21358, -- Pattern: Soul Pouch
-	21369, -- Pattern: Felcloth Bag
-	21371, -- Pattern: Core Felcloth Bag
-	21892, -- Pattern: Bolt of Imbued Netherweave
-	21893, -- Pattern: Imbued Netherweave Bag
-	21894, -- Pattern: Bolt of Soulcloth
-	21895, -- Pattern: Primal Mooncloth
-	21896, -- Pattern: Netherweave Robe
-	21897, -- Pattern: Netherweave Tunic
-	21898, -- Pattern: Imbued Netherweave Pants
-	21899, -- Pattern: Imbued Netherweave Boots
-	21902, -- Pattern: Soulcloth Gloves
-	21908, -- Pattern: Spellfire Belt
-	21909, -- Pattern: Spellfire Gloves
-	21910, -- Pattern: Spellfire Robe
-	21911, -- Pattern: Spellfire Bag
-	21912, -- Pattern: Frozen Shadoweave Shoulders
-	21913, -- Pattern: Frozen Shadoweave Robe
-	21914, -- Pattern: Frozen Shadoweave Boots
-	21915, -- Pattern: Ebon Shadowbag
-	21916, -- Pattern: Primal Mooncloth Belt
-	21917, -- Pattern: Primal Mooncloth Robe
-	21918, -- Pattern: Primal Mooncloth Shoulders
-	21919, -- Pattern: Primal Mooncloth Bag
-	22307, -- Pattern: Enchanted Mageweave Pouch
-	22308, -- Pattern: Enchanted Runecloth Bag
-	22312, -- Pattern: Satchel of Cenarius
-	22683, -- Pattern: Gaea's Embrace
-	22684, -- Pattern: Glacial Gloves
-	22685, -- Pattern: Glacial Cloak
-	22686, -- Pattern: Glacial Vest
-	22687, -- Pattern: Glacial Wrists
-	22694, -- Pattern: Polar Gloves
-	22695, -- Pattern: Polar Bracers
-	22697, -- Pattern: Icy Scale Gauntlets
-	22698, -- Pattern: Icy Scale Bracers
-	22774, -- Pattern: Sylvan Vest
-	24294, -- Pattern: Runic Spellthread
-	24295, -- Pattern: Golden Spellthread
-	24296, -- Pattern: Unyielding Bracers
-	24297, -- Pattern: Bracers of Havok
-	24298, -- Pattern: Blackstrike Bracers
-	24299, -- Pattern: Cloak of the Black Void
-	24300, -- Pattern: Cloak of Eternity
-	24301, -- Pattern: White Remedy Cape
-	24316, -- Pattern: Spellcloth
-	30483, -- Pattern: Shadowcloth
-	30844, -- Pattern: Flameheart Vest
-	37915, -- Pattern: Dress Shoes
-	38327, -- Pattern: Haliscan Jacket
-	38328, -- Pattern: Haliscan Pantaloons
-	114867, -- Pattern: Miniature Flying Carpet - NYI
-	118098, -- Pattern: Murloc Chew Toy
-	127022, -- Pattern: Imbued Silkweave Cinch
-	127023, -- Pattern: Imbued Silkweave Epaulets
-	127024, -- Pattern: Imbued Silkweave Pantaloons
-	127025, -- Pattern: Imbued Silkweave Hood
-	127026, -- Pattern: Imbued Silkweave Gloves
-	127027, -- Pattern: Imbued Silkweave Slippers
-	127028, -- Pattern: Imbued Silkweave Robe
-	127277, -- Pattern: Imbued Silkweave Cover
-	127278, -- Pattern: Imbued Silkweave Drape
-	127279, -- Pattern: Imbued Silkweave Shade
-	127280, -- Pattern: Imbued Silkweave Flourish
-	137681, -- Pattern: Bloodtotem Saddle Blanket
-	137953, -- Pattern: Silkweave Bracers
-	137954, -- Pattern: Silkweave Cinch
-	137955, -- Pattern: Silkweave Epaulets
-	137956, -- Pattern: Silkweave Pantaloons
-	137957, -- Pattern: Silkweave Hood
-	137958, -- Pattern: Silkweave Gloves
-	137959, -- Pattern: Silkweave Slippers
-	137960, -- Pattern: Silkweave Robe
-	137961, -- Pattern: Silkweave Bracers
-	137962, -- Pattern: Silkweave Cinch
-	137963, -- Pattern: Silkweave Epaulets
-	137964, -- Pattern: Silkweave Robe
-	137965, -- Pattern: Imbued Silkweave Bracers
-	137966, -- Pattern: Imbued Silkweave Cinch
-	137967, -- Pattern: Imbued Silkweave Epaulets
-	137968, -- Pattern: Imbued Silkweave Pantaloons
-	137969, -- Pattern: Imbued Silkweave Hood
-	137970, -- Pattern: Imbued Silkweave Gloves
-	137971, -- Pattern: Imbued Silkweave Slippers
-	137972, -- Pattern: Imbued Silkweave Robe
-	137973, -- Pattern: Imbued Silkweave Bracers
-	137974, -- Pattern: Imbued Silkweave Cinch
-	137975, -- Pattern: Imbued Silkweave Epaulets
-	137976, -- Pattern: Imbued Silkweave Pantaloons
-	137977, -- Pattern: Imbued Silkweave Hood
-	137978, -- Pattern: Imbued Silkweave Gloves
-	137979, -- Pattern: Imbued Silkweave Slippers
-	137980, -- Pattern: Imbued Silkweave Robe
-	137981, -- Pattern: Silkweave Cloak
-	137984, -- Pattern: Silkweave Shade
-	137987, -- Pattern: Silkweave Flourish
-	137990, -- Pattern: Silkweave Cover
-	137993, -- Pattern: Silkweave Drape
-	138000, -- Pattern: Imbued Silkweave Shade
-	138001, -- Pattern: Imbued Silkweave Shade
-	138003, -- Pattern: Imbued Silkweave Flourish
-	138004, -- Pattern: Imbued Silkweave Flourish
-	138006, -- Pattern: Imbued Silkweave Cover
-	138007, -- Pattern: Imbued Silkweave Cover
-	138009, -- Pattern: Imbued Silkweave Drape
-	138010, -- Pattern: Imbued Silkweave Drape
-	138011, -- Pattern: Silkweave Satchel
-	138012, -- Pattern: Silkweave Gloves
-	138013, -- Pattern: Silkweave Hood
-	138014, -- Pattern: Silkweave Slippers
-	138016, -- Clothes Chest Pattern: Dalaran Citizens
-	138017, -- Clothes Chest Pattern: Karazhan Opera House
-	138018, -- Clothes Chest Pattern: Molten Core
-	142076, -- Pattern: Imbued Silkweave Bag
-	142077, -- Pattern: Imbued Silkweave Bag
-	142078, -- Pattern: Imbued Silkweave Bag
-	151746, -- Pattern: Lightweave Breeches
-	151747, -- Pattern: Lightweave Breeches
-	151748, -- Pattern: Lightweave Breeches
-	162421, -- Pattern: Deep Sea Bag
-	162424, -- Pattern: Embroidered Deep Sea Cloak of the Feather
-	162426, -- Pattern: Embroidered Deep Sea Cloak of Resilience
-	162427, -- Pattern: Embroidered Deep Sea Cloak
-	162428, -- Pattern: Embroidered Deep Sea Gloves
-	162430, -- Pattern: Embroidered Deep Sea Breeches
-	162431, -- Pattern: Honorable Combatant's Satin Cloak
-	162432, -- Pattern: Honorable Combatant's Satin Cloak
-	162433, -- Pattern: Honorable Combatant's Satin Boots
-	162434, -- Pattern: Honorable Combatant's Satin Boots
-	162435, -- Pattern: Honorable Combatant's Satin Mittens
-	162436, -- Pattern: Honorable Combatant's Satin Mittens
-	162437, -- Pattern: Honorable Combatant's Satin Pants
-	162438, -- Pattern: Honorable Combatant's Satin Pants
-	162439, -- Pattern: Honorable Combatant's Satin Belt
-	162440, -- Pattern: Honorable Combatant's Satin Belt
-	162441, -- Pattern: Honorable Combatant's Satin Bracers
-	162442, -- Pattern: Honorable Combatant's Satin Bracers
-	162443, -- Pattern: Battle Flag: Spirit of Freedom
-	162444, -- Pattern: Battle Flag: Phalanx Defense
-	162445, -- Pattern: Battle Flag: Rallying Swiftness
-	162769, -- Pattern: Deep Sea Bag
-	162770, -- Pattern: Embroidered Deep Sea Cloak of the Feather
-	162771, -- Pattern: Embroidered Deep Sea Cloak of Resilience
-	162772, -- Pattern: Embroidered Deep Sea Cloak
-	165332, -- Pattern: Sinister Combatant's Satin Cloak
-	165333, -- Pattern: Sinister Combatant's Satin Cloak
-	165334, -- Pattern: Sinister Combatant's Satin Boots
-	165335, -- Pattern: Sinister Combatant's Satin Boots
-	165336, -- Pattern: Sinister Combatant's Satin Mittens
-	165337, -- Pattern: Sinister Combatant's Satin Mittens
-	165338, -- Pattern: Sinister Combatant's Satin Pants
-	165339, -- Pattern: Sinister Combatant's Satin Pants
-	165340, -- Pattern: Sinister Combatant's Satin Belt
-	165341, -- Pattern: Sinister Combatant's Satin Belt
-	165342, -- Pattern: Sinister Combatant's Satin Bracers
-	165343, -- Pattern: Sinister Combatant's Satin Bracers
-	167882, -- Pattern: Cloak of Warding
-	167883, -- Pattern: Felcloth Gloves
-	167884, -- Pattern: Inferno Gloves
-	167885, -- Pattern: Mooncloth Gloves
-	167888, -- Pattern: Robe of Winter Night
-	167889, -- Pattern: Azure Silk Cloak
-	167890, -- Pattern: Icy Cloak
-	168029, -- Pattern: Synchronous Thread
-	170444, -- Pattern: Uncanny Combatant's Satin Cloak
-	170445, -- Pattern: Uncanny Combatant's Satin Belt
-	170446, -- Pattern: Uncanny Combatant's Satin Belt
-	170447, -- Pattern: Uncanny Combatant's Satin Cloak
-	170448, -- Pattern: Uncanny Combatant's Satin Boots
-	170449, -- Pattern: Uncanny Combatant's Satin Boots
-	170450, -- Pattern: Uncanny Combatant's Satin Mittens
-	170451, -- Pattern: Uncanny Combatant's Satin Mittens
-	174370, -- Pattern: Unsettling Seaweave Gloves
-	174371, -- Pattern: Unsettling Seaweave Breeches
-	180781, -- Pattern: Pink Party Hat
 	194127, -- Dragon Isles Unravelling
-	194265, -- Pattern: Blue Silken Lining
-	194266, -- Pattern: Bronzed Grip Wrappings
-	194268, -- Pattern: Dragonscale Expedition's Expedition Tent
-	194269, -- Pattern: Infurious Wildercloth Bolt
-	194281, -- Pattern: Cold Cushion
-	194282, -- Pattern: Cushion of Time Travel
-	194283, -- Pattern: Duck-Stuffed Duck Lovie
-	194285, -- Pattern: Azureweave Expedition Pack
-	194287, -- Pattern: Chronocloth Reagent Bag
-	194288, -- Pattern: Master's Wildercloth Alchemist's Robe
-	194289, -- Pattern: Master's Wildercloth Chef's Hat
-	194290, -- Pattern: Master's Wildercloth Enchanter's Hat
-	194291, -- Pattern: Master's Wildercloth Fishing Cap
-	194292, -- Pattern: Master's Wildercloth Gardening Hat
-	194294, -- Pattern: Explorer's Banner of Herbology
-	194295, -- Pattern: Explorer's Banner of Geology
-	194296, -- Pattern: Fiddle with Draconium Fabric Cutters
-	194297, -- Pattern: Fiddle with Khaz'gorite Fabric Cutters
-	194298, -- Pattern: Forlorn Funeral Pall
 	194537, -- Fiddle with Draconium Fabric Cutters
 	194538, -- Fiddle with Khaz'gorite Fabric Cutters
-	201258, -- Bloodstained Pattern: Infurious Wildercloth Bolt
-	203848, -- Ancient Pattern: Bloodlord's Embrace
-	203849, -- Ancient Pattern: Gurubashi Tigerhide Cloak
-	203850, -- Ancient Pattern: Gurubashi Headdress
-	203851, -- Ancient Pattern: Ritualistic Legwarmers
-	204678, -- Pattern: Paw-Made Winterpelt Reagent Bag
-	205138, -- Pattern: Medical Wrap Kit
-	205139, -- Pattern: Reserve Parachute
-	205140, -- Pattern: Undulating Sporecloak
-	206393, -- Pattern: Glacial Cloak
-	206395, -- Pattern: Glacial Chapeau
-	206396, -- Pattern: Glacial Epaulets
-	206397, -- Pattern: Glacial Vest
-	206398, -- Pattern: Glacial Wrists
-	206399, -- Pattern: Glacial Gloves
-	206400, -- Pattern: Glacial Tether
-	206401, -- Pattern: Glacial Leggings
-	206402, -- Pattern: Glacial Footwear
-	210670, -- Pattern: Verdant Tether
 	222788, -- Khaz Algar Unraveling
-	224420, -- Pattern: Artisan Gardening Hat
-	224421, -- Pattern: Artisan Fishing Cap
-	224422, -- Pattern: Artisan Enchanter's Hat
-	224423, -- Pattern: Artisan Alchemist's Robe
-	224424, -- Pattern: Artisan Chef's Hat
-	224425, -- Pattern: Concoctor's Clutch
-	224426, -- Pattern: Ignition Satchel
-	224427, -- Pattern: Hideshaper's Workbag
-	224428, -- Pattern: Magically \"Infinite\" Messenger
-	224429, -- Pattern: Prodigy's Toolbox
-	224430, -- Pattern: Darkmoon Duffle
-	224431, -- Pattern: Gardener's Seed Satchel
-	224432, -- Pattern: Excavator's Haversack
-	225434, -- Pattern: Algari Competitor's Cloth Leggings
-	225435, -- Pattern: Algari Competitor's Cloth Shoulderpads
-	225436, -- Pattern: Algari Competitor's Cloth Treads
-	225437, -- Pattern: Algari Competitor's Cloth Bands
-	225438, -- Pattern: Algari Competitor's Cloth Hood
-	225439, -- Pattern: Algari Competitor's Cloth Gloves
-	225440, -- Pattern: Algari Competitor's Cloth Tunic
-	225441, -- Pattern: Algari Competitor's Cloth Sash
-	225442, -- Pattern: Algari Competitor's Cloth Cloak
-	225995, -- Pattern: Hideseeker's Tote
-	239485, -- Pattern: Pure Energizing Fiber
-	239486, -- Pattern: Pure Chronomantic Fiber
-	239487, -- Pattern: Pure Dexterous Fiber
-	239488, -- Pattern: Pure Precise Fiber
-	256880, -- Pattern: Thalassian Competitor's Cloth Bands
-	256884, -- Pattern: Thalassian Competitor's Cloth Sash
-	256885, -- Pattern: Thalassian Competitor's Cloth Tunic
-	256886, -- Pattern: Thalassian Competitor's Cloth Treads
-	256887, -- Pattern: Thalassian Competitor's Cloth Gloves
-	256888, -- Pattern: Thalassian Competitor's Cloth Hood
-	256889, -- Pattern: Thalassian Competitor's Cloth Leggings
-	256890, -- Pattern: Thalassian Competitor's Cloth Shoulderpads
-	256891, -- Pattern: Thalassian Competitor's Cloth Cloak
-	258025, -- Pattern: Sunfire Silk Lining
-	258033, -- Pattern: Arcanoweave Lining
-	258035, -- Pattern: Elegant Artisan's Alchemy Coveralls
-	258036, -- Pattern: Elegant Artisan's Cooking Hat
-	258037, -- Pattern: Elegant Artisan's Enchanting Hat
-	258038, -- Pattern: Elegant Artisan's Fishing Hat
-	258039, -- Pattern: Elegant Artisan's Herbalism Hat
-	258040, -- Pattern: Elegant Artisan's Tailoring Robe
-	258123, -- Pattern: Sunfire Silk Spellthread
-	258124, -- Pattern: Arcanoweave Spellthread
-	258126, -- Pattern: Arcanoweave Cord
-	258127, -- Pattern: Silvermoon Curtains
-	258128, -- Pattern: Lush Telogrus Carpet
-	258131, -- Pattern: Luxurious Silvermoon Lounge Cushion
-	258132, -- Pattern: Plush Silvermoon Bed
-	258133, -- Pattern: Chic Silvermoon Pillow
-	258134, -- Pattern: Voidstrider Saddlebag
 	-- Rogue
 	2892, -- Empty Poison Vial
 	2893, -- Empty Poison Vial
@@ -9746,9 +6488,6 @@ local itemIDs = {
 	150248, -- Ensemble: Fierce Combatant's Ringmail Armor
 	150249, -- Ensemble: Fierce Combatant's Ringmail Armor
 	159841, -- Tome of Hex: Skeletal Hatchling
-	162623, -- Tome of Hex: Zandalari Tendonripper
-	162624, -- Tome of Hex: Wicker Mongrel
-	172405, -- Tome of Hex: Living Honey
 	190378, -- Glyph of the Spectral Lupine
 	190380, -- Glyph of the Spectral Vulpine
 	-- Unknown > Unknown
@@ -9782,7 +6521,6 @@ local itemIDs = {
 	150266, -- Ensemble: Fierce Combatant's Plate Armor
 	150267, -- Ensemble: Fierce Combatant's Plate Armor
 	-- Warrior, Paladin, Death Knight
-	138431, -- Ensemble: Scale of the Scarlet Crusade
 	152743, -- Unsullied Plate Sabatons
 	153140, -- Unsullied Plate Waistplate
 	153143, -- Unsullied Plate Breastplate
