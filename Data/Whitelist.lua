@@ -16,6 +16,7 @@ local itemIDs = {
 	211413, -- Radiant Cache
 	202081, -- Dreamsurge Crate
 	270244, -- Field Pouch
+	267051,
 
 	-- Lockboxes, Geodes & Clams
 	5523, -- Small Barnacled Clam

@@ -19,13 +19,13 @@ jobs:
         with:
           ref: ${{ github.head_ref || github.ref_name }}
 
-      # Auto-format with StyLua (modifies files in place)
+      # Auto-format with StyLua (modifies files in place, skipping Utils/)
       - name: Auto-format with StyLua
         uses: JohnnyMorganz/stylua-action@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           version: 2.0.2
-          args: .
+          args: --glob "!Utils/**" --glob "*.lua" -- .
 
       # Automatically commit and push changes back if StyLua modified any files
       - name: Commit and push formatting fixes
@@ -39,7 +39,7 @@ jobs:
       - name: Lua Linter (Luacheck)
         uses: lunarmodules/luacheck@v1
         with:
-          args: .
+          args: . --exclude-files "Utils/**"
 
   # 2. Second job handles automated releases if checks pass
   release:
