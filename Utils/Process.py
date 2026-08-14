@@ -38,7 +38,7 @@ FILE_LOCK = os.path.join(SCRIPT_DIR, "Lock.sql")
 
 OUTPUT_PY_PATH = os.path.join(SCRIPT_DIR, "item_database.py")
 OUTPUT_LUA_DATA_PATH = os.path.join(DATA_DIR, "Items.lua")
-OUTPUT_LUA_UTILS_PATH = os.path.join(SCRIPT_DIR, "Items.lua")
+OUTPUT_LUA_UTILS_PATH = os.path.join(SCRIPT_DIR, "preclean.lua")
 
 # Master Toggle: Set to False to bypass all category/subclass filtering and get unfiltered data
 ENABLE_FILTERS = True
@@ -629,7 +629,7 @@ with open(OUTPUT_LUA_DATA_PATH, "w", encoding="utf-8") as out:
   out.write("addon.knownItems = {}\n")
   out.write("for _, itemID in ipairs(itemIDs) do\n")
   out.write("\taddon.knownItems[itemID] = true\n")
-  out.write("end\n")
+  out.write("end")
 
 # 3. Export Annotated preclean.lua to Utils/ folder (Grouped with comments and item names)
 print(f"Exporting annotated items to Lua file {OUTPUT_LUA_UTILS_PATH}...")
@@ -655,5 +655,6 @@ with open(OUTPUT_LUA_UTILS_PATH, "w", encoding="utf-8") as out:
     for item_id, name in sorted_group_items:
       safe_name = name.replace('"', '\\"')
       out.write(f"\t{item_id}, -- {safe_name}\n")
+  out.write("}")
 
 print("Generation complete.")
