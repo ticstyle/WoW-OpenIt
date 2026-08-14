@@ -4,13 +4,13 @@
 # FUTURE UPDATE & DATABASE REQUIREMENTS INSTRUCTIONS:
 # To update this item database in the future, you must export the following  
 # 7 database tables as SQL files from your local game files using 'wow.export':
-#   1. ItemClass.sql       - Maps main class IDs to category names (Weapon, Armor, etc.)
-#   2. ItemSubClass.sql    - Maps subcategories (One-Handed Swords, Cloth, etc.)
-#   3. Item.sql            - Links each item ID to its corresponding ClassID and SubclassID
-#   4. ItemSparse.sql      - Contains raw item names, levels, sell prices, and allowable classes
-#   5. ItemEffect.sql      - Contains active use/open effects for items that can be opened or used
-#   6. PlayerCondition.sql - Contains conditional requirements (zones, maps, factions, etc.)
-#   7. Lock.sql            - Contains lock and key/unlock requirements for items/containers
+#   1. ItemClass.sql         - Maps main class IDs to category names (Weapon, Armor, etc.)
+#   2. ItemSubClass.sql      - Maps subcategories (One-Handed Swords, Cloth, etc.)
+#   3. Item.sql              - Links each item ID to its corresponding ClassID and SubclassID
+#   4. ItemSparse.sql        - Contains raw item names, levels, sell prices, and allowable classes
+#   5. ItemEffect.sql        - Contains active use/open effects for items that can be opened or used
+#   6. PlayerCondition.sql   - Contains conditional requirements (zones, maps, factions, etc.)
+#   7. Lock.sql              - Contains lock and key/unlock requirements for items/containers
 #
 # Place all seven files in the exact same folder as this script (Utils/) before running.
 # ==============================================================================
@@ -37,7 +37,8 @@ FILE_PLAYER_CONDITION = os.path.join(SCRIPT_DIR, "PlayerCondition.sql")
 FILE_LOCK = os.path.join(SCRIPT_DIR, "Lock.sql")
 
 OUTPUT_PY_PATH = os.path.join(SCRIPT_DIR, "item_database.py")
-OUTPUT_LUA_PATH = os.path.join(DATA_DIR, "Items.lua")
+OUTPUT_LUA_DATA_PATH = os.path.join(DATA_DIR, "Items.lua")
+OUTPUT_LUA_UTILS_PATH = os.path.join(SCRIPT_DIR, "Items.lua")
 
 # Master Toggle: Set to False to bypass all category/subclass filtering and get unfiltered data
 ENABLE_FILTERS = True
@@ -107,17 +108,17 @@ ENABLED_CLASS_SUBCLASSES = {
 
     # Gems
     "Gem": False,
-    "Gem > Agility": True,
-    "Gem > Artifact Relic": True,
-    "Gem > Critical Strike": True,
-    "Gem > Haste": True,
-    "Gem > Intellect": True,
-    "Gem > Mastery": True,
-    "Gem > Multiple Stats": True,
-    "Gem > Other": True,
-    "Gem > Stamina": True,
-    "Gem > Strength": True,
-    "Gem > Versatility": True,
+    "Gem > Agility": False,
+    "Gem > Artifact Relic": False,
+    "Gem > Critical Strike": False,
+    "Gem > Haste": False,
+    "Gem > Intellect": False,
+    "Gem > Mastery": False,
+    "Gem > Multiple Stats": False,
+    "Gem > Other": False,
+    "Gem > Stamina": False,
+    "Gem > Strength": False,
+    "Gem > Versatility": False,
 
     # Housing
     "Housing": True,
@@ -128,23 +129,23 @@ ENABLED_CLASS_SUBCLASSES = {
     "Housing > Service Item": True,
 
     # Item Enhancements
-    "Item Enhancement": True,
-    "Item Enhancement > Chest": True,
-    "Item Enhancement > Cloak": True,
-    "Item Enhancement > Feet": True,
-    "Item Enhancement > Finger": True,
-    "Item Enhancement > Hands": True,
-    "Item Enhancement > Head": True,
-    "Item Enhancement > Legs": True,
-    "Item Enhancement > Misc": True,
-    "Item Enhancement > Miscellaneous": True,
-    "Item Enhancement > Neck": True,
-    "Item Enhancement > Shield/Off-hand": True,
-    "Item Enhancement > Shoulder": True,
-    "Item Enhancement > Two-Handed Weapon": True,
-    "Item Enhancement > Waist": True,
-    "Item Enhancement > Weapon": True,
-    "Item Enhancement > Wrist": True,
+    "Item Enhancement": False,
+    "Item Enhancement > Chest": False,
+    "Item Enhancement > Cloak": False,
+    "Item Enhancement > Feet": False,
+    "Item Enhancement > Finger": False,
+    "Item Enhancement > Hands": False,
+    "Item Enhancement > Head": False,
+    "Item Enhancement > Legs": False,
+    "Item Enhancement > Misc": False,
+    "Item Enhancement > Miscellaneous": False,
+    "Item Enhancement > Neck": False,
+    "Item Enhancement > Shield/Off-hand": False,
+    "Item Enhancement > Shoulder": False,
+    "Item Enhancement > Two-Handed Weapon": False,
+    "Item Enhancement > Waist": False,
+    "Item Enhancement > Weapon": False,
+    "Item Enhancement > Wrist": False,
 
     # Keys & Quests
     "Key": False,
@@ -179,15 +180,15 @@ ENABLED_CLASS_SUBCLASSES = {
     "Profession > Tailoring": True,
 
     # Projectiles
-    "Projectile": True,
-    "Projectile > Arrow": True,
-    "Projectile > Bullet": True,
+    "Projectile": False,
+    "Projectile > Arrow": False,
+    "Projectile > Bullet": False,
 
     # Reagents
-    "Reagent": True,
-    "Reagent > Context Token": True,
-    "Reagent > Keystone": True,
-    "Reagent > Reagent": True,
+    "Reagent": False,
+    "Reagent > Context Token": False,
+    "Reagent > Keystone": False,
+    "Reagent > Reagent": False,
 
     # Recipes
     "Recipe": True,
@@ -205,21 +206,21 @@ ENABLED_CLASS_SUBCLASSES = {
     "Recipe > Tailoring": True,
 
     # Tradeskills
-    "Tradeskill": True,
-    "Tradeskill > Cloth": True,
-    "Tradeskill > Cooking": True,
-    "Tradeskill > Elemental": True,
-    "Tradeskill > Enchanting": True,
-    "Tradeskill > Finishing Reagents": True,
-    "Tradeskill > Herb": True,
-    "Tradeskill > Inscription": True,
-    "Tradeskill > Jewelcrafting": True,
-    "Tradeskill > Leather": True,
-    "Tradeskill > Metal & Stone": True,
-    "Tradeskill > Optional Reagents": True,
-    "Tradeskill > Other": True,
-    "Tradeskill > Parts": True,
-    "Tradeskill > Unknown": True,
+    "Tradeskill": False,
+    "Tradeskill > Cloth": False,
+    "Tradeskill > Cooking": False,
+    "Tradeskill > Elemental": False,
+    "Tradeskill > Enchanting": False,
+    "Tradeskill > Finishing Reagents": False,
+    "Tradeskill > Herb": False,
+    "Tradeskill > Inscription": False,
+    "Tradeskill > Jewelcrafting": False,
+    "Tradeskill > Leather": False,
+    "Tradeskill > Metal & Stone": False,
+    "Tradeskill > Optional Reagents": False,
+    "Tradeskill > Other": False,
+    "Tradeskill > Parts": False,
+    "Tradeskill > Unknown": False,
 
     # Unknown / Housing / Token
     "Unknown > Unknown": True,
@@ -258,10 +259,10 @@ ENABLED_ATTRIBUTES = {
     "sell_price": False,
     "quality": True,
     "inventory_type": True,
-    "allowed_classes": True,       # Decodes AllowableClass bitmask into class names
-    "openable": True,              # 1 for true (containers/effects), 0 for false
-    "player_condition_id": False,  # Optional numeric condition ID
-    "player_condition": True,      # 1 if condition present, 0 otherwise
+    "allowed_classes": True,        # Decodes AllowableClass bitmask into class names
+    "openable": True,               # 1 for true (containers/effects), 0 for false
+    "player_condition_id": False,   # Optional numeric condition ID
+    "player_condition": True,       # 1 if condition present, 0 otherwise
 }
 
 # Standard World of Warcraft class bitmask flag definitions
@@ -442,6 +443,7 @@ for row in load_table(FILE_ITEM_EFFECT):
 
 def is_openable_or_usable(item_id, class_name, subclass_name, row):
   """Comprehensive check to determine if an item is openable, a container,
+
   a mount, a companion pet, or has an active spell use effect.
   """
   if class_name == "Container":
@@ -592,7 +594,7 @@ with open(OUTPUT_PY_PATH, "w", encoding="utf-8") as out:
     out.write("    },\n")
   out.write("}\n")
 
-# 2. Export Lua Item Addon File (Items.lua) matching requested style
+# Group items for Lua formatting
 lua_groups = {}
 for item_id in sorted_ids:
   data = master_items[item_id]
@@ -609,15 +611,36 @@ for item_id in sorted_ids:
     lua_groups[group_key] = []
   lua_groups[group_key].append((item_id, data["name"]))
 
-print(f"Exporting items to Lua file {OUTPUT_LUA_PATH}...")
-with open(OUTPUT_LUA_PATH, "w", encoding="utf-8") as out:
+# 2. Export Speed-Optimized Items.lua to Data/ folder (Sorted purely by item ID, minimal comments)
+print(f"Exporting speed-optimized items to Lua file {OUTPUT_LUA_DATA_PATH}...")
+with open(OUTPUT_LUA_DATA_PATH, "w", encoding="utf-8") as out:
   out.write("-- Data/Items.lua\n")
-  out.write("-- https://github.com/ticstyle/WoW-OpenIt\n")
+  out.write("-- https://github.com/ticstyle/WoW-OpenIt\n\n")
+  out.write("-- luacheck: globals\n\n")
+  out.write("local _, addon = ...\n\n")
+  out.write("local itemIDs = {\n")
+
+  # Sort purely numerically by item ID for absolute speed and clean sequence
+  for item_id in sorted_ids:
+    out.write(f"\t{item_id},\n")
+
+  out.write("}\n\n")
+  out.write("-- Build a fast lookup table on load\n")
+  out.write("addon.knownItems = {}\n")
+  out.write("for _, itemID in ipairs(itemIDs) do\n")
+  out.write("\taddon.knownItems[itemID] = true\n")
+  out.write("end\n")
+
+# 3. Export Annotated preclean.lua to Utils/ folder (Grouped with comments and item names)
+print(f"Exporting annotated items to Lua file {OUTPUT_LUA_UTILS_PATH}...")
+with open(OUTPUT_LUA_UTILS_PATH, "w", encoding="utf-8") as out:
+  out.write("-- Utils/preclean.lua\n")
+  out.write("-- https://github.com/ticstyle/WoW-OpenIt\n\n")
   out.write(
       f"-- World of Warcraft Retail Item database for the addon OpenIt, created"
       f" {current_timestamp}\n"
   )
-  out.write(f"-- Number of items {len(sorted_ids)}\n")
+  out.write(f"-- Number of items {len(sorted_ids)}\n\n")
   out.write("-- Included Groups:\n")
   for group_key in sorted(lua_groups.keys()):
     out.write(f"--   {group_key}\n")
@@ -632,13 +655,5 @@ with open(OUTPUT_LUA_PATH, "w", encoding="utf-8") as out:
     for item_id, name in sorted_group_items:
       safe_name = name.replace('"', '\\"')
       out.write(f"\t{item_id}, -- {safe_name}\n")
-    out.write("\n")
-
-  out.write("}\n\n")
-  out.write("-- Build a fast lookup table on load\n")
-  out.write("addon.knownItems = {}\n")
-  out.write("for _, itemID in ipairs(itemIDs) do\n")
-  out.write("\taddon.knownItems[itemID] = true\n")
-  out.write("end\n")
 
 print("Generation complete.")
